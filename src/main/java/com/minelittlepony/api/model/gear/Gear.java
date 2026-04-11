@@ -1,14 +1,14 @@
 package com.minelittlepony.api.model.gear;
 
-import net.minecraft.client.render.RenderLayer;
-import net.minecraft.client.render.RenderLayers;
-import net.minecraft.client.render.command.OrderedRenderCommandQueue;
-import net.minecraft.client.render.entity.state.BipedEntityRenderState;
-import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.util.Identifier;
+import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.client.renderer.entity.state.HumanoidRenderState;
+import net.minecraft.client.renderer.rendertype.RenderType;
+import net.minecraft.client.renderer.rendertype.RenderTypes;
+import net.minecraft.resources.Identifier;
 
 import com.minelittlepony.api.model.*;
 import com.minelittlepony.api.pony.meta.Wearable;
+import com.mojang.blaze3d.vertex.PoseStack;
 
 import java.util.*;
 import java.util.function.Supplier;
@@ -16,7 +16,7 @@ import java.util.function.Supplier;
 /**
  * Interface for an accessory on a pony's body.
  */
-public interface Gear<S extends BipedEntityRenderState & PonyModel.AttributedHolder> {
+public interface Gear<S extends HumanoidRenderState & PonyModel.AttributedHolder> {
     List<Supplier<Gear<?>>> MOD_GEARS = new ArrayList<>();
 
     /**
@@ -67,23 +67,23 @@ public interface Gear<S extends BipedEntityRenderState & PonyModel.AttributedHol
     /**
      * Gets the layer used to render this piece of gear.
      */
-    default RenderLayer getLayer(S entity, Context<S, ?> context) {
-        return RenderLayers.entityTranslucent(getTexture(entity, context));
+    default RenderType getLayer(S entity, Context<S, ?> context) {
+        return RenderTypes.entityTranslucent(getTexture(entity, context));
     }
 
     /**
      * Applies body transformations for this wearable
      */
-    default void transform(S state, PonyModel<S> model, MatrixStack matrices) {
+    default void transform(S state, PonyModel<S> model, PoseStack matrices) {
         BodyPart part = getGearLocation();
         model.transform(state, part,  matrices);
-        model.getBodyPart(part).applyTransform(matrices);
+        model.getBodyPart(part).translateAndRotate(matrices);
     }
 
     /**
      * Renders this model component.
      */
-    void render(MatrixStack stack, GearRenderState<S> state, OrderedRenderCommandQueue queue, RenderLayer layer, int overlay, int light, int color);
+    void render(PoseStack stack, GearRenderState<S> state, SubmitNodeCollector frame, RenderType renderType, int overlay, int light, int color);
 
     /**
      * A render context for instance of IGear.
@@ -91,14 +91,14 @@ public interface Gear<S extends BipedEntityRenderState & PonyModel.AttributedHol
      * @param <T> The type of entity being rendered.
      * @param <M> The type of the entity's primary model.
      */
-    public interface Context<S extends BipedEntityRenderState & PonyModel.AttributedHolder, M extends PonyModel<?>> {
+    public interface Context<S extends HumanoidRenderState & PonyModel.AttributedHolder, M extends PonyModel<?>> {
         /**
          * The empty context.
          */
         @SuppressWarnings("rawtypes")
         Context<?, ?> NULL = new Context() {
             @Override
-            public Identifier getDefaultTexture(BipedEntityRenderState entity, Wearable wearable) {
+            public Identifier getDefaultTexture(HumanoidRenderState entity, Wearable wearable) {
                 return wearable.getDefaultTexture();
             }
         };
@@ -118,7 +118,7 @@ public interface Gear<S extends BipedEntityRenderState & PonyModel.AttributedHol
         Identifier getDefaultTexture(S entity, Wearable wearable);
     }
 
-    public class GearRenderState<S extends BipedEntityRenderState & PonyModel.AttributedHolder> {
+    public class GearRenderState<S extends HumanoidRenderState & PonyModel.AttributedHolder> {
         public S entityState;
         public PonyModel<S> model;
         public float limbDistance;

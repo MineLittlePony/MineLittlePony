@@ -1,7 +1,5 @@
 package com.minelittlepony.api.pony.meta;
 
-import net.minecraft.util.StringIdentifiable;
-
 import com.minelittlepony.api.config.PonyConfig;
 
 /**
@@ -22,7 +20,7 @@ public enum SizePreset implements Size {
     FOAL    (0xffbe53, 0.25f, 0.6F,  0.65F, 0.5F),
     UNSET   (0x000000, 1,     1,     1,     1);
 
-    public static final EnumCodec<SizePreset> CODEC = StringIdentifiable.createCodec(SizePreset::values);
+    public static final EnumCodec<SizePreset> CODEC = TValue.enumCodec(SizePreset::values);
 
     private final int triggerValue;
     private final float shadowSize;

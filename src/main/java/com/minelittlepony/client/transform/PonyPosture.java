@@ -1,13 +1,13 @@
 package com.minelittlepony.client.transform;
 
-import net.minecraft.client.network.AbstractClientPlayerEntity;
-import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.entity.LivingEntity;
+import net.minecraft.client.player.AbstractClientPlayer;
+import net.minecraft.world.entity.LivingEntity;
 
 import org.jetbrains.annotations.NotNull;
 
 import com.minelittlepony.api.model.*;
 import com.minelittlepony.client.render.entity.state.PonyRenderState;
+import com.mojang.blaze3d.vertex.PoseStack;
 
 public abstract class PonyPosture {
     public static final PonyPosture STANDING = new PonyPosture() {
@@ -21,8 +21,8 @@ public abstract class PonyPosture {
     };
     public static final PonyPosture ELYTRA = new PonyPosture() {
         @Override
-        public void transform(PonyRenderState state, MatrixStack stack) {
-            stack.translate(0, state.isInSneakingPose ? -0.825F : -1, 0);
+        public void transform(PonyRenderState state, PoseStack stack) {
+            stack.translate(0, state.isCrouching ? -0.825F : -1, 0);
         }
     };
     public static final PonyPosture FLYING = new PostureFlight(1, 0);
@@ -52,14 +52,14 @@ public abstract class PonyPosture {
 
     public void updateState(LivingEntity entity, PonyRenderState state) {
         if (RenderPass.getCurrent() == RenderPass.GUI || RenderPass.getCurrent() == RenderPass.WORLD) {
-            if (entity instanceof AbstractClientPlayerEntity) {
-                state.isGliding = false;
-                state.leaningPitch = 0;
+            if (entity instanceof AbstractClientPlayer) {
+                state.isFallFlying = false;
+                state.bodyRot = 0;
             }
         }
     }
 
-    public void transform(PonyRenderState state, MatrixStack stack) {
+    public void transform(PonyRenderState state, PoseStack stack) {
 
     }
 }

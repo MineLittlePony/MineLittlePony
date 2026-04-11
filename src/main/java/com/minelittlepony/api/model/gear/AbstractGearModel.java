@@ -1,27 +1,27 @@
 package com.minelittlepony.api.model.gear;
 
 import net.minecraft.client.model.Model;
-import net.minecraft.client.model.ModelPart;
-import net.minecraft.client.render.RenderLayer;
-import net.minecraft.client.render.RenderLayers;
-import net.minecraft.client.render.command.OrderedRenderCommandQueue;
-import net.minecraft.client.render.entity.state.BipedEntityRenderState;
-import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.client.model.geom.ModelPart;
+import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.client.renderer.entity.state.HumanoidRenderState;
+import net.minecraft.client.renderer.rendertype.RenderType;
+import net.minecraft.client.renderer.rendertype.RenderTypes;
 
 import com.minelittlepony.api.model.PonyModel;
+import com.mojang.blaze3d.vertex.PoseStack;
 
-public abstract class AbstractGearModel<T extends BipedEntityRenderState & PonyModel.AttributedHolder> extends Model<Gear.GearRenderState<T>> implements Gear<T> {
+public abstract class AbstractGearModel<T extends HumanoidRenderState & PonyModel.AttributedHolder> extends Model<Gear.GearRenderState<T>> implements Gear<T> {
 
     private final float stackingHeight;
 
     public AbstractGearModel(ModelPart root, float stackingHeight) {
-        super(root, RenderLayers::entitySolid);
+        super(root, RenderTypes::entitySolid);
         this.stackingHeight = stackingHeight;
     }
 
     @Override
-    public void render(MatrixStack stack, GearRenderState<T> state, OrderedRenderCommandQueue queue, RenderLayer layer, int overlay, int light, int color) {
-        queue.submitModel(this, state, stack, layer, light, overlay, color, null, state.entityState.outlineColor, null);
+    public void render(PoseStack stack, GearRenderState<T> state, SubmitNodeCollector frame, RenderType renderType, int overlay, int light, int color) {
+        frame.submitModel(this, state, stack, renderType, light, overlay, color, null, state.entityState.outlineColor, null);
     }
 
     @Override

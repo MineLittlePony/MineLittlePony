@@ -1,6 +1,6 @@
 package com.minelittlepony.api.config;
 
-import net.minecraft.entity.Entity;
+import net.minecraft.world.entity.Entity;
 
 import org.jetbrains.annotations.Nullable;
 

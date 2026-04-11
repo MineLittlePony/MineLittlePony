@@ -1,14 +1,14 @@
 package com.minelittlepony.client.model.entity;
 
-import net.minecraft.client.model.ModelPart;
-import net.minecraft.client.render.entity.model.BipedEntityModel;
-import net.minecraft.entity.EntityPose;
-import net.minecraft.util.Arm;
-import net.minecraft.util.math.MathHelper;
+import net.minecraft.client.model.HumanoidModel;
+import net.minecraft.client.model.geom.ModelPart;
+import net.minecraft.util.Mth;
+import net.minecraft.world.entity.HumanoidArm;
+import net.minecraft.world.entity.Pose;
 
 import com.minelittlepony.client.render.entity.AllayRenderer;
 
-public class BreezieModel extends BipedEntityModel<AllayRenderer.State> {
+public class BreezieModel extends HumanoidModel<AllayRenderer.State> {
 
     private ModelPart leftWing;
     private ModelPart rightWing;
@@ -20,31 +20,26 @@ public class BreezieModel extends BipedEntityModel<AllayRenderer.State> {
     }
 
     @Override
-    public void setVisible(boolean visible) {
-        super.setVisible(visible);
-        hat.visible = false;
-    }
+    public void setupAnim(AllayRenderer.State state) {
+        super.setupAnim(state);
+        hat.skipDraw = true;
 
-    @Override
-    public void setAngles(AllayRenderer.State state) {
-        super.setAngles(state);
+        float move = state.walkAnimationSpeed;
+        float swing = state.walkAnimationPos;
 
-        float move = state.limbSwingAnimationProgress;
-        float swing = state.limbSwingAmplitude;
+        head.yRot = state.yRot * Mth.DEG_TO_RAD;
+        head.xRot = state.xRot * Mth.DEG_TO_RAD;
 
-        head.yaw = state.relativeHeadYaw * 0.017453292F;
-        head.pitch = state.pitch * 0.017453292F;
+        leftArm.xRot = Mth.cos(move * 0.6662F) * swing;
+        leftArm.zRot = 0;
 
-        leftArm.pitch = MathHelper.cos(move * 0.6662F) * swing;
-        leftArm.roll = 0;
+        rightArm.setRotation(swing * Mth.cos(move * 0.6662F + Mth.PI),        0, 0);
+        leftLeg .setRotation(swing * Mth.cos(move * 0.6662F + Mth.PI) * 1.4F, 0, 0);
+        rightLeg.setRotation(swing * Mth.cos(move * 0.6662F)          * 1.4F, 0, 0);
 
-        rightArm.setAngles(swing * MathHelper.cos(move * 0.6662F + MathHelper.PI),        0, 0);
-        leftLeg .setAngles(swing * MathHelper.cos(move * 0.6662F + MathHelper.PI) * 1.4F, 0, 0);
-        rightLeg.setAngles(swing * MathHelper.cos(move * 0.6662F)                 * 1.4F, 0, 0);
-
-        if (state.isInPose(EntityPose.SITTING)) {
-            leftArm.pitch += -MathHelper.PI / 5;
-            rightArm.pitch += -MathHelper.PI / 5;
+        if (state.hasPose(Pose.SITTING)) {
+            leftArm.xRot += -Mth.PI / 5;
+            rightArm.xRot += -Mth.PI / 5;
 
             rotateLegRiding(leftLeg, -1);
             rotateLegRiding(rightLeg, 1);
@@ -53,28 +48,28 @@ public class BreezieModel extends BipedEntityModel<AllayRenderer.State> {
         rotateArm(leftArm, state.leftArmPose, 1);
         rotateArm(rightArm, state.rightArmPose, 1);
 
-        if (state.handSwingProgress > 0) {
-            swingArms(state, state.preferredArm);
+        if (state.attackTime > 0) {
+            swingArms(state, state.mainArm);
         }
 
-        float rotX = MathHelper.sin(state.age * 0.067F) * 0.05F;
-        float rotZ = MathHelper.cos(state.age * 0.09F) * 0.05F + 0.05F;
+        float rotX = Mth.sin(state.ageInTicks * 0.067F) * 0.05F;
+        float rotZ = Mth.cos(state.ageInTicks * 0.09F) * 0.05F + 0.05F;
 
-        leftArm.pitch -= rotX;
-        leftArm.roll -= rotZ;
+        leftArm.xRot -= rotX;
+        leftArm.zRot -= rotZ;
 
-        rightArm.pitch += rotX;
-        rightArm.roll += rotZ;
+        rightArm.xRot += rotX;
+        rightArm.zRot += rotZ;
 
-        rotX = MathHelper.sin(state.age * 0.3F) * 0.05F;
-        rotZ = MathHelper.cos(state.age * 0.2F) * 0.05F + 0.05F;
+        rotX = Mth.sin(state.ageInTicks * 0.3F) * 0.05F;
+        rotZ = Mth.cos(state.ageInTicks * 0.2F) * 0.05F + 0.05F;
 
         rotX -= 0.05F;
 
-        leftWing.yaw = rotX * 10;
-        leftWing.pitch = rotZ;
-        rightWing.yaw = -rotX * 10;
-        rightWing.pitch = rotZ;
+        leftWing.yRot = rotX * 10;
+        leftWing.xRot = rotZ;
+        rightWing.yRot = -rotX * 10;
+        rightWing.xRot = rotZ;
 
         if (state.rightArmPose == ArmPose.BOW_AND_ARROW) {
             raiseArm(rightArm, leftArm, -1);
@@ -84,60 +79,60 @@ public class BreezieModel extends BipedEntityModel<AllayRenderer.State> {
     }
 
     protected void rotateLegRiding(ModelPart leg, float factor) {
-        leg.setAngles(-1.4137167F, factor * MathHelper.PI / 10, factor * 0.07853982F);
+        leg.setRotation(-1.4137167F, factor * Mth.PI * 0.1F, factor * Mth.PI * 0.025F);
     }
 
-    protected void swingArms(AllayRenderer.State state, Arm mainHand) {
-        body.yaw = MathHelper.sin(MathHelper.sqrt(state.handSwingProgress) * MathHelper.TAU) / 5;
+    protected void swingArms(AllayRenderer.State state, HumanoidArm mainHand) {
+        body.yRot = Mth.sin(Mth.sqrt(state.attackTime) * Mth.TWO_PI) * 0.2F;
 
-        if (mainHand == Arm.LEFT) {
-            body.yaw *= -1;
+        if (mainHand == HumanoidArm.LEFT) {
+            body.yRot *= -1;
         }
 
-        float sin = MathHelper.sin(body.yaw) * 5;
-        float cos = MathHelper.cos(body.yaw) * 5;
+        float sin = Mth.sin(body.yRot) * 5;
+        float cos = Mth.cos(body.yRot) * 5;
 
-        leftArm.pitch += body.yaw;
-        leftArm.yaw += body.yaw;
-        leftArm.originX = cos;
-        leftArm.originZ = -sin;
+        leftArm.xRot += body.yRot;
+        leftArm.yRot += body.yRot;
+        leftArm.x = cos;
+        leftArm.z = -sin;
 
-        rightArm.yaw += body.yaw;
-        rightArm.originX = -cos;
-        rightArm.originZ = sin;
+        rightArm.yRot += body.yRot;
+        rightArm.x = -cos;
+        rightArm.z = sin;
 
-        float swingAmount = 1 - (float)Math.pow(1 - state.handSwingProgress, 4);
+        float swingAmount = 1 - (float)Math.pow(1 - state.attackTime, 4);
 
-        float swingFactorX = MathHelper.sin(swingAmount * MathHelper.PI);
-        float swingX = MathHelper.sin(state.handSwingProgress * MathHelper.PI) * (0.7F - head.pitch) * 0.75F;
+        float swingFactorX = Mth.sin(swingAmount * Mth.PI);
+        float swingX = Mth.sin(state.attackTime * Mth.PI) * (0.7F - head.xRot) * 0.75F;
 
         ModelPart mainArm = getArm(mainHand);
-        mainArm.pitch -= swingFactorX * 1.2F + swingX;
-        mainArm.yaw += body.yaw * 2;
-        mainArm.roll -= MathHelper.sin(state.handSwingProgress * MathHelper.PI) * 0.4F;
+        mainArm.xRot -= swingFactorX * 1.2F + swingX;
+        mainArm.yRot += body.yRot * 2;
+        mainArm.zRot -= Mth.sin(state.attackTime * Mth.PI) * 0.4F;
     }
 
     protected void rotateArm(ModelPart arm, ArmPose pose, float factor) {
         switch (pose) {
             case EMPTY:
-                arm.yaw = 0;
+                arm.yRot = 0;
                 break;
             case ITEM:
-                arm.pitch = arm.pitch / 2 - (MathHelper.PI / 10);
-                arm.yaw = 0;
+                arm.xRot = arm.xRot / 2 - (Mth.PI / 10);
+                arm.yRot = 0;
             case BLOCK:
-                arm.pitch = arm.pitch / 2 - 0.9424779F;
-                arm.yaw = factor * 0.5235988F;
+                arm.xRot = arm.xRot / 2 - 0.9424779F;
+                arm.yRot = factor * 0.5235988F;
                 break;
             default:
         }
     }
 
     protected void raiseArm(ModelPart up, ModelPart down, float factor) {
-        up.yaw = head.yaw + (factor / 10);
-        up.pitch = head.pitch - MathHelper.HALF_PI;
+        up.yRot = head.yRot + (factor / 10);
+        up.xRot = head.xRot - Mth.HALF_PI;
 
-        down.yaw = head.yaw - (factor / 2);
-        down.pitch = head.pitch - MathHelper.HALF_PI;
+        down.yRot = head.yRot - (factor / 2);
+        down.xRot = head.xRot - Mth.HALF_PI;
     }
 }

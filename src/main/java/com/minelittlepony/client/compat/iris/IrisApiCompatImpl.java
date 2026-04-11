@@ -5,7 +5,7 @@ import net.irisshaders.iris.layer.BlockEntityRenderStateShard;
 import net.irisshaders.iris.layer.OuterWrappedRenderType;
 import net.irisshaders.iris.mixinterface.ModelStorage;
 import net.irisshaders.iris.vertices.ImmediateState;
-import net.minecraft.client.render.RenderLayer;
+import net.minecraft.client.renderer.rendertype.RenderType;
 
 import org.jetbrains.annotations.Nullable;
 
@@ -18,7 +18,7 @@ interface IrisApiCompatImpl {
         return IrisApi.getInstance().isRenderingShadowPass();
     }
 
-    static @Nullable RenderLayer wrapExactlyOnce(@Nullable RenderLayer layer) {
+    static @Nullable RenderType wrapExactlyOnce(@Nullable RenderType layer) {
         return ImmediateState.isRenderingBEs ? OuterWrappedRenderType.wrapExactlyOnce("iris:block_entity", layer, BlockEntityRenderStateShard.INSTANCE) : layer;
     }
 

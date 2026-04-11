@@ -1,20 +1,20 @@
 package com.minelittlepony.client.render.entity.feature;
 
-import net.minecraft.client.network.ClientPlayerLikeEntity;
-import net.minecraft.client.render.OverlayTexture;
-import net.minecraft.client.render.block.entity.SkullBlockEntityModel.SkullModelState;
-import net.minecraft.client.render.command.OrderedRenderCommandQueue;
-import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.entity.PlayerLikeEntity;
-import net.minecraft.util.Colors;
+import net.minecraft.client.entity.ClientAvatarEntity;
+import net.minecraft.client.model.object.skull.SkullModelBase;
+import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.util.CommonColors;
+import net.minecraft.world.entity.Avatar;
 
 import com.minelittlepony.api.model.BodyPart;
 import com.minelittlepony.client.model.*;
 import com.minelittlepony.client.render.PonyRenderContext;
 import com.minelittlepony.client.render.entity.state.PonyRenderState;
+import com.mojang.blaze3d.vertex.PoseStack;
 
 public class DJPon3Feature<
-        T extends PlayerLikeEntity & ClientPlayerLikeEntity,
+        T extends Avatar & ClientAvatarEntity,
         S extends PonyRenderState,
         M extends ClientPonyModel<S>
     > extends AbstractPonyFeature<S, M> {
@@ -26,27 +26,27 @@ public class DJPon3Feature<
     }
 
     @Override
-    public void render(MatrixStack stack, OrderedRenderCommandQueue queue, int light, S state, float limbAngle, float limbDistance) {
-        if (state.displayName != null && "deadmau5".equals(state.displayName.getString())) {
-            stack.push();
+    public void submit(PoseStack stack, SubmitNodeCollector queue, int light, S state, float limbAngle, float limbDistance) {
+        if (state.nameTag != null && "deadmau5".equals(state.nameTag.getString())) {
+            stack.pushPose();
 
             M body = getContext().getEquineManager().lookupModel(state).body();
 
             body.transform(state, BodyPart.HEAD, stack);
-            body.getHead().applyTransform(stack);
+            body.getHead().translateAndRotate(stack);
 
             stack.scale(1.3333334F, 1.3333334F, 1.3333334F);
             stack.translate(0, 0.3F, 0);
 
             deadMau5.setVisible(true);
 
-            SkullModelState skullState = new SkullModelState();
-            skullState.pitch = state.pitch;
-            skullState.yaw = state.relativeHeadYaw;
+            SkullModelBase.State skullState = new SkullModelBase.State();
+            skullState.xRot = state.xRot;
+            skullState.yRot = state.yRot;
 
-            queue.getBatchingQueue(1).submitModel(deadMau5, skullState, stack, deadMau5.getLayer(state.skinTextures.body().texturePath()), light, OverlayTexture.DEFAULT_UV, Colors.WHITE, null, state.outlineColor, null);
+            queue.order(1).submitModel(deadMau5, skullState, stack, deadMau5.renderType(state.skin.body().texturePath()), light, OverlayTexture.NO_OVERLAY, CommonColors.WHITE, null, state.outlineColor, null);
 
-            stack.pop();
+            stack.popPose();
         }
     }
 }

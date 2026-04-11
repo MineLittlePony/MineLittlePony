@@ -1,6 +1,10 @@
 package com.minelittlepony.client.compat.hdskins;
 
 import com.minelittlepony.client.PonySettingsScreen;
+
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.resources.Identifier;
+
 import com.minelittlepony.client.MineLittlePony;
 import com.minelittlepony.common.client.gui.dimension.Bounds;
 import com.minelittlepony.common.client.gui.element.Button;
@@ -9,9 +13,6 @@ import com.minelittlepony.hdskins.client.gui.DualCarouselWidget;
 import com.minelittlepony.hdskins.client.gui.GuiSkins;
 import com.minelittlepony.hdskins.server.SkinServerList;
 import com.minelittlepony.hdskins.profile.SkinType;
-
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.util.Identifier;
 
 /**
  * Skin uploading GUI. Usually displayed over the main menu.
@@ -31,7 +32,7 @@ class GuiSkinsMineLP extends GuiSkins {
                 MineLittlePony.getInstance().getManager().removePony(previewer.getLocal().getSkins().get(SkinType.SKIN).getId());
             }
         });
-        uploader.addSkinLoadedEventListener((type, location, profileTexture) -> {
+        uploader.addSkinLoadedEventListener((type, location, _) -> {
             MineLittlePony.LOGGER.debug("Invalidating old remote skin, checking updated remote skin");
             if (type == SkinType.SKIN) {
                 MineLittlePony.getInstance().getManager().removePony(location);
@@ -43,7 +44,7 @@ class GuiSkinsMineLP extends GuiSkins {
     protected void initServerPreviewButtons(Bounds area) {
         if (!(parent instanceof PonySettingsScreen)) {
             addButton(new Button(area.right() - 20, area.bottom() + 5, 20, 20))
-                .onClick(sender -> client.setScreen(new PonySettingsScreen(this)))
+                .onClick(_ -> minecraft.setScreen(new PonySettingsScreen(this)))
                 .getStyle()
                     .setIcon(new TextureSprite()
                             .setPosition(2, 2)

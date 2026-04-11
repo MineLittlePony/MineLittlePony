@@ -10,14 +10,12 @@
         "MixinEntityHitboxDebugRenderer",
         "MixinFishingBobberEntityRenderer",
         "MixinSkullBlockEntityRenderer",
-        "MixinPlayerHeadModelRenderer",
         "MixinHeadModelRenderer_Unbaked",
         "MixinHeldItemRenderer",
         "MixinLivingEntity",
         "MixinPlayerEntity",
         "MixinPlayerInteractItemC2SPacket",
         "MixinVertextConsumers",
-        "MixinGameRenderer",
-        "MixinWorldRenderer"
+        "MixinGameRenderer"
     ]
 }

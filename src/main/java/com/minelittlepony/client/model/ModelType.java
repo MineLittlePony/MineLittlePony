@@ -1,11 +1,10 @@
 package com.minelittlepony.client.model;
 
 import net.minecraft.client.model.Model;
-import net.minecraft.client.model.Model.SinglePartModel;
-import net.minecraft.client.render.RenderLayers;
-import net.minecraft.client.render.entity.model.ArmorStandEntityModel;
-import net.minecraft.client.model.ModelPart;
-import net.minecraft.entity.LivingEntity;
+import net.minecraft.client.model.geom.ModelPart;
+import net.minecraft.client.model.object.armorstand.ArmorStandModel;
+import net.minecraft.client.renderer.rendertype.RenderTypes;
+import net.minecraft.world.entity.LivingEntity;
 
 import com.minelittlepony.api.model.BodyPart;
 import com.minelittlepony.api.model.PonyModel;
@@ -17,6 +16,7 @@ import com.minelittlepony.client.model.armour.PonyArmourModel;
 import com.minelittlepony.client.model.entity.*;
 import com.minelittlepony.client.model.entity.race.*;
 import com.minelittlepony.client.model.gear.*;
+import com.minelittlepony.common.util.Untyped;
 import com.minelittlepony.mson.api.ModelKey;
 import com.minelittlepony.mson.api.Mson;
 import com.minelittlepony.mson.api.MsonModel;
@@ -38,7 +38,7 @@ public final class ModelType {
     public static final ModelKey<ClientPonyModel<?>> ZOMBIE = register("zombie", ZomponyModel::new);
     public static final ModelKey<ClientPonyModel<?>> PIGLIN = register("piglin", PiglinPonyModel::new);
     public static final ModelKey<ClientPonyModel<?>> SKELETON = register("skeleton", tree -> new AlicornModel<>(tree, false));
-    public static final ModelKey<SinglePartModel> BOGGED_MUSHROOMS = register("bogged_mushrooms", tree -> new SinglePartModel(tree, RenderLayers::entityTranslucent));
+    public static final ModelKey<Model.Simple> BOGGED_MUSHROOMS = register("bogged_mushrooms", tree -> new Model.Simple(tree, RenderTypes::entityTranslucent));
     public static final ModelKey<ClientPonyModel<?>> SKELETON_CLOTHES = register("skeleton_clothes", tree -> new AlicornModel<>(tree, false));
     public static final ModelKey<ClientPonyModel<?>> PILLAGER = register("pillager", tree -> new ChangelingModel<>(tree, false));
     public static final ModelKey<ClientPonyModel<?>> ILLAGER = register("illager", IllagerPonyModel::new);
@@ -51,9 +51,9 @@ public final class ModelType {
     public static final ModelKey<ClientPonyModel<?>> COPPER_GOLEM = register("copper_golem", CopperPonyModel::new);
     public static final ModelKey<ClientPonyModel<?>> SPIKE = register("spike", SpikeModel::new);
 
-    public static final ModelKey<PonyElytra<?>> ELYTRA = register("elytra", PonyElytra::new);
+    public static final ModelKey<PonyElytra> ELYTRA = register("elytra", PonyElytra::new);
 
-    public static final ModelKey<ArmorStandEntityModel> ARMOUR_STAND = register("armour_stand", ArmorStandEntityModel::new);
+    public static final ModelKey<ArmorStandModel> ARMOUR_STAND = register("armour_stand", ArmorStandModel::new);
     public static final ModelKey<ClientPonyModel<?>> INNER_VANILLA_ARMOR = register("armor/inner_vanilla_armor", PonyArmourModel::new);
     public static final ModelKey<ClientPonyModel<?>> OUTER_VANILLA_ARMOR = register("armor/outer_vanilla_armor", PonyArmourModel::new);
     public static final ModelKey<ClientPonyModel<?>> INNER_PONY_ARMOR = register("armor/inner_pony_armor", PonyArmourModel::new);
@@ -86,33 +86,29 @@ public final class ModelType {
         return registerPlayer(name, race, constructor, PonyArmourModel::new);
     }
 
-    @SuppressWarnings("unchecked")
     static <T extends Model<?> & PonyModel<?>> PlayerModelKey<T> registerPlayer(String name, Race race,
             BiFunction<ModelPart, Boolean, T> constructor,
             MsonModel.Factory<ClientPonyModel<?>> armorFactory) {
-        return (PlayerModelKey<T>)PLAYER_MODELS.computeIfAbsent(race, r -> new PlayerModelKey<T>(name, constructor, armorFactory));
+        return Untyped.cast(PLAYER_MODELS.computeIfAbsent(race, _ -> new PlayerModelKey<T>(name, constructor, armorFactory)));
     }
 
-    @SuppressWarnings("unchecked")
     static <T extends AbstractGearModel<?>> GearModelKey<T> registerGear(String name, Wearable wearable, MsonModel.Factory<T> constructor) {
-        return (GearModelKey<T>)GEAR_MODELS.computeIfAbsent(wearable, w -> {
+        return Untyped.cast(GEAR_MODELS.computeIfAbsent(wearable, _ -> {
             return new GearModelKey<T>(Mson.getInstance().registerModel(MineLittlePony.id("gear/" + name), constructor), constructor);
-        });
+        }));
     }
 
-    @SuppressWarnings("unchecked")
     static <T extends AbstractGearModel<?>> GearModelKey<T> registerGear(GearModelKey<T> key, Wearable wearable, MsonModel.Factory<T> constructor) {
-        return (GearModelKey<T>)GEAR_MODELS.computeIfAbsent(wearable, w -> new GearModelKey<T>(key.key, constructor));
+        return Untyped.cast(GEAR_MODELS.computeIfAbsent(wearable, _ -> new GearModelKey<T>(key.key, constructor)));
     }
 
     static <T extends Model<?>> ModelKey<T> register(String name, MsonModel.Factory<T> constructor) {
         return new ModelKeyImpl<T>(MineLittlePony.id(name), constructor);
     }
 
-    @SuppressWarnings("unchecked")
     @Nullable
     public static <T extends Model<?> & PonyModel<?>> PlayerModelKey<T> getPlayerModel(Race race) {
-        return (PlayerModelKey<T>)PLAYER_MODELS.get(race);
+        return Untyped.cast(PLAYER_MODELS.get(race));
     }
 
     public static Stream<Map.Entry<Wearable, GearModelKey<? extends Gear<?>>>> getWearables() {

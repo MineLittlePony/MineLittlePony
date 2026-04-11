@@ -1,7 +1,7 @@
 package com.minelittlepony.api.pony;
 
-import net.minecraft.entity.*;
-import net.minecraft.util.Identifier;
+import net.minecraft.resources.Identifier;
+import net.minecraft.world.entity.*;
 
 import org.jetbrains.annotations.Nullable;
 
@@ -45,7 +45,7 @@ public interface PonyManager  {
      *
      * @param player the player
      */
-    Pony getPony(PlayerLikeEntity player);
+    Pony getPony(Avatar player);
 
     /**
      * Gets or creates a pony for the given skin resource and entity id.

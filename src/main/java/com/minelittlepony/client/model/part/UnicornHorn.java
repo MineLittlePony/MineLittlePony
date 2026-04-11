@@ -1,14 +1,17 @@
 package com.minelittlepony.client.model.part;
 
-import net.minecraft.client.model.ModelPart;
-import net.minecraft.client.render.*;
-import net.minecraft.client.render.command.OrderedRenderCommandQueue;
-import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.util.math.ColorHelper;
+import net.minecraft.client.model.geom.ModelPart;
+import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.util.*;
 
 import com.minelittlepony.api.model.*;
 import com.minelittlepony.client.render.MagicGlow;
 import com.minelittlepony.client.render.entity.state.PonyRenderState;
+
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
+
 
 public class UnicornHorn<T extends PonyRenderState> implements SubModel<T> {
 
@@ -23,20 +26,20 @@ public class UnicornHorn<T extends PonyRenderState> implements SubModel<T> {
     }
 
     @Override
-    public void accept(MatrixStack stack, VertexConsumer vertices, int overlay, int light, int color) {
+    public void accept(PoseStack stack, VertexConsumer vertices, int overlay, int light, int color) {
         horn.render(stack, vertices, overlay, light, color);
     }
 
     @Override
-    public void render(PonyModel<T> model, T state, MatrixStack matrices, OrderedRenderCommandQueue queue) {
+    public void render(PonyModel<T> model, T state, PoseStack matrices, SubmitNodeCollector frame) {
         if (tint != 0) {
-            matrices.push();
+            matrices.pushPose();
             model.transformAccessory(state, BodyPart.HEAD, matrices);
-            queue.submitModelPart(glow, matrices, MagicGlow.getRenderLayer(),
-                    LightmapTextureManager.MAX_LIGHT_COORDINATE,
-                    OverlayTexture.DEFAULT_UV, null, false, false, ColorHelper.withAlpha(1F, tint),
+            frame.submitModelPart(glow, matrices, MagicGlow.getRenderLayer(),
+                    LightCoordsUtil.FULL_BRIGHT,
+                    OverlayTexture.NO_OVERLAY, null, false, false, ARGB.color(1F, tint),
                     null, 0);
-            matrices.pop();
+            matrices.popPose();
         }
     }
 
@@ -49,8 +52,8 @@ public class UnicornHorn<T extends PonyRenderState> implements SubModel<T> {
 
     @Override
     public void setAngles(PonyModel<T> model, T state) {
-        horn.resetTransform();
-        glow.resetTransform();
+        horn.resetPose();
+        glow.resetPose();
         model.transform(state, BodyPart.HORN, horn);
         model.transform(state, BodyPart.HORN, glow);
     }

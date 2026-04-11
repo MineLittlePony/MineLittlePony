@@ -1,6 +1,5 @@
 package com.minelittlepony.api.model;
 
-import com.google.common.cache.*;
 import com.minelittlepony.api.config.PonyConfig;
 import com.minelittlepony.api.pony.*;
 import com.minelittlepony.api.pony.meta.*;
@@ -8,17 +7,16 @@ import com.minelittlepony.common.util.animation.Interpolator;
 import com.minelittlepony.util.MathUtil;
 
 import java.util.*;
-import java.util.concurrent.TimeUnit;
 
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.render.entity.model.BipedEntityModel.ArmPose;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.PlayerLikeEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.*;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.model.HumanoidModel.ArmPose;
+import net.minecraft.resources.Identifier;
+import net.minecraft.util.Mth;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.*;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.phys.Vec3;
 
 import org.jetbrains.annotations.Nullable;
 
@@ -135,8 +133,8 @@ public class ModelAttributes {
 
     public Size size = SizePreset.NORMAL;
 
-    public Arm mainArm = Arm.RIGHT;
-    public Hand activeHand = Hand.MAIN_HAND;
+    public HumanoidArm mainArm = HumanoidArm.RIGHT;
+    public InteractionHand activeHand = InteractionHand.MAIN_HAND;
     @Deprecated
     public ItemStack heldStack = ItemStack.EMPTY;
     public int itemUseTime;
@@ -145,7 +143,7 @@ public class ModelAttributes {
      * Checks flying and speed conditions and sets rainboom to true if we're a species with wings and is going faaast.
      */
     public void checkRainboom(@Nullable LivingEntity entity, PonyModel<?> model, float ticks) {
-        Vec3d motion = entity == null ? Vec3d.ZERO : entity.getVelocity();
+        Vec3 motion = entity == null ? Vec3.ZERO : entity.getDeltaMovement();
         double zMotion = Math.sqrt(motion.x * motion.x + motion.z * motion.z);
 
         isGoingFast = (isFlying && model instanceof ModelWithWings) || isGliding;
@@ -162,74 +160,47 @@ public class ModelAttributes {
 
     private float calcWingRotationFactor(float ticks) {
         if (isSwimming) {
-            return (MathHelper.sin(ticks * 0.136f) / 2) + MathUtil.Angles._270_DEG;
+            return (Mth.sin(ticks * 0.136f) / 2) + MathUtil.Angles._270_DEG;
         }
         if (isFlying) {
-            return MathHelper.sin(ticks * 0.536f) + ModelWithWings.WINGS_FULL_SPREAD_ANGLE;
+            return Mth.sin(ticks * 0.536f) + ModelWithWings.WINGS_FULL_SPREAD_ANGLE;
         }
         return ModelWithWings.WINGS_RAISED_ANGLE;
     }
 
     public void updateLivingState(@Nullable LivingEntity entity, Pony pony, Mode mode) {
         if (entity != null) {
-            interpolatorId = entity.getUuid();
+            interpolatorId = entity.getUUID();
         }
         metadata = pony.metadata();
         size = entity != null && entity.isBaby() ? SizePreset.FOAL : pony.size();
-        isPlayer = entity instanceof PlayerEntity;
-        visualHeight = (entity == null ? PlayerLikeEntity.EYE_HEIGHT : entity.getHeight()) + 0.125F;
+        isPlayer = entity instanceof Player;
+        visualHeight = (entity == null ? /*Avatar.DEFAULT_EYE_HEIGHT*/ 1.8F : entity.getBbHeight()) + 0.125F;
         isSitting = entity != null && PonyPosture.isSitting(entity);
         isSleeping = entity != null && entity.isAlive() && entity.isSleeping();;
         isLyingDown = isSleeping;
         if (isPlayer) {
-            boolean moving = entity.getVelocity().multiply(1, 0, 1).length() == 0 && entity.isSneaking();
+            boolean moving = entity.getDeltaMovement().multiply(1, 0, 1).length() == 0 && entity.isCrouching();
             isLyingDown |= getMainInterpolator().interpolate("lyingDown", moving ? 10 : 0, 200) >= 9;
         }
 
         isCrouching = !isLyingDown && !isSitting && mode == Mode.THIRD_PERSON && entity != null && PonyPosture.isCrouching(pony, entity);
         isFlying = !isLyingDown && mode == Mode.THIRD_PERSON && entity != null && PonyPosture.isFlying(entity);
-        isGliding = entity != null && entity.isGliding();
+        isGliding = entity != null && entity.isFallFlying();
         isSwimming = mode == Mode.THIRD_PERSON && entity != null && PonyPosture.isSwimming(entity);
         isSwimmingRotated = isSwimming;
-        isRiptide = entity != null && entity.isUsingRiptide();
+        isRiptide = entity != null && entity.isAutoSpinAttack();
         isRidingInteractive = entity != null && PonyPosture.isRidingAPony(entity);
-        isLeftHanded = entity != null && entity.getMainArm() == Arm.LEFT;
+        isLeftHanded = entity != null && entity.getMainArm() == HumanoidArm.LEFT;
         isHorsey = PonyConfig.getInstance().horsieMode.get();
         featureSkins = entity == null ? Set.of() : SkinsProxy.getInstance().getAvailableSkins(entity);
-        mainArm = entity == null ? MinecraftClient.getInstance().options.getMainArm().getValue() : entity.getMainArm();
-        activeHand = entity == null ? Hand.MAIN_HAND : entity.getActiveHand();
-        itemUseTime = entity == null ? 0 : entity.getItemUseTimeLeft();
+        mainArm = entity == null ? Minecraft.getInstance().options.mainHand().get() : entity.getMainArm();
+        activeHand = entity == null ? InteractionHand.MAIN_HAND : entity.getUsedItemHand();
+        itemUseTime = entity == null ? 0 : entity.getUseItemRemainingTicks();
     }
 
     public Interpolator getMainInterpolator() {
-        return LinearInterpolator.instanceCache.getUnchecked(interpolatorId);
-    }
-
-    @Deprecated
-    static class LinearInterpolator implements Interpolator {
-        static LoadingCache<UUID, LinearInterpolator> instanceCache = CacheBuilder.newBuilder()
-            .expireAfterAccess(30, TimeUnit.SECONDS)
-            .build(CacheLoader.from(LinearInterpolator::new));
-
-        private final Map<String, Float> properties = new HashMap<>();
-
-        @Override
-        public float interpolate(String key, float to, float animationSpeed) {
-            float from = properties.getOrDefault(key, to);
-
-            if (!MinecraftClient.getInstance().isPaused()) {
-                from += (to - from) / animationSpeed;
-
-                if (Float.isNaN(from) || Float.isInfinite(from)) {
-                    System.err.println("Error: Animation frame for " + key + " is NaN or Infinite.");
-                    from = to;
-                }
-
-                properties.put(key, from);
-            }
-
-            return from;
-        }
+        return Interpolator.linear(interpolatorId);
     }
 
     public UUID getEntityId() {

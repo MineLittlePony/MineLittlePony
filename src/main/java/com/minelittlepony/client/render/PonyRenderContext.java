@@ -6,13 +6,14 @@ import com.minelittlepony.api.pony.Pony;
 import com.minelittlepony.api.pony.meta.Wearable;
 import com.minelittlepony.client.model.ClientPonyModel;
 import com.minelittlepony.client.render.entity.state.PonyRenderState;
+import com.minelittlepony.common.util.Untyped;
 
-import net.minecraft.client.render.entity.EntityRenderer;
-import net.minecraft.client.render.entity.feature.FeatureRendererContext;
-import net.minecraft.client.render.entity.model.EntityModel;
-import net.minecraft.client.render.entity.state.EntityRenderState;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.util.Identifier;
+import net.minecraft.client.model.EntityModel;
+import net.minecraft.client.renderer.entity.EntityRenderer;
+import net.minecraft.client.renderer.entity.RenderLayerParent;
+import net.minecraft.client.renderer.entity.state.EntityRenderState;
+import net.minecraft.resources.Identifier;
+import net.minecraft.world.entity.LivingEntity;
 
 import org.jetbrains.annotations.Nullable;
 
@@ -41,8 +42,7 @@ public interface PonyRenderContext<
         return this instanceof EntityRenderer ? (EntityRenderer<T, S>)(Object)this : null;
     }
 
-    @SuppressWarnings("unchecked")
-    default <S2 extends EntityRenderState, M2 extends EntityModel<? super S2>> FeatureRendererContext<S2, M2> upcast() {
-        return (FeatureRendererContext<S2, M2>)this;
+    default <S2 extends EntityRenderState, M2 extends EntityModel<? super S2>> RenderLayerParent<S2, M2> upcast() {
+        return Untyped.cast(this);
     }
 }

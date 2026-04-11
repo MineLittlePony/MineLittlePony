@@ -1,18 +1,18 @@
 package com.minelittlepony.client.model;
 
-import net.minecraft.client.model.ModelPart;
-import net.minecraft.client.render.VertexConsumer;
-import net.minecraft.client.render.entity.model.*;
-import net.minecraft.client.render.entity.state.PlayerEntityRenderState;
-import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.util.Arm;
-import net.minecraft.util.math.MathHelper;
+import net.minecraft.client.model.geom.ModelPart;
+import net.minecraft.client.model.player.PlayerModel;
+import net.minecraft.client.renderer.entity.state.AvatarRenderState;
+import net.minecraft.util.Mth;
+import net.minecraft.world.entity.HumanoidArm;
 
 import org.jetbrains.annotations.Nullable;
 
 import com.minelittlepony.api.model.*;
 import com.minelittlepony.client.render.entity.state.PonyRenderState;
 import com.minelittlepony.mson.util.RenderList;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,7 +24,7 @@ import java.util.List;
  *
  * Modders can extend this class to make their own pony models if they wish.
  */
-public abstract class ClientPonyModel<T extends PonyRenderState> extends PlayerEntityModel implements PonyModel<T> {
+public abstract class ClientPonyModel<T extends PonyRenderState> extends PlayerModel implements PonyModel<T> {
     @Nullable
     protected PosingCallback<T> onSetModelAngles;
 
@@ -64,13 +64,13 @@ public abstract class ClientPonyModel<T extends PonyRenderState> extends PlayerE
             }
 
             @Override
-            public void accept(MatrixStack stack, VertexConsumer vertices, int overlay, int light, int color) {
-                stack.push();
+            public void accept(PoseStack stack, VertexConsumer vertices, int overlay, int light, int color) {
+                stack.pushPose();
                 if (currentState != null) {
                     transform(currentState, part, stack);
                 }
                 action.accept(stack, vertices, overlay, light, color);
-                stack.pop();
+                stack.popPose();
             }
 
             @SuppressWarnings("unchecked")
@@ -87,8 +87,8 @@ public abstract class ClientPonyModel<T extends PonyRenderState> extends PlayerE
      */
     @SuppressWarnings("unchecked")
     @Override
-    public final void setAngles(PlayerEntityRenderState state) {
-        super.setAngles((T)state);
+    public final void setupAnim(AvatarRenderState state) {
+        super.setupAnim((T)state);
 
         setModelVisibilities((T)state);
         setModelAngles((T)state);
@@ -105,11 +105,11 @@ public abstract class ClientPonyModel<T extends PonyRenderState> extends PlayerE
     }
 
     public void setHeadRotation(float animationProgress, float yaw, float pitch) {
-        head.yaw = yaw * MathHelper.RADIANS_PER_DEGREE;
-        head.pitch = pitch * MathHelper.RADIANS_PER_DEGREE;
+        head.yRot = yaw * Mth.DEG_TO_RAD;
+        head.xRot = pitch * Mth.DEG_TO_RAD;
     }
 
-    public void renderHead(MatrixStack matrices, VertexConsumer vertices, int light, int overlay, int color) {
+    public void renderHead(PoseStack matrices, VertexConsumer vertices, int light, int overlay, int color) {
         getHead().render(matrices, vertices, light, overlay, color);
     }
 
@@ -128,13 +128,13 @@ public abstract class ClientPonyModel<T extends PonyRenderState> extends PlayerE
     }
 
     @Override
-    public ModelPart getForeLeg(Arm side) {
+    public ModelPart getForeLeg(HumanoidArm side) {
         return getArm(side);
     }
 
     @Override
-    public ModelPart getHindLeg(Arm side) {
-        return side == Arm.LEFT ? leftLeg : rightLeg;
+    public ModelPart getHindLeg(HumanoidArm side) {
+        return side == HumanoidArm.LEFT ? leftLeg : rightLeg;
     }
 
     public interface PosingCallback<S extends PonyRenderState> {

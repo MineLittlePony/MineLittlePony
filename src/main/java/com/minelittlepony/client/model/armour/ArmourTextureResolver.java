@@ -1,9 +1,9 @@
 package com.minelittlepony.client.model.armour;
 
-import net.minecraft.client.render.entity.equipment.EquipmentModel;
-import net.minecraft.item.*;
-import net.minecraft.resource.ResourceReloader;
-import net.minecraft.util.Identifier;
+import net.minecraft.client.resources.model.EquipmentClientInfo;
+import net.minecraft.resources.Identifier;
+import net.minecraft.server.packs.resources.PreparableReloadListener;
+import net.minecraft.world.item.ItemStack;
 
 import com.google.common.cache.*;
 import com.minelittlepony.client.MineLittlePony;
@@ -33,7 +33,7 @@ import java.util.stream.Stream;
  * Leggings = ponified_leggings (leg chainmail)
  * Boots = ponified (knee guards and boots)
  */
-public class ArmourTextureResolver implements ArmourTextureLookup, ResourceReloader {
+public class ArmourTextureResolver implements ArmourTextureLookup, PreparableReloadListener {
     public static final Identifier ID = MineLittlePony.id("armor_textures");
     public static final ArmourTextureResolver INSTANCE = new ArmourTextureResolver();
 
@@ -63,19 +63,19 @@ public class ArmourTextureResolver implements ArmourTextureLookup, ResourceReloa
     }
 
     @Override
-    public CompletableFuture<Void> reload(ResourceReloader.Store store, Executor prepareExecutor, Synchronizer sync, Executor applyExecutor) {
-        return CompletableFuture.runAsync(this::invalidate, prepareExecutor).thenCompose(sync::whenPrepared);
+    public CompletableFuture<Void> reload(SharedState state, Executor prepareExecutor, PreparationBarrier sync, Executor applyExecutor) {
+        return CompletableFuture.runAsync(this::invalidate, prepareExecutor).thenCompose(sync::wait);
     }
 
     @Override
-    public ArmourTexture getTexture(ItemStack stack, EquipmentModel.LayerType layerType, EquipmentModel.Layer layer) {
+    public ArmourTexture getTexture(ItemStack stack, EquipmentClientInfo.LayerType layerType, EquipmentClientInfo.Layer layer) {
         layerCache.invalidateAll();
         return layerCache.getUnchecked(new ArmourParameters(layer, layerType));
     }
 
-    private record ArmourParameters(EquipmentModel.Layer layer, EquipmentModel.LayerType layerType) {
+    private record ArmourParameters(EquipmentClientInfo.Layer layer, EquipmentClientInfo.LayerType layerType) {
         public Identifier textureId() {
-            return layer.getFullTextureId(layerType);
+            return layer.getTextureLocation(layerType);
         }
     }
 }

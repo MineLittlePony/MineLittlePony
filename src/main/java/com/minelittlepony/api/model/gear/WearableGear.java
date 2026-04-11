@@ -1,14 +1,14 @@
 package com.minelittlepony.api.model.gear;
 
-import net.minecraft.client.model.ModelPart;
-import net.minecraft.client.render.entity.state.BipedEntityRenderState;
-import net.minecraft.util.Identifier;
+import net.minecraft.client.model.geom.ModelPart;
+import net.minecraft.client.renderer.entity.state.HumanoidRenderState;
+import net.minecraft.resources.Identifier;
 
 import com.minelittlepony.api.model.BodyPart;
 import com.minelittlepony.api.model.PonyModel;
 import com.minelittlepony.api.pony.meta.Wearable;
 
-public class WearableGear<T extends BipedEntityRenderState & PonyModel.AttributedHolder> extends AbstractGearModel<T> {
+public class WearableGear<T extends HumanoidRenderState & PonyModel.AttributedHolder> extends AbstractGearModel<T> {
 
     protected final Wearable wearable;
     protected final BodyPart location;

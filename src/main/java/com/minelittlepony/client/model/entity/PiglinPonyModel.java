@@ -1,8 +1,8 @@
 package com.minelittlepony.client.model.entity;
 
-import net.minecraft.client.model.ModelPart;
-import net.minecraft.entity.mob.PiglinActivity;
-import net.minecraft.util.math.MathHelper;
+import net.minecraft.client.model.geom.ModelPart;
+import net.minecraft.util.Mth;
+import net.minecraft.world.entity.monster.piglin.PiglinArmPose;
 
 import com.minelittlepony.client.render.entity.PonyPiglinRenderer;
 
@@ -21,55 +21,55 @@ public class PiglinPonyModel extends ZomponyModel<PonyPiglinRenderer.State> {
     public void setModelAngles(PonyPiglinRenderer.State state) {
         super.setModelAngles(state);
 
-        float progress = state.age * 0.1F + state.limbSwingAnimationProgress * 0.5F;
-        float range = 0.08F + state.limbSwingAmplitude * 0.4F;
-        rightFlap.roll = -0.5235988F - MathHelper.cos(progress * 1.2F) * range;
-        leftFlap.roll =   0.5235988F + MathHelper.cos(progress) * range;
+        float progress = state.ageInTicks * 0.1F + state.walkAnimationSpeed * 0.5F;
+        float range = 0.08F + state.walkAnimationPos * 0.4F;
+        rightFlap.zRot = -0.5235988F - Mth.cos(progress * 1.2F) * range;
+        leftFlap.zRot =   0.5235988F + Mth.cos(progress) * range;
     }
 
     @Override
     public void setHeadRotation(float animationProgress, float yaw, float pitch) {
         super.setHeadRotation(animationProgress, yaw, pitch);
-        leftFlap.roll = -(float)(-(Math.cos((double)(animationProgress * (float) Math.PI * 0.2F * 1.2F)) + 2.5)) * 0.2F;
-        rightFlap.roll = -(float)(Math.cos((double)(animationProgress * (float) Math.PI * 0.2F)) + 2.5) * 0.2F;
+        leftFlap.zRot = -(float)(-(Math.cos((double)(animationProgress * (float) Math.PI * 0.2F * 1.2F)) + 2.5)) * 0.2F;
+        rightFlap.zRot = -(float)(Math.cos((double)(animationProgress * (float) Math.PI * 0.2F)) + 2.5) * 0.2F;
     }
 
     @Override
     protected void rotateLegs(PonyPiglinRenderer.State state) {
         super.rotateLegs(state);
 
-        if (state.activity == PiglinActivity.ADMIRING_ITEM) {
-            leftArm.yaw = 0.5F;
-            leftArm.pitch = -1.9F;
-            leftArm.originY += 4;
-            leftArm.originZ += 3;
-            leftArm.originX += 2;
-            head.pitch = MathHelper.sin(state.age / 12) / 6 + 0.5F;
-            head.yaw = 0;
+        if (state.activity == PiglinArmPose.ADMIRING_ITEM) {
+            leftArm.yRot = 0.5F;
+            leftArm.xRot = -1.9F;
+            leftArm.y += 4;
+            leftArm.z += 3;
+            leftArm.x += 2;
+            head.xRot = Mth.sin(state.ageInTicks / 12) / 6 + 0.5F;
+            head.yRot = 0;
 
-            head.roll = MathHelper.sin(state.age / 10) / 3F;
-        } else if (state.activity == PiglinActivity.DANCING) {
+            head.zRot = Mth.sin(state.ageInTicks / 10) / 3F;
+        } else if (state.activity == PiglinArmPose.DANCING) {
 
-            float speed = state.age / 60;
+            float speed = state.ageInTicks / 60;
 
-            head.originX = MathHelper.sin(speed * 10);
-            head.originY = MathHelper.sin(speed * 40) + 0.4F;
-            head.pitch += MathHelper.sin(speed * 40) / 4 + 0.4F;
+            head.x = Mth.sin(speed * 10);
+            head.y = Mth.sin(speed * 40) + 0.4F;
+            head.xRot += Mth.sin(speed * 40) / 4 + 0.4F;
 
-            float bodyBob = MathHelper.sin(speed * 40) * 0.35F;
-            float legBob = MathHelper.sin(speed * 40) * 0.25F;
+            float bodyBob = Mth.sin(speed * 40) * 0.35F;
+            float legBob = Mth.sin(speed * 40) * 0.25F;
 
-            neck.originY = bodyBob;
-            body.originY = bodyBob;
+            neck.y = bodyBob;
+            body.y = bodyBob;
 
-            leftLeg.pitch += legBob;
-            rightLeg.pitch -= legBob;
+            leftLeg.xRot += legBob;
+            rightLeg.xRot -= legBob;
 
-            leftArm.roll -= legBob/4;
-            rightArm.roll += legBob/4;
+            leftArm.zRot -= legBob/4;
+            rightArm.zRot += legBob/4;
 
-            rightArm.pitch += legBob - 0.4F;
-            leftArm.pitch -= legBob + 0.4F;
+            rightArm.xRot += legBob - 0.4F;
+            leftArm.xRot -= legBob + 0.4F;
         }
     }
 

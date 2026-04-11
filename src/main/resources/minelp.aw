@@ -1,6 +1,5 @@
-accessWidener       v2       named
-transitive-accessible method   net/minecraft/client/render/RenderLayer                                    of                   (Ljava/lang/String;Lnet/minecraft/client/render/RenderSetup;)Lnet/minecraft/client/render/RenderLayer;
-transitive-accessible method   net/minecraft/client/render/entity/GuardianEntityRenderer                  renderBeam           (Lnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/command/OrderedRenderCommandQueue;Lnet/minecraft/util/math/Vec3d;FFF)V
-transitive-accessible method   net/minecraft/client/render/entity/GuardianEntityRenderer                  getBeamTarget        (Lnet/minecraft/entity/mob/GuardianEntity;)Lnet/minecraft/entity/Entity;
+accessWidener       v2       official
+accessible method   net/minecraft/client/renderer/entity/GuardianRenderer         renderBeam           (Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/SubmitNodeCollector;Lnet/minecraft/world/phys/Vec3;FFF)V
+accessible method   net/minecraft/client/renderer/entity/GuardianRenderer         getEntityToLookAt    (Lnet/minecraft/world/entity/monster/Guardian;)Lnet/minecraft/world/entity/Entity;
 
-transitive-extendable method   net/minecraft/client/model/Model                                           render               (Lnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/VertexConsumer;III)V    
+extendable method   net/minecraft/client/model/Model                              renderToBuffer       (Lcom/mojang/blaze3d/vertex/PoseStack;Lcom/mojang/blaze3d/vertex/VertexConsumer;III)V    

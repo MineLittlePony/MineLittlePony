@@ -7,19 +7,20 @@ import com.minelittlepony.api.pony.meta.Race;
 import com.minelittlepony.client.model.*;
 import com.minelittlepony.client.render.blockentity.skull.PonySkullRenderer.ISkull;
 import com.minelittlepony.client.render.entity.state.PlayerPonyRenderState;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.math.Axis;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.render.*;
-import net.minecraft.client.render.command.OrderedRenderCommandQueue;
-import net.minecraft.client.util.DefaultSkinHelper;
-import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.component.type.ProfileComponent;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.math.ColorHelper;
-import net.minecraft.util.math.RotationAxis;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.client.renderer.rendertype.RenderType;
+import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.client.resources.DefaultPlayerSkin;
+import net.minecraft.resources.Identifier;
+import net.minecraft.util.ARGB;
+import net.minecraft.world.item.component.ResolvableProfile;
 
 import org.jetbrains.annotations.Nullable;
 import org.joml.Vector3f;
@@ -34,17 +35,17 @@ public class PlayerPonySkull implements ISkull {
     }
 
     @Override
-    public Identifier getSkinResource(@Nullable ProfileComponent profile) {
+    public Identifier getSkinResource(@Nullable ResolvableProfile profile) {
         if (profile == null) {
-            return DefaultSkinHelper.getTexture();
+            return DefaultPlayerSkin.getDefaultTexture();
         }
-        return MinecraftClient.getInstance().getPlayerSkinCache().get(profile).getTextures().body().texturePath();
+        return Minecraft.getInstance().playerSkinRenderCache().getOrDefault(profile).playerSkin().body().texturePath();
     }
 
     @Override
-    public void render(MatrixStack stack, State state, OrderedRenderCommandQueue queue, Pony pony, RenderLayer layer) {
+    public void render(PoseStack stack, State state, SubmitNodeCollector frame, Pony pony, RenderType layer) {
         Race race = pony.race();
-        boolean renderingEars = state.profile != null && "deadmau5".equals(state.profile.getGameProfile().name());
+        boolean renderingEars = state.profile != null && "deadmau5".equals(state.profile.partialProfile().name());
         if (race.isHuman()) {
             race = Race.EARTH;
             if (!renderingEars) {
@@ -58,29 +59,27 @@ public class PlayerPonySkull implements ISkull {
         ponyState.attributes.size = pony.size();
         ponyState.attributes.metadata = pony.metadata();
 
-        int color = ColorHelper.getWhite(state.alpha);
+        int color = ARGB.white(state.alpha);
 
-        stack.push();
-        MatrixStack copyStack = new MatrixStack();
-        queue.getBatchingQueue(0).submitCustom(stack, layer, (entry, vertices) -> {
+        stack.pushPose();
+        PoseStack copyStack = new PoseStack();
+        frame.order(0).submitCustomGeometry(stack, layer, (entry, vertices) -> {
             Vector3f v = new Vector3f(0, -2, 2);
-            v.rotate(RotationAxis.POSITIVE_Y.rotationDegrees(state.yaw));
-            ponyHead.setVisible(true);
-            ponyHead.setAngles(ponyState);
-            ponyHead.getHead().setOrigin(v.x, v.y, v.z);
-            ponyHead.setHeadRotation(state.poweredTicks, state.yaw, 0);
-            copyStack.peek().getPositionMatrix().set(entry.getPositionMatrix());
-            copyStack.peek().getNormalMatrix().set(entry.getNormalMatrix());
-            ponyHead.headRenderList.accept(copyStack, vertices, state.light, OverlayTexture.DEFAULT_UV, color);
+            v.rotate(Axis.YP.rotationDegrees(state.yRot));
+            ponyHead.setupAnim(ponyState);
+            ponyHead.getHead().setPos(v.x, v.y, v.z);
+            ponyHead.setHeadRotation(state.animationPos, state.yRot, 0);
+            copyStack.last().set(entry);
+            ponyHead.headRenderList.accept(copyStack, vertices, state.light, OverlayTexture.NO_OVERLAY, color);
         });
 
-        stack.pop();
+        stack.popPose();
         if (renderingEars) {
-            stack.push();
+            stack.pushPose();
             stack.scale(1.3333334f, 1.3333334f, 1.3333334f);
             stack.translate(0, 0.05F, 0);
-            queue.getBatchingQueue(0).submitModel(deadMau5, state, stack, layer, state.light, OverlayTexture.DEFAULT_UV, color, null, state.outlineColor, state.crumblingOverlay);
-            stack.pop();
+            frame.order(0).submitModel(deadMau5, state, stack, layer, state.light, OverlayTexture.NO_OVERLAY, color, null, state.outlineColor, state.crumblingOverlay);
+            stack.popPose();
         }
     }
 }

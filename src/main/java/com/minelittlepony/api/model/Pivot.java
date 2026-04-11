@@ -1,13 +1,13 @@
 package com.minelittlepony.api.model;
 
-import net.minecraft.client.model.ModelPart;
+import net.minecraft.client.model.geom.ModelPart;
 
 public record Pivot(float x, float y, float z) {
     public void set(ModelPart part) {
-        part.setOrigin(x, y, z);
+        part.setPos(x, y, z);
     }
 
     public void add(ModelPart part) {
-        part.setOrigin(part.originX + x, part.originY + y, part.originZ + z);
+        part.setPos(part.x + x, part.y + y, part.z + z);
     }
 }

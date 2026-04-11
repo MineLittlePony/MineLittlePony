@@ -4,7 +4,7 @@ buildscript {
     }
 }
 plugins {
-    id 'fabric-loom' version '1.14-SNAPSHOT'
+    id 'net.fabricmc.fabric-loom' version '1.15-SNAPSHOT'
     id 'maven-publish'
     id 'com.modrinth.minotaur' version '2.+'
     id 'org.ajoberstar.reckon' version '0.13.1'
@@ -13,14 +13,17 @@ apply plugin: 'io.github.dexman545.outlet'
 
 java {
     toolchain {
-        languageVersion = JavaLanguageVersion.of(21)
+        languageVersion = JavaLanguageVersion.of(25)
     }
     withSourcesJar()
 }
 
 group = project.group
 description = project.displayname
-base.archivesName = project.name
+
+base {
+    archivesName = project.name
+}
 
 loom {
     accessWidenerPath = file('src/main/resources/minelp.aw')
@@ -50,43 +53,42 @@ repositories {
 
 dependencies {
     minecraft "com.mojang:minecraft:${project.minecraft_version}"
-    mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
-    modApi "net.fabricmc:fabric-loader:${project.loader_version}"
+    api "net.fabricmc:fabric-loader:${project.loader_version}"
 
-    modImplementation "com.ptsmods:devlogin:3.4.1"
+    //implementation "com.ptsmods:devlogin:3.4.1"
 
-    modApi fabricApi.module("fabric-api-base", project.fabric_version)
-    modApi fabricApi.module("fabric-lifecycle-events-v1", project.fabric_version)
-    modApi fabricApi.module("fabric-resource-loader-v0", project.fabric_version)
-    modApi fabricApi.module("fabric-key-binding-api-v1", project.fabric_version)
-    modApi fabricApi.module("fabric-networking-api-v1", project.fabric_version)
-    modApi fabricApi.module("fabric-rendering-v1", project.fabric_version)
-    modApi fabricApi.module("fabric-transitive-access-wideners-v1", project.fabric_version)
+    api fabricApi.module("fabric-api-base", project.fabric_version)
+    api fabricApi.module("fabric-lifecycle-events-v1", project.fabric_version)
+    api fabricApi.module("fabric-resource-loader-v0", project.fabric_version)
+    api fabricApi.module("fabric-key-mapping-api-v1", project.fabric_version)
+    api fabricApi.module("fabric-networking-api-v1", project.fabric_version)
+    api fabricApi.module("fabric-rendering-v1", project.fabric_version)
+    api fabricApi.module("fabric-transitive-access-wideners-v1", project.fabric_version)
 
-    modApi "com.minelittlepony:kirin:${project.kirin_version}", { exclude group: "net.fabricmc.fabric-api" }
+    api "com.minelittlepony:kirin:${project.kirin_version}", { exclude group: "net.fabricmc.fabric-api" }
     include "com.minelittlepony:kirin:${project.kirin_version}"
 
-    modApi "com.minelittlepony:mson:${project.mson_version}", { exclude group: "net.fabricmc.fabric-api" }
+    api "com.minelittlepony:mson:${project.mson_version}", { exclude group: "net.fabricmc.fabric-api" }
     include "com.minelittlepony:mson:${project.mson_version}"
 
-    modImplementation "com.minelittlepony:hdskins:${project.hd_skins_version}", { exclude group: "net.fabricmc.fabric-api" }
-    modImplementation "com.terraformersmc:modmenu:${project.modmenu_version}", { exclude group: "net.fabricmc.fabric-api" }
-    modApi fabricApi.module("fabric-screen-api-v1", project.fabric_version)
+    implementation "com.minelittlepony:hdskins:${project.hd_skins_version}", { exclude group: "net.fabricmc.fabric-api" }
+    implementation "com.terraformersmc:modmenu:${project.modmenu_version}", { exclude group: "net.fabricmc.fabric-api" }
+    api fabricApi.module("fabric-screen-api-v1", project.fabric_version)
 
     if (project.use_sodium == '1') {
-        modApi fabricApi.module("fabric-renderer-api-v1", project.fabric_version)
-        modApi fabricApi.module("fabric-block-view-api-v2", project.fabric_version)
-        modApi fabricApi.module("fabric-rendering-fluids-v1", project.fabric_version)
-        modCompileOnly "maven.modrinth:sodium:${project.sodium_version}"
+        api fabricApi.module("fabric-renderer-api-v1", project.fabric_version)
+        api fabricApi.module("fabric-block-view-api-v2", project.fabric_version)
+        api fabricApi.module("fabric-rendering-fluids-v1", project.fabric_version)
+        compileOnly "maven.modrinth:sodium:${project.sodium_version}-fabric"
     }
 
     if (project.use_sodium == '1' && project.use_iris == '1') {
-        modCompileOnly "maven.modrinth:iris:${project.iris_version}"
-        modImplementation "org.anarres:jcpp:${project.iris_jcpp_version}"
-        modImplementation "org.antlr:antlr4-runtime:${project.iris_antlr_version}"
-        modImplementation "io.github.douira:glsl-transformer:${project.iris_glsl_version}"
+        compileOnly "maven.modrinth:iris:${project.iris_version}-fabric"
+        implementation "org.anarres:jcpp:${project.iris_jcpp_version}"
+        implementation "org.antlr:antlr4-runtime:${project.iris_antlr_version}"
+        implementation "io.github.douira:glsl-transformer:${project.iris_glsl_version}"
     } else {
-        modCompileOnly "maven.modrinth:iris-dummy:${project.iris_version}"
+        compileOnly "maven.modrinth:iris-dummy:${project.iris_version}-fabric"
     }
 }
 
@@ -146,7 +148,7 @@ modrinth {
     versionName = project.name + '-' + version
     changelog = "[Changelog](https://github.com/MineLittlePony/MineLittlePony/releases/tag/${version.toString()})"
     loaders = ['fabric', 'quilt']
-    uploadFile = remapJar
+    uploadFile = jar
     outlet.mcVersions().each{ver ->
       gameVersions.add ver
     }

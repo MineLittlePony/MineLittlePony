@@ -1,6 +1,6 @@
 package com.minelittlepony.api.pony;
 
-import net.minecraft.util.Identifier;
+import net.minecraft.resources.Identifier;
 
 import org.jetbrains.annotations.Nullable;
 
@@ -30,7 +30,7 @@ public record Pony (
      * Gets an identifier for the Mine Little Pony namespace
      */
     public static Identifier id(String name) {
-        return Identifier.of("minelittlepony", name);
+        return Identifier.fromNamespaceAndPath("minelittlepony", name);
     }
 
     /**

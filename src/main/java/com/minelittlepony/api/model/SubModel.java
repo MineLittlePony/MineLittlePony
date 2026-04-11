@@ -1,20 +1,20 @@
 package com.minelittlepony.api.model;
 
-import net.minecraft.client.render.VertexConsumer;
-import net.minecraft.client.render.command.OrderedRenderCommandQueue;
-import net.minecraft.client.render.entity.state.EntityRenderState;
-import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.client.renderer.entity.state.EntityRenderState;
 
 import com.minelittlepony.mson.util.RenderList;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
 
 public interface SubModel<T extends EntityRenderState & PonyModel.AttributedHolder> extends RenderList {
     /**
      * Renders this model component.
      */
-    default void render(PonyModel<T> model, T state, MatrixStack matrices, OrderedRenderCommandQueue queue) {}
+    default void render(PonyModel<T> model, T state, PoseStack matrices, SubmitNodeCollector frame) {}
 
     @Override
-    default void accept(MatrixStack matrices, VertexConsumer vertices, int overlay, int light, int color) {}
+    default void accept(PoseStack matrices, VertexConsumer vertices, int overlay, int light, int color) {}
 
     /**
      * Sets the model's various rotation angles.

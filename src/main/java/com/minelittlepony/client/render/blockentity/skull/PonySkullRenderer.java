@@ -7,21 +7,20 @@ import com.minelittlepony.client.model.armour.ArmourRendererPlugin;
 import com.minelittlepony.client.render.MobRenderers;
 import com.minelittlepony.client.render.entity.*;
 import com.minelittlepony.client.render.entity.state.PonyRenderState;
+import com.mojang.blaze3d.vertex.PoseStack;
 
 import net.fabricmc.fabric.api.client.rendering.v1.RenderStateDataKey;
-import net.minecraft.block.SkullBlock;
-import net.minecraft.client.render.RenderLayer;
-import net.minecraft.client.render.RenderLayers;
-import net.minecraft.client.render.block.entity.SkullBlockEntityModel;
-import net.minecraft.client.render.command.ModelCommandRenderer;
-import net.minecraft.client.render.command.OrderedRenderCommandQueue;
-import net.minecraft.client.render.entity.equipment.EquipmentModel;
-import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.component.type.ProfileComponent;
-import net.minecraft.entity.EquipmentSlot;
-import net.minecraft.util.Identifier;
+import net.minecraft.client.model.object.skull.SkullModelBase;
+import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
+import net.minecraft.client.renderer.rendertype.RenderType;
+import net.minecraft.client.renderer.rendertype.RenderTypes;
+import net.minecraft.client.resources.model.EquipmentClientInfo;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.Util;
-import net.minecraft.util.math.Direction;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.item.component.ResolvableProfile;
+import net.minecraft.world.level.block.SkullBlock;
 
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Function;
@@ -46,14 +45,14 @@ public class PonySkullRenderer {
         ponySkullState.set(data);
     }
 
-    private Function<SkullBlock.SkullType, ISkull> skulls;
+    private Function<SkullBlock.Type, ISkull> skulls;
 
     private PonySkullRenderer() {
         reload();
     }
 
     public void reload() {
-        skulls = Util.memoize(type -> type instanceof SkullBlock.Type t ? switch (t) {
+        skulls = Util.memoize(type -> type instanceof SkullBlock.Types t ? switch (t) {
             case SKELETON -> new MobSkull<>(SkeleponyRenderer.SKELETON, MobRenderers.SKELETON, ModelType.SKELETON, SkeleponyRenderer.State::new);
             case WITHER_SKELETON -> new MobSkull<>(SkeleponyRenderer.WITHER, MobRenderers.SKELETON, ModelType.SKELETON, SkeleponyRenderer.State::new);
             case ZOMBIE -> new MobSkull<>(ZomponyRenderer.ZOMBIE, MobRenderers.ZOMBIE, ModelType.ZOMBIE, PonyRenderState::new);
@@ -64,12 +63,7 @@ public class PonySkullRenderer {
     }
 
     @Nullable
-    public Data getSkullState(SkullBlock.SkullType skullType, @Nullable ProfileComponent profile) {
-        return getSkullState(skullType, profile, null);
-    }
-
-    @Nullable
-    public Data getSkullState(SkullBlock.SkullType skullType, @Nullable ProfileComponent profile, @Nullable Identifier overrideTexture) {
+    public Data getSkullState(SkullBlock.Type skullType, @Nullable ResolvableProfile profile, @Nullable Identifier overrideTexture, float animation) {
         @Nullable
         ISkull skull = skulls.apply(skullType);
 
@@ -78,7 +72,7 @@ public class PonySkullRenderer {
         }
 
         Identifier texture = overrideTexture == null ? skull.getSkinResource(profile) : overrideTexture;
-        return new Data(skull, RenderLayers.entityTranslucent(texture), Pony.getManager().getPony(texture), profile);
+        return new Data(skull, RenderTypes.entityTranslucent(texture), Pony.getManager().getPony(texture), profile, animation);
     }
 
     /**
@@ -87,18 +81,18 @@ public class PonySkullRenderer {
      * Implement this interface if you want to extend our behaviour, modders.
      */
     public interface ISkull {
-        void render(MatrixStack stack, State state, OrderedRenderCommandQueue queue, Pony pony, RenderLayer layer);
+        void render(PoseStack stack, State state, SubmitNodeCollector frame, Pony pony, RenderType layer);
 
         boolean canRender(PonyConfig config);
 
-        Identifier getSkinResource(@Nullable ProfileComponent profile);
+        Identifier getSkinResource(@Nullable ResolvableProfile profile);
 
-        class State extends SkullBlockEntityModel.SkullModelState {
+        class State extends SkullModelBase.State {
             public float alpha;
             public int outlineColor;
             public int light;
-            public @Nullable ModelCommandRenderer.CrumblingOverlayCommand crumblingOverlay;
-            public @Nullable ProfileComponent profile;
+            public @Nullable ModelFeatureRenderer.CrumblingOverlay crumblingOverlay;
+            public @Nullable ResolvableProfile profile;
         }
     }
 
@@ -106,38 +100,21 @@ public class PonySkullRenderer {
         void setPonySkullData(Data data);
     }
 
-    public record Data(ISkull model, RenderLayer layer, Pony pony, @Nullable ProfileComponent profile) {
-        public boolean render(@Nullable Direction direction, float yaw, float poweredTicks, MatrixStack matrices, OrderedRenderCommandQueue queue, int light, int outlineColor, @Nullable ModelCommandRenderer.CrumblingOverlayCommand crumblingOverlay) {
+    public record Data(ISkull model, RenderType layer, Pony pony, @Nullable ResolvableProfile profile, float animation) {
+        public boolean render(PoseStack matrices, SubmitNodeCollector frame, int light, int outlineColor, @Nullable ModelFeatureRenderer.CrumblingOverlay crumblingOverlay) {
             if (!model.canRender(PonyConfig.getInstance())) {
                 return false;
             }
 
-            matrices.push();
-
-            if (direction == null) {
-                matrices.translate(0.5, 0, 0.5);
-            } else {
-                final float offset = 0.25F;
-                matrices.translate(
-                        0.5F - direction.getOffsetX() * offset,
-                        offset,
-                        0.5F - direction.getOffsetZ() * offset
-                );
-            }
-            matrices.scale(-1, -1, 1);
-
             ISkull.State skullModelState = new ISkull.State();
-            skullModelState.poweredTicks = poweredTicks;
-            skullModelState.yaw = yaw;
-            skullModelState.alpha = ArmourRendererPlugin.INSTANCE.get().getArmourAlpha(EquipmentSlot.HEAD, EquipmentModel.LayerType.HUMANOID);
+            skullModelState.animationPos = animation;
+            skullModelState.alpha = ArmourRendererPlugin.INSTANCE.get().getArmourAlpha(EquipmentSlot.HEAD, EquipmentClientInfo.LayerType.HUMANOID);
             skullModelState.outlineColor = outlineColor;
             skullModelState.light = light;
             skullModelState.crumblingOverlay = crumblingOverlay;
             skullModelState.profile = profile;
 
-            model.render(matrices, skullModelState, queue, pony, layer);
-
-            matrices.pop();
+            model.render(matrices, skullModelState, frame, pony, layer);
 
             return true;
         }

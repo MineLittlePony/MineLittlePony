@@ -1,11 +1,11 @@
 package com.minelittlepony.client.model.entity.race;
 
+import net.minecraft.client.model.geom.ModelPart;
+
 import com.minelittlepony.api.model.ModelWithWings;
 import com.minelittlepony.client.model.part.PonyWings;
 import com.minelittlepony.client.render.entity.state.PonyRenderState;
 import com.minelittlepony.mson.api.ModelView;
-
-import net.minecraft.client.model.ModelPart;
 
 public class PegasusModel<T extends PonyRenderState> extends EarthPonyModel<T> implements ModelWithWings<T> {
 

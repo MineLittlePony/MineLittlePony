@@ -1,5 +1,14 @@
 package com.minelittlepony.client.render.entity.npc;
 
+import net.minecraft.client.model.HumanoidModel.ArmPose;
+import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.client.renderer.entity.EntityRendererProvider;
+import net.minecraft.client.renderer.item.ItemModelResolver;
+import net.minecraft.resources.Identifier;
+import net.minecraft.world.entity.HumanoidArm;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.monster.illager.*;
+
 import com.minelittlepony.api.model.*;
 import com.minelittlepony.api.pony.Pony;
 import com.minelittlepony.client.MineLittlePony;
@@ -10,22 +19,13 @@ import com.minelittlepony.client.model.entity.race.ChangelingModel;
 import com.minelittlepony.client.render.entity.npc.textures.TextureSupplier;
 import com.minelittlepony.client.render.entity.state.PonyRenderState;
 import com.minelittlepony.mson.api.ModelKey;
+import com.mojang.blaze3d.vertex.PoseStack;
 import com.minelittlepony.client.render.PonyRenderContext;
 import com.minelittlepony.client.render.entity.PonyRenderer;
 import com.minelittlepony.client.render.entity.feature.HeldItemFeature;
 
-import net.minecraft.client.item.ItemModelManager;
-import net.minecraft.client.render.command.OrderedRenderCommandQueue;
-import net.minecraft.client.render.entity.EntityRendererFactory;
-import net.minecraft.client.render.entity.model.BipedEntityModel.ArmPose;
-import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.mob.*;
-import net.minecraft.util.Arm;
-import net.minecraft.util.Identifier;
-
 public class IllagerPonyRenderer<
-        T extends IllagerEntity,
+        T extends AbstractIllager,
         S extends IllagerPonyRenderer.State,
         M extends AlicornModel<S>
     > extends PonyRenderer<T, S, M> {
@@ -34,7 +34,7 @@ public class IllagerPonyRenderer<
     public static final Identifier EVOKER = MineLittlePony.id("textures/entity/illager/evoker_pony.png");
     public static final Identifier VINDICATOR = MineLittlePony.id("textures/entity/illager/vindicator_pony.png");
 
-    public IllagerPonyRenderer(EntityRendererFactory.Context context, ModelKey<? super M> key, Identifier texture) {
+    public IllagerPonyRenderer(EntityRendererProvider.Context context, ModelKey<? super M> key, Identifier texture) {
         super(context, key, TextureSupplier.of(texture), BASE_MODEL_SCALE);
     }
 
@@ -44,7 +44,7 @@ public class IllagerPonyRenderer<
         return (S)new State();
     }
 
-    static ArmPose getHoldingPose(IllagerEntity.State state) {
+    static ArmPose getHoldingPose(AbstractIllager.IllagerArmPose state) {
         switch (state) {
             case BOW_AND_ARROW: return ArmPose.BOW_AND_ARROW;
             case CROSSBOW_CHARGE: return ArmPose.CROSSBOW_CHARGE;
@@ -54,16 +54,16 @@ public class IllagerPonyRenderer<
     }
 
     @Override
-    protected HeldItemFeature<S, M> createHeldItemFeature(EntityRendererFactory.Context context) {
+    protected HeldItemFeature<S, M> createHeldItemFeature(EntityRendererProvider.Context context) {
         return new IllagerHeldItemFeature<>(this);
     }
 
-    public static IllagerPonyRenderer<PillagerEntity, State, ChangelingModel<State>> pillager(EntityRendererFactory.Context context) {
-        return new IllagerPonyRenderer<PillagerEntity, State, ChangelingModel<State>>(context, ModelType.PILLAGER, PILLAGER) {
+    public static IllagerPonyRenderer<Pillager, State, ChangelingModel<State>> pillager(EntityRendererProvider.Context context) {
+        return new IllagerPonyRenderer<Pillager, State, ChangelingModel<State>>(context, ModelType.PILLAGER, PILLAGER) {
             @Override
-            public ArmPose getArmPose(ArmPose initial, PillagerEntity state, Arm arm) {
+            public ArmPose getArmPose(ArmPose initial, Pillager state, HumanoidArm arm) {
                 if (state.getMainArm() == arm) {
-                    return getHoldingPose(state.getState());
+                    return getHoldingPose(state.getArmPose());
                 }
 
                 return ArmPose.EMPTY;
@@ -71,25 +71,25 @@ public class IllagerPonyRenderer<
         };
     }
 
-    public static IllagerPonyRenderer<VindicatorEntity, ?, ?> vindicator(EntityRendererFactory.Context context) {
-        return new IllagerPonyRenderer<VindicatorEntity, State, IllagerPonyModel<State>>(context, ModelType.ILLAGER, VINDICATOR);
+    public static IllagerPonyRenderer<Vindicator, ?, ?> vindicator(EntityRendererProvider.Context context) {
+        return new IllagerPonyRenderer<Vindicator, State, IllagerPonyModel<State>>(context, ModelType.ILLAGER, VINDICATOR);
     }
 
-    public static IllagerPonyRenderer<EvokerEntity, ?, ?> evoker(EntityRendererFactory.Context context) {
-        return new IllagerPonyRenderer<EvokerEntity, State, IllagerPonyModel<State>>(context,ModelType.ILLAGER, EVOKER);
+    public static IllagerPonyRenderer<Evoker, ?, ?> evoker(EntityRendererProvider.Context context) {
+        return new IllagerPonyRenderer<Evoker, State, IllagerPonyModel<State>>(context,ModelType.ILLAGER, EVOKER);
     }
 
     public static class State extends PonyRenderState {
-        public IllagerEntity.State state;
+        public AbstractIllager.IllagerArmPose state;
 
-        public void updateState(ItemModelManager resolver, LivingEntity entity, Models<?> models, Pony pony, ModelAttributes.Mode mode) {
+        public void updateState(ItemModelResolver resolver, LivingEntity entity, Models<?> models, Pony pony, ModelAttributes.Mode mode) {
             super.updateState(resolver, entity, models, pony, mode);
-            state = ((IllagerEntity)entity).getState();
+            state = ((AbstractIllager)entity).getArmPose();
         }
     }
 
     public static class IllagerHeldItemFeature<
-        T extends IllagerEntity,
+        T extends AbstractIllager,
         S extends IllagerPonyRenderer.State,
         M extends AlicornModel<S>
     > extends HeldItemFeature<S, M> {
@@ -99,14 +99,14 @@ public class IllagerPonyRenderer<
         }
 
         @Override
-        public void render(MatrixStack matrices, OrderedRenderCommandQueue queue, int light, S state, float limbAngle, float limbDistance) {
+        public void render(PoseStack matrices, SubmitNodeCollector frame, int light, S state, float xRot, float yRot) {
             if (shouldRender(state)) {
-                super.render(matrices, queue, light, state, limbAngle, limbDistance);
+                super.render(matrices, frame, light, state, xRot, yRot);
             }
         }
 
         protected boolean shouldRender(S state) {
-            return state.state != IllagerEntity.State.CROSSED;
+            return state.state != AbstractIllager.IllagerArmPose.CROSSED;
         }
     }
 }

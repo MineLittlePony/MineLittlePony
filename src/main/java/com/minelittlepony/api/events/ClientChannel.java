@@ -18,11 +18,11 @@ public class ClientChannel {
     private static boolean registered;
 
     public static void bootstrap() {
-        ClientLoginConnectionEvents.INIT.register((handler, client) -> {
+        ClientLoginConnectionEvents.INIT.register((_, _) -> {
            registered = false;
         });
 
-        ClientPlayNetworking.registerGlobalReceiver(CommonChannel.PonyDataRequest.ID, (packet, context) -> {
+        ClientPlayNetworking.registerGlobalReceiver(CommonChannel.PonyDataRequest.ID, (_, _) -> {
             registered = true;
             LOGGER.info("Server has just consented");
         });

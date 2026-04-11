@@ -1,79 +1,79 @@
 package com.minelittlepony.client.render.entity.feature;
 
-import net.minecraft.client.network.ClientPlayerLikeEntity;
-import net.minecraft.client.render.OverlayTexture;
-import net.minecraft.client.render.command.OrderedRenderCommandQueue;
-import net.minecraft.client.render.entity.EntityRendererFactory;
-import net.minecraft.client.render.entity.ParrotEntityRenderer;
-import net.minecraft.client.render.entity.model.EntityModelLayers;
-import net.minecraft.client.render.entity.model.ParrotEntityModel;
-import net.minecraft.client.render.entity.state.ParrotEntityRenderState;
-import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.util.math.RotationAxis;
-import net.minecraft.entity.PlayerLikeEntity;
-import net.minecraft.entity.passive.ParrotEntity;
+import net.minecraft.client.entity.ClientAvatarEntity;
+import net.minecraft.client.model.animal.parrot.ParrotModel;
+import net.minecraft.client.model.geom.ModelLayers;
+import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.client.renderer.entity.EntityRendererProvider;
+import net.minecraft.client.renderer.entity.ParrotRenderer;
+import net.minecraft.client.renderer.entity.state.ParrotRenderState;
+import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.world.entity.Avatar;
+import net.minecraft.world.entity.animal.parrot.Parrot;
 
 import com.minelittlepony.api.model.BodyPart;
 import com.minelittlepony.client.model.ClientPonyModel;
 import com.minelittlepony.client.render.PonyRenderContext;
 import com.minelittlepony.client.render.entity.state.PonyRenderState;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.math.Axis;
 
 public class PassengerFeature<
-        T extends PlayerLikeEntity & ClientPlayerLikeEntity,
+        T extends Avatar & ClientAvatarEntity,
         S extends PonyRenderState,
         M extends ClientPonyModel<S>
     > extends AbstractPonyFeature<S, M> {
 
-    private final ParrotEntityModel model;
-    private final ParrotEntityRenderState parrotState = new ParrotEntityRenderState();
+    private final ParrotModel model;
+    private final ParrotRenderState parrotState = new ParrotRenderState();
 
-    public PassengerFeature(PonyRenderContext<T, S, M> renderer, EntityRendererFactory.Context context) {
+    public PassengerFeature(PonyRenderContext<T, S, M> renderer, EntityRendererProvider.Context context) {
         super(renderer);
-        model = new ParrotEntityModel(context.getPart(EntityModelLayers.PARROT));
-        parrotState.parrotPose = ParrotEntityModel.Pose.ON_SHOULDER;
+        model = new ParrotModel(context.bakeLayer(ModelLayers.PARROT));
+        parrotState.pose = ParrotModel.Pose.ON_SHOULDER;
     }
 
     @Override
-    public void render(MatrixStack matrices, OrderedRenderCommandQueue queue, int light, S state, float limbAngle, float limbDistance) {
-        if (state.leftShoulderParrotVariant != null) {
-            render(matrices, queue, light, state, state.leftShoulderParrotVariant, limbAngle, limbDistance, true);
+    public void submit(PoseStack matrices, SubmitNodeCollector frame, int light, S state, float limbAngle, float limbDistance) {
+        if (state.parrotOnLeftShoulder != null) {
+            render(matrices, frame, light, state, state.parrotOnLeftShoulder, limbAngle, limbDistance, true);
         }
 
-        if (state.rightShoulderParrotVariant != null) {
-            render(matrices, queue, light, state, state.rightShoulderParrotVariant, limbAngle, limbDistance, false);
+        if (state.parrotOnRightShoulder != null) {
+            render(matrices, frame, light, state, state.parrotOnRightShoulder, limbAngle, limbDistance, false);
         }
     }
 
     private void render(
-        MatrixStack matrices,
-        OrderedRenderCommandQueue queue,
+        PoseStack matrices,
+        SubmitNodeCollector frame,
         int light,
         S state,
-        ParrotEntity.Variant parrotVariant,
+        Parrot.Variant parrotVariant,
         float headYaw,
         float headPitch,
         boolean left
     ) {
-        matrices.push();
+        matrices.pushPose();
 
         float scale = 1/state.attributes.size.scaleFactor();
         final double parrotModelHeight = 1.5;
 
-        getContextModel().transform(state, BodyPart.BACK, matrices);
-        getContextModel().body.applyTransform(matrices);
+        getParentModel().transform(state, BodyPart.BACK, matrices);
+        getParentModel().body.translateAndRotate(matrices);
 
         matrices.translate(0, -1.28, 0);
-        matrices.multiply(RotationAxis.NEGATIVE_Z.rotationDegrees(left ? -5 : 5));
+        matrices.mulPose(Axis.ZP.rotationDegrees(left ? -5 : 5));
         matrices.translate(0, parrotModelHeight, 0);
         matrices.scale(scale, scale, scale);
         matrices.translate(left ? 0.25 : -0.25, -parrotModelHeight, 0.45);
 
-        parrotState.age = state.age;
-        parrotState.limbSwingAnimationProgress = state.limbSwingAnimationProgress;
-        parrotState.limbSwingAmplitude = state.limbSwingAmplitude;
-        parrotState.relativeHeadYaw = headYaw;
-        parrotState.pitch = headPitch;
-        queue.getBatchingQueue(0).submitModel(model, parrotState, matrices, model.getLayer(ParrotEntityRenderer.getTexture(parrotVariant)), light, OverlayTexture.DEFAULT_UV, state.outlineColor, null);
-        matrices.pop();
+        parrotState.ageInTicks = state.ageInTicks;
+        parrotState.walkAnimationPos = state.walkAnimationPos;
+        parrotState.walkAnimationSpeed = state.walkAnimationSpeed;
+        parrotState.yRot = headYaw;
+        parrotState.xRot = headPitch;
+        frame.order(0).submitModel(model, parrotState, matrices, model.renderType(ParrotRenderer.getVariantTexture(parrotVariant)), light, OverlayTexture.NO_OVERLAY, state.outlineColor, null);
+        matrices.popPose();
     }
 }

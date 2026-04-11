@@ -1,9 +1,9 @@
 package com.minelittlepony.api.model;
 
-import net.minecraft.client.render.entity.model.BipedEntityModel.ArmPose;
-import net.minecraft.client.render.entity.state.BipedEntityRenderState;
+import net.minecraft.client.model.HumanoidModel.ArmPose;
+import net.minecraft.client.renderer.entity.state.HumanoidRenderState;
 
-public interface ModelWithHorn<T extends BipedEntityRenderState & PonyModel.AttributedHolder> extends PonyModel<T> {
+public interface ModelWithHorn<T extends HumanoidRenderState & PonyModel.AttributedHolder> extends PonyModel<T> {
 
     SubModel<T> getHorn();
 

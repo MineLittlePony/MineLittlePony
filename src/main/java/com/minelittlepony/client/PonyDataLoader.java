@@ -1,9 +1,5 @@
 package com.minelittlepony.client;
 
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.resource.metadata.ResourceMetadataSerializer;
-import net.minecraft.util.Identifier;
-
 import com.minelittlepony.api.pony.PonyData;
 import com.minelittlepony.client.util.render.NativeUtil;
 
@@ -12,11 +8,15 @@ import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
+import net.minecraft.client.Minecraft;
+import net.minecraft.resources.Identifier;
+import net.minecraft.server.packs.metadata.MetadataSectionType;
+
 import org.jetbrains.annotations.Nullable;
 
 public class PonyDataLoader {
     public static final Supplier<Optional<PonyData>> NULL = loaded(PonyData.NULL);
-    private static final ResourceMetadataSerializer<PonyData> SERIALIZER = new ResourceMetadataSerializer<PonyData>("pony", PonyData.CODEC);
+    private static final MetadataSectionType<PonyData> SERIALIZER = new MetadataSectionType<PonyData>("pony", PonyData.CODEC);
 
     /**
      * Parses the given resource into a new IPonyData.
@@ -27,9 +27,9 @@ public class PonyDataLoader {
             return NULL;
         }
 
-        return MinecraftClient.getInstance().getResourceManager().getResource(identifier).flatMap(res -> {
+        return Minecraft.getInstance().getResourceManager().getResource(identifier).flatMap(res -> {
             try {
-                return res.getMetadata().decode(SERIALIZER);
+                return res.metadata().getSection(SERIALIZER);
             } catch (IOException e) {
                 MineLittlePony.LOGGER.warn("Unable to read {} metadata", identifier, e);
             }

@@ -1,20 +1,20 @@
 package com.minelittlepony.client.render.entity.npc;
 
-import net.minecraft.client.render.command.OrderedRenderCommandQueue;
-import net.minecraft.client.render.entity.EntityRendererFactory;
-import net.minecraft.client.render.state.CameraRenderState;
-import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.entity.mob.IllusionerEntity;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.client.renderer.entity.EntityRendererProvider;
+import net.minecraft.client.renderer.state.level.CameraRenderState;
+import net.minecraft.util.Mth;
+import net.minecraft.world.entity.monster.illager.Illusioner;
+import net.minecraft.world.phys.Vec3;
 
 import com.minelittlepony.client.model.ModelType;
 import com.minelittlepony.client.model.entity.IllagerPonyModel;
+import com.mojang.blaze3d.vertex.PoseStack;
 
 import java.util.Arrays;
 
-public class IllusionistPonyRenderer extends IllagerPonyRenderer<IllusionerEntity, IllusionistPonyRenderer.State, IllagerPonyModel<IllusionistPonyRenderer.State>> {
-    public IllusionistPonyRenderer(EntityRendererFactory.Context context) {
+public class IllusionistPonyRenderer extends IllagerPonyRenderer<Illusioner, IllusionistPonyRenderer.State, IllagerPonyModel<IllusionistPonyRenderer.State>> {
+    public IllusionistPonyRenderer(EntityRendererProvider.Context context) {
         super(context, ModelType.ILLAGER, ILLUSIONIST);
     }
 
@@ -24,40 +24,40 @@ public class IllusionistPonyRenderer extends IllagerPonyRenderer<IllusionerEntit
     }
 
     @Override
-    public void render(IllusionistPonyRenderer.State entity, MatrixStack stack, OrderedRenderCommandQueue queue, CameraRenderState camera) {
-        if (!entity.invisible) {
-            Vec3d[] clones = entity.mirrorCopyOffsets;
+    public void submit(State entity, PoseStack stack, SubmitNodeCollector queue, CameraRenderState camera) {
+        if (!entity.isInvisible) {
+            Vec3[] clones = entity.mirrorCopyOffsets;
 
             for (int i = 0; i < clones.length; ++i) {
-                stack.push();
+                stack.pushPose();
                 stack.translate(
-                        clones[i].x + MathHelper.cos(i + entity.age * 0.5F) * 0.025D,
-                        clones[i].y + MathHelper.cos(i + entity.age * 0.75F) * 0.0125D,
-                        clones[i].z + MathHelper.cos(i + entity.age * 0.7F) * 0.025D
+                        clones[i].x + Mth.cos(i + entity.ageInTicks * 0.5F) * 0.025D,
+                        clones[i].y + Mth.cos(i + entity.ageInTicks * 0.75F) * 0.0125D,
+                        clones[i].z + Mth.cos(i + entity.ageInTicks * 0.7F) * 0.025D
                 );
-                super.render(entity, stack, queue, camera);
-                stack.pop();
+                super.submit(entity, stack, queue, camera);
+                stack.popPose();
             }
         } else {
-            super.render(entity, stack, queue, camera);
+            super.submit(entity, stack, queue, camera);
         }
     }
 
     @Override
-    protected boolean isVisible(IllusionistPonyRenderer.State entity) {
+    protected boolean isBodyVisible(State entity) {
         return true;
     }
 
     @Override
-    public void updateRenderState(IllusionerEntity entity, IllusionistPonyRenderer.State state, float tickDelta) {
-        super.updateRenderState(entity, state, tickDelta);
-        Vec3d[] vec3ds = entity.getMirrorCopyOffsets(tickDelta);
-        state.mirrorCopyOffsets = (Vec3d[])Arrays.copyOf(vec3ds, vec3ds.length);
-        state.spellcasting = entity.isSpellcasting();
+    public void extractRenderState(Illusioner entity, State state, float tickDelta) {
+        super.extractRenderState(entity, state, tickDelta);
+        Vec3[] vec3ds = entity.getIllusionOffsets(tickDelta);
+        state.mirrorCopyOffsets = Arrays.copyOf(vec3ds, vec3ds.length);
+        state.spellcasting = entity.isCastingSpell();
     }
 
     public static class State extends IllagerPonyRenderer.State {
-        public Vec3d[] mirrorCopyOffsets;
+        public Vec3[] mirrorCopyOffsets = new Vec3[0];
         public boolean spellcasting;
     }
 }

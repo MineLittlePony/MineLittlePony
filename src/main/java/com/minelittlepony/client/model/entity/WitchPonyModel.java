@@ -1,13 +1,13 @@
 package com.minelittlepony.client.model.entity;
 
-import net.minecraft.client.model.ModelPart;
-import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.util.*;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.RotationAxis;
+import net.minecraft.client.model.geom.ModelPart;
+import net.minecraft.util.Mth;
+import net.minecraft.world.entity.HumanoidArm;
 
 import com.minelittlepony.client.model.entity.race.EarthPonyModel;
 import com.minelittlepony.client.render.entity.WitchRenderer;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.math.Axis;
 
 public class WitchPonyModel extends EarthPonyModel<WitchRenderer.State> {
     public WitchPonyModel(ModelPart tree) {
@@ -19,7 +19,7 @@ public class WitchPonyModel extends EarthPonyModel<WitchRenderer.State> {
         super.setModelAngles(entity);
 
         if (entity.drinking) {
-            float noseRot = MathHelper.sin(entity.age);
+            float noseRot = Mth.sin(entity.ageInTicks);
 
             snout.rotate(noseRot * 4.5F * 0.02F, 0, noseRot * 2.5F * 0.02F);
         } else {
@@ -27,29 +27,29 @@ public class WitchPonyModel extends EarthPonyModel<WitchRenderer.State> {
         }
 
         if (!entity.getMainHandItemState().isEmpty()) {
-            float rot = (float)(Math.tan(entity.age / 7) + Math.sin(entity.age / 3));
+            float rot = (float)(Math.tan(entity.ageInTicks / 7) + Math.sin(entity.ageInTicks / 3));
             if (rot > 1) rot = 1;
             if (rot < -1) rot = -1;
 
-            float legDrinkingAngle = -1 * MathHelper.PI / 3F + rot;
+            float legDrinkingAngle = -1 * Mth.PI / 3F + rot;
 
-            rightArm.pitch = legDrinkingAngle;
-            rightArm.yaw = 0.1F;
-            rightArm.originX = 0.1F;
+            rightArm.xRot = legDrinkingAngle;
+            rightArm.yRot = 0.1F;
+            rightArm.x = 0.1F;
 
             if (rot > 0) {
                 rot = 0;
             }
 
-            head.pitch = -rot / 2;
+            head.xRot = -rot / 2;
         } else {
-            rightArm.originX = 0;
+            rightArm.x = 0;
         }
     }
 
     @Override
-    public void positionheldItem(WitchRenderer.State state, Arm arm, MatrixStack matrices) {
+    public void positionheldItem(WitchRenderer.State state, HumanoidArm arm, PoseStack matrices) {
         super.positionheldItem(state, arm, matrices);
-        matrices.multiply(RotationAxis.POSITIVE_X.rotationDegrees(10));
+        matrices.mulPose(Axis.XP.rotationDegrees(10));
     }
 }

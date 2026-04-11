@@ -1,15 +1,15 @@
 package com.minelittlepony.client.render;
 
 import net.fabricmc.loader.api.FabricLoader;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.hud.debug.DebugHudEntry;
-import net.minecraft.client.gui.hud.debug.DebugHudLines;
-import net.minecraft.client.network.ClientPlayerEntity;
-import net.minecraft.entity.attribute.EntityAttributes;
-import net.minecraft.util.Formatting;
-import net.minecraft.util.Identifier;
-import net.minecraft.world.World;
-import net.minecraft.world.chunk.WorldChunk;
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.components.debug.DebugScreenDisplayer;
+import net.minecraft.client.gui.components.debug.DebugScreenEntry;
+import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.resources.Identifier;
+import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.chunk.LevelChunk;
 
 import com.minelittlepony.api.config.PonyConfig;
 import com.minelittlepony.api.pony.Pony;
@@ -17,39 +17,39 @@ import com.minelittlepony.client.MineLittlePony;
 
 import java.util.Map;
 
-public class PonyEntityRenderersDebugEntry implements DebugHudEntry {
+public class PonyEntityRenderersDebugEntry implements DebugScreenEntry {
     public static final Identifier ID = MineLittlePony.id("entity_renderers");
 
     @Override
-    public void render(DebugHudLines lines, World world, WorldChunk clientChunk, WorldChunk chunk) {
+    public void display(DebugScreenDisplayer lines, Level world, LevelChunk clientChunk, LevelChunk chunk) {
 
-        ClientPlayerEntity player = MinecraftClient.getInstance().player;
+        LocalPlayer player = Minecraft.getInstance().player;
 
-        lines.addLineToSection(ID, Formatting.YELLOW + "Mine Little Pony (" + FabricLoader.getInstance().getModContainer("minelp").get().getMetadata().getVersion() + ")");
-        lines.addLineToSection(ID, " HDSkins Present: " + boolString(FabricLoader.getInstance().getModContainer("hdskins").isPresent()));
-        lines.addLineToSection(ID, " Pony Level: " + Formatting.YELLOW + PonyConfig.getInstance().ponyLevel.get());
-        lines.addLineToSection(ID, " Show Scale: "
+        lines.addToGroup(ID, ChatFormatting.YELLOW + "Mine Little Pony (" + FabricLoader.getInstance().getModContainer("minelp").get().getMetadata().getVersion() + ")");
+        lines.addToGroup(ID, " HDSkins Present: " + boolString(FabricLoader.getInstance().getModContainer("hdskins").isPresent()));
+        lines.addToGroup(ID, " Pony Level: " + ChatFormatting.YELLOW + PonyConfig.getInstance().ponyLevel.get());
+        lines.addToGroup(ID, " Show Scale: "
                 + boolString(PonyConfig.getInstance().showscale.get())
                 + (PonyConfig.getInstance().showscale.get() ? " (" + PonyConfig.getInstance().getGlobalScaleFactor() + ")" : ""));
         if (player == null) {
-            lines.addLineToSection(ID, " Filly Cam: " + boolString(PonyConfig.getInstance().fillycam.get()));
+            lines.addToGroup(ID, " Filly Cam: " + boolString(PonyConfig.getInstance().fillycam.get()));
         } else {
             Pony playerPony = MineLittlePony.getInstance().getManager().getPony(player);
-            float cameraDistance = player.getScale() * (float)player.getAttributeValue(EntityAttributes.CAMERA_DISTANCE) * playerPony.size().eyeDistanceFactor();
+            float cameraDistance = player.getScale() * (float)player.getAttributeValue(Attributes.CAMERA_DISTANCE) * playerPony.size().eyeDistanceFactor();
 
-            lines.addLineToSection(ID, " Filly Cam: " + boolString(PonyConfig.getInstance().fillycam.get())
-                    + ", EH/F: " + Formatting.YELLOW + player.getStandingEyeHeight() + "/" + playerPony.size().eyeHeightFactor() + Formatting.RESET
-                    + ", ED/F: " + Formatting.YELLOW + cameraDistance + "/" + playerPony.size().eyeDistanceFactor());
-            lines.addLineToSection(ID, "");
-            lines.addLineToSection(ID, Formatting.UNDERLINE + "Current Player Skin: ");
-            lines.addLinesToSection(ID, playerPony.metadata().attributes().entrySet().stream().map(entry -> {
-                return entry.getKey() + "=" + Formatting.AQUA + entry.getValue().name() + Formatting.RESET + " (" + Formatting.YELLOW + '#' + Integer.toString(entry.getValue().colorCode(), 16) + Formatting.RESET + ")";
+            lines.addToGroup(ID, " Filly Cam: " + boolString(PonyConfig.getInstance().fillycam.get())
+                    + ", EH/F: " + ChatFormatting.YELLOW + player.getEyeHeight() + "/" + playerPony.size().eyeHeightFactor() + ChatFormatting.RESET
+                    + ", ED/F: " + ChatFormatting.YELLOW + cameraDistance + "/" + playerPony.size().eyeDistanceFactor());
+            lines.addToGroup(ID, "");
+            lines.addToGroup(ID, ChatFormatting.UNDERLINE + "Current Player Skin: ");
+            lines.addToGroup(ID, playerPony.metadata().attributes().entrySet().stream().map(entry -> {
+                return entry.getKey() + "=" + ChatFormatting.AQUA + entry.getValue().name() + ChatFormatting.RESET + " (" + ChatFormatting.YELLOW + '#' + Integer.toString(entry.getValue().colorCode(), 16) + ChatFormatting.RESET + ")";
             }).toList());
         }
-        lines.addLineToSection(ID, "");
-        lines.addLineToSection(ID, Formatting.UNDERLINE + "MineLP Debug Options: ");
+        lines.addToGroup(ID, "");
+        lines.addToGroup(ID, ChatFormatting.UNDERLINE + "MineLP Debug Options: ");
         PonyConfig.getInstance().getCategory("debug").forEach(entry -> {
-            lines.addLineToSection(ID, "debug/" + entry.getKey() + ": " + Formatting.AQUA + String.valueOf(entry.getValue().get()));
+            lines.addToGroup(ID, "debug/" + entry.getKey() + ": " + ChatFormatting.AQUA + String.valueOf(entry.getValue().get()));
         });
         MobRenderers.REGISTRY.entrySet().stream()
                 .filter(e -> e.getValue().option().get())
@@ -58,6 +58,6 @@ public class PonyEntityRenderersDebugEntry implements DebugHudEntry {
     }
 
     private String boolString(boolean on) {
-        return (on ? Formatting.GREEN : Formatting.RED) + String.valueOf(on) + Formatting.RESET;
+        return (on ? ChatFormatting.GREEN : ChatFormatting.RED) + String.valueOf(on) + ChatFormatting.RESET;
     }
 }

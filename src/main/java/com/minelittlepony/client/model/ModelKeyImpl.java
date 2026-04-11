@@ -1,8 +1,8 @@
 package com.minelittlepony.client.model;
 
 import net.minecraft.client.model.Model;
-import net.minecraft.client.model.ModelPart;
-import net.minecraft.util.Identifier;
+import net.minecraft.client.model.geom.ModelPart;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.Util;
 
 import com.google.common.base.Preconditions;

@@ -10,36 +10,42 @@ import com.minelittlepony.client.render.PonyRenderContext;
 import com.minelittlepony.client.render.entity.feature.*;
 import com.minelittlepony.client.render.entity.state.PlayerPonyRenderState;
 import com.minelittlepony.client.render.entity.state.PonyRenderState;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.math.Axis;
 
 import java.util.*;
 
 import com.minelittlepony.client.render.EquineRenderManager;
 
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.item.ItemModelManager;
-import net.minecraft.client.model.ModelPart;
-import net.minecraft.client.network.ClientPlayerEntity;
-import net.minecraft.client.network.ClientPlayerLikeEntity;
-import net.minecraft.client.render.*;
-import net.minecraft.client.render.command.OrderedRenderCommandQueue;
-import net.minecraft.client.render.entity.EntityRendererFactory;
-import net.minecraft.client.render.entity.PlayerEntityRenderer;
-import net.minecraft.client.render.entity.feature.*;
-import net.minecraft.client.render.entity.state.*;
-import net.minecraft.client.render.state.CameraRenderState;
-import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.component.DataComponentTypes;
-import net.minecraft.entity.EntityPose;
-import net.minecraft.entity.PlayerLikeEntity;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.entity.ClientAvatarEntity;
+import net.minecraft.client.model.geom.ModelPart;
+import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.client.renderer.Sheets;
+import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.client.renderer.entity.EntityRendererProvider;
+import net.minecraft.client.renderer.entity.layers.*;
+import net.minecraft.client.renderer.entity.player.AvatarRenderer;
+import net.minecraft.client.renderer.entity.state.AvatarRenderState;
+import net.minecraft.client.renderer.item.ItemModelResolver;
+import net.minecraft.client.renderer.rendertype.RenderTypes;
+import net.minecraft.client.renderer.state.level.CameraRenderState;
+import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.core.Direction;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.*;
-import net.minecraft.util.math.*;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.*;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.Vec3;
 
 import org.jetbrains.annotations.Nullable;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
 
-public class PlayerPonyRenderer<Player extends PlayerLikeEntity & ClientPlayerLikeEntity>
-        extends PlayerEntityRenderer<Player>
+public class PlayerPonyRenderer<Player extends Avatar & ClientAvatarEntity>
+        extends AvatarRenderer<Player>
         implements PonyRenderContext<
             Player,
             PlayerPonyRenderState,
@@ -48,74 +54,74 @@ public class PlayerPonyRenderer<Player extends PlayerLikeEntity & ClientPlayerLi
     protected final EquineRenderManager<Player, PlayerPonyRenderState, ClientPonyModel<PlayerPonyRenderState>> manager;
 
     private ModelAttributes.Mode mode = ModelAttributes.Mode.THIRD_PERSON;
-    protected final ItemModelManager itemModelManager;
+    protected final ItemModelResolver itemModelManager;
 
     @SuppressWarnings({"unchecked", "rawtypes"})
-    public PlayerPonyRenderer(EntityRendererFactory.Context context, boolean slim) {
+    public PlayerPonyRenderer(EntityRendererProvider.Context context, boolean slim) {
         super(context, slim);
-        itemModelManager = context.getItemModelManager();
-        manager = new EquineRenderManager<>(this, super::setupTransforms, race -> ModelType.getPlayerModel(race).create(slim));
+        itemModelManager = context.getItemModelResolver();
+        manager = new EquineRenderManager<>(this, super::setupRotations, race -> ModelType.getPlayerModel(race).create(slim));
 
         // remove vanilla features (keep modded ones)
-        features.removeIf(feature -> {
-            return feature instanceof ArmorFeatureRenderer
-                    || feature instanceof PlayerHeldItemFeatureRenderer
-                    || feature instanceof Deadmau5FeatureRenderer
-                    || feature instanceof CapeFeatureRenderer
-                    || feature instanceof HeadFeatureRenderer
-                    || feature instanceof ElytraFeatureRenderer
-                    || feature instanceof ShoulderParrotFeatureRenderer;
+        layers.removeIf(feature -> {
+            return feature instanceof HumanoidArmorLayer
+                    || feature instanceof PlayerItemInHandLayer
+                    || feature instanceof Deadmau5EarsLayer
+                    || feature instanceof CapeLayer
+                    || feature instanceof CustomHeadLayer
+                    || feature instanceof WingsLayer
+                    || feature instanceof ParrotOnShoulderLayer;
         });
-        addPonyFeature(new ArmourFeature<>(this, context.getEquipmentModelLoader(), context.getSpriteAtlasTexture(Atlases.ARMOR_TRIMS)));
+        addPonyFeature(new ArmourFeature<>(this, context.getEquipmentAssets(), context.getAtlas(Sheets.ARMOR_TRIMS_SHEET)));
         addPonyFeature(new HeldItemFeature<>(this));
         addPonyFeature(new DJPon3Feature<>(this));
-        addFeature(new CapeFeature(this, context.getEntityModels(), context.getEquipmentModelLoader()));
-        addPonyFeature(new SkullFeature<>(this, context.getPlayerSkinCache(), context.getEntityModels(), HeadFeatureRenderer.HeadTransformation.DEFAULT, true));
+        addPonyFeature(new CapeFeature(this, context.getModelSet(), context.getEquipmentAssets()));
+        addPonyFeature(new SkullFeature<>(this, context.getPlayerSkinRenderCache(), context.getModelSet(), CustomHeadLayer.Transforms.DEFAULT, true));
         addPonyFeature(new ElytraFeature(this, context.getEquipmentRenderer()));
         addPonyFeature(new PassengerFeature<>(this, context));
         addPonyFeature(new GearFeature<>(this));
 
-        addPonyFeature(new PonyBodyPartFeature<>(this, m -> m instanceof ModelWithHorn, m -> ((ModelWithHorn)m).getHorn()));
+        addPonyFeature(new PonyBodyPartFeature<>(this, m -> ((ModelWithHorn)m).getHorn(), m -> m instanceof ModelWithHorn));
     }
 
     @SuppressWarnings({"unchecked", "rawtypes"})
-    protected final boolean addPonyFeature(FeatureRenderer<
-            ? extends PlayerEntityRenderState,
+    protected final boolean addPonyFeature(RenderLayer<
+            ? extends AvatarRenderState,
             ? extends ClientPonyModel<? extends PonyRenderState>
             > feature) {
-        return ((List)features).add(feature);
+        return ((List)layers).add(feature);
     }
 
     @Override
-    public Vec3d getPositionOffset(PlayerEntityRenderState state) {
-        Vec3d offset = super.getPositionOffset(state);
+    public Vec3 getRenderOffset(AvatarRenderState state) {
+        Vec3 offset = super.getRenderOffset(state);
         return offset
-                .multiply(((PlayerPonyRenderState)state).attributes.size.scaleFactor())
-                .add(0, state.baseScale * ((PlayerPonyRenderState)state).yOffset, 0);
+                .scale(((PlayerPonyRenderState)state).attributes.size.scaleFactor())
+                .add(0, state.scale * ((PlayerPonyRenderState)state).yOffset, 0);
     }
 
     @Override
-    public PlayerEntityRenderState createRenderState() {
+    public AvatarRenderState createRenderState() {
         return new PlayerPonyRenderState();
     }
 
     @Override
-    public void updateRenderState(Player entity, PlayerEntityRenderState state, float tickDelta) {
-        super.updateRenderState(entity, state, tickDelta);
+    public void extractRenderState(Player entity, AvatarRenderState state, float tickDelta) {
+        super.extractRenderState(entity, state, tickDelta);
         manager.updateState(entity, (PlayerPonyRenderState)state, mode, itemModelManager);
     }
 
-    public final PlayerPonyRenderState getAndUpdateRenderState(Player entity, float tickDelta, ModelAttributes.Mode mode) {
+    public final PlayerPonyRenderState createRenderState(Player entity, float tickDelta, ModelAttributes.Mode mode) {
         try {
             this.mode = mode;
-            return (PlayerPonyRenderState)getAndUpdateRenderState(entity, tickDelta);
+            return (PlayerPonyRenderState)createRenderState(entity, tickDelta);
         } finally {
             this.mode = ModelAttributes.Mode.THIRD_PERSON;
         }
     }
 
     @Override
-    protected void setupTransforms(PlayerEntityRenderState state, MatrixStack matrices, float animationProgress, float bodyYaw) {
+    protected void setupRotations(AvatarRenderState state, PoseStack matrices, float animationProgress, float bodyYaw) {
         manager.completeStateUpdate(state);
         model = lookupModel(state).body();
         shadowRadius = ((PlayerPonyRenderState)state).attributes.size.shadowSize();
@@ -123,112 +129,115 @@ public class PlayerPonyRenderer<Player extends PlayerLikeEntity & ClientPlayerLi
     }
 
     @Override
-    protected Box getBoundingBox(Player entity) {
+    protected AABB getBoundingBoxForCulling(Player entity) {
         return manager.getBoundingBox(entity, entity.getBoundingBox());
     }
 
     @Override
-    protected void renderLabelIfPresent(PlayerEntityRenderState state, MatrixStack matrices, OrderedRenderCommandQueue queue, CameraRenderState camera) {
-        matrices.push();
+    protected void submitNameDisplay(AvatarRenderState state, PoseStack matrices, SubmitNodeCollector queue, CameraRenderState camera) {
+        matrices.pushPose();
         matrices.translate(0, ((PlayerPonyRenderState)state).nameplateYOffset, 0);
-        super.renderLabelIfPresent(state, matrices, queue, camera);
-        matrices.pop();
+        super.submitNameDisplay(state, matrices, queue, camera);
+        matrices.popPose();
     }
 
     @Override
-    public final void renderRightArm(MatrixStack matrices, OrderedRenderCommandQueue queue, int light, Identifier skinTexture, boolean sleeveVisible) {
-        renderArm(matrices, queue, light, skinTexture, sleeveVisible, Arm.RIGHT);
+    public final void renderRightHand(PoseStack matrices, SubmitNodeCollector queue, int light, Identifier skinTexture, boolean sleeveVisible) {
+        renderArm(matrices, queue, light, skinTexture, sleeveVisible, HumanoidArm.RIGHT);
     }
 
     @Override
-    public final void renderLeftArm(MatrixStack matrices, OrderedRenderCommandQueue queue, int light, Identifier skinTexture, boolean sleeveVisible) {
-        renderArm(matrices, queue, light, skinTexture, sleeveVisible, Arm.LEFT);
+    public final void renderLeftHand(PoseStack matrices, SubmitNodeCollector queue, int light, Identifier skinTexture, boolean sleeveVisible) {
+        renderArm(matrices, queue, light, skinTexture, sleeveVisible, HumanoidArm.LEFT);
     }
 
     @Nullable
     @SuppressWarnings("unchecked")
-    public Vec3d getHandPos(Player player, Arm arm, float swingProgress, float tickDelta) {
-        if (dispatcher.gameOptions.getPerspective().isFirstPerson() && player == MinecraftClient.getInstance().player) {
+    public Vec3 getHandPos(Player player, HumanoidArm arm, float swingProgress, float tickDelta) {
+        if (entityRenderDispatcher.options.getCameraType().isFirstPerson() && player == Minecraft.getInstance().player) {
             return null;
         }
 
-        var state = getAndUpdateRenderState(player, tickDelta, Mode.THIRD_PERSON);
-        MatrixStack matrices = new MatrixStack();
-        if (state.isInPose(EntityPose.SLEEPING)) {
-            Direction direction = state.sleepingDirection;
+        var state = createRenderState(player, tickDelta, Mode.THIRD_PERSON);
+        PoseStack matrices = new PoseStack();
+        if (state.hasPose(Pose.SLEEPING)) {
+            Direction direction = state.bedOrientation;
             if (direction != null) {
-                float bodyLength = state.standingEyeHeight - 0.1F;
-                matrices.translate(-direction.getOffsetX() * bodyLength, 0, -direction.getOffsetZ() * bodyLength);
+                float bodyLength = state.eyeHeight - 0.1F;
+                matrices.translate(-direction.getStepX() * bodyLength, 0, -direction.getStepZ() * bodyLength);
             }
         }
-        float scale = state.baseScale;
+        float scale = state.scale;
         matrices.scale(scale, scale, scale);
-        setupTransforms(state, matrices, state.bodyYaw, 0);
+        setupRotations(state, matrices, state.bodyRot, 0);
         matrices.scale(-1, -1, 1);
         scale(state, matrices);
         matrices.translate(0, -1.501F, 0);
-        model.setAngles(state);
+        model.setupAnim(state);
         ((ClientPonyModel<PlayerPonyRenderState>)model).transformHeldItem(state, arm, matrices);
-        model.setArmAngle(state, arm, matrices);
-        var a = arm == Arm.LEFT ? model.leftArm : model.rightArm;
-        Quaternionf rotation = new Quaternionf().rotationZYX(a.roll, a.yaw, a.pitch);
-        matrices.multiply(rotation);
+        model.translateToHand(state, arm, matrices);
+        ModelPart a = arm == HumanoidArm.LEFT ? model.leftArm : model.rightArm;
+        Quaternionf rotation = new Quaternionf().rotationZYX(a.zRot, a.yRot, a.xRot);
+        matrices.mulPose(rotation);
         matrices.translate(0, -0.2F, -0.7F);
-        matrices.multiply(rotation.conjugate());
-        model.body.applyTransform(matrices);
+        matrices.mulPose(rotation.conjugate());
+        model.body.translateAndRotate(matrices);
 
-        matrices.multiply(RotationAxis.POSITIVE_X.rotationDegrees(-90));
-        matrices.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(180));
-        boolean left = arm == Arm.LEFT;
+        matrices.mulPose(Axis.XP.rotationDegrees(-90));
+        matrices.mulPose(Axis.YP.rotationDegrees(180));
+        boolean left = arm == HumanoidArm.LEFT;
         matrices.translate((left ? -1 : 1) / 16F, 0.125F, -0.625F);
-        var vec = matrices.peek().getPositionMatrix().transformPosition(new Vector3f());
-        var pos = new Vec3d(
-                MathHelper.lerp(tickDelta, player.lastX, player.getX()),
-                MathHelper.lerp(tickDelta, player.lastY, player.getY()),
-                MathHelper.lerp(tickDelta, player.lastZ, player.getZ())
+        var vec = matrices.last().pose().transformPosition(new Vector3f());
+        var pos = new Vec3(
+                Mth.lerp(tickDelta, player.xOld, player.getX()),
+                Mth.lerp(tickDelta, player.yOld, player.getY()),
+                Mth.lerp(tickDelta, player.zOld, player.getZ())
         );
 
         return pos.add(vec.x, vec.y, vec.z);
     }
 
     @SuppressWarnings("unchecked")
-    protected void renderArm(MatrixStack stack, OrderedRenderCommandQueue queue, int light, Identifier skinTexture, boolean sleeveVisible, Arm side) {
+    protected void renderArm(PoseStack stack, SubmitNodeCollector queue, int light, Identifier skinTexture, boolean sleeveVisible, HumanoidArm side) {
 
-        ClientPlayerEntity player = MinecraftClient.getInstance().player;
+        LocalPlayer player = Minecraft.getInstance().player;
 
         var renderer = MineLittlePony.getInstance().getRenderDispatcher().getPonyRenderer(player);
         if (((Object)renderer) != this) {
             return;
         }
-        PonyRenderState state = renderer.getAndUpdateRenderState(player, MinecraftClient.getInstance().getRenderTickCounter().getTickProgress(false));
+        PonyRenderState state = renderer.createRenderState(player, Minecraft.getInstance().getDeltaTracker().getGameTimeDeltaPartialTick(false));
 
-        if (state.hasMagicGlow() && (player.getStackInHand(Hand.MAIN_HAND).contains(DataComponentTypes.MAP_ID) || player.getStackInHand(Hand.OFF_HAND).contains(DataComponentTypes.MAP_ID))) {
+        if (state.hasMagicGlow() && (
+                player.getItemInHand(InteractionHand.MAIN_HAND).has(DataComponents.MAP_ID)
+             || player.getItemInHand(InteractionHand.OFF_HAND).has(DataComponents.MAP_ID)
+        )) {
             return;
         }
 
-        stack.push();
-        float reflect = side == Arm.LEFT ? -1 : 1;
+        stack.pushPose();
+        float reflect = side == HumanoidArm.LEFT ? -1 : 1;
 
         stack.translate(reflect * -0.3F, -0.54F, 0);
 
         model = lookupModel(state).body();
 
-        ModelPart arm = side == Arm.LEFT ? model.leftArm : model.rightArm;
-        arm.resetTransform();
+        ModelPart arm = side == HumanoidArm.LEFT ? model.leftArm : model.rightArm;
+        arm.resetPose();
         arm.visible = true;
         model.leftSleeve.visible = sleeveVisible;
         model.rightSleeve.visible = sleeveVisible;
-        arm.roll = reflect * 0.1F;
+        arm.zRot = reflect * 0.1F;
         // seapony has different angles, so make sure they're correct
-        arm.pitch = 0;
-        arm.yaw = 0;
+        arm.xRot = 0;
+        arm.yRot = 0;
 
         if (model instanceof PonyModel ponyModel) {
             ponyModel.transform(state, BodyPart.LEGS, arm);
         }
 
-        queue.submitModelPart(arm, stack, RenderLayers.entityTranslucent(skinTexture), light, OverlayTexture.DEFAULT_UV, null);
-        stack.pop();
+        queue.submitModelPart(arm, stack, RenderTypes.entityTranslucent(skinTexture), light, OverlayTexture.NO_OVERLAY, null);
+        stack.popPose();
     }
 
     @Override
@@ -242,7 +251,7 @@ public class PlayerPonyRenderer<Player extends PlayerLikeEntity & ClientPlayerLi
     }
 
     @Override
-    public final Identifier getTexture(PlayerEntityRenderState state) {
+    public final Identifier getTextureLocation(AvatarRenderState state) {
         return ((PlayerPonyRenderState)state).pony.texture();
     }
 
@@ -253,7 +262,7 @@ public class PlayerPonyRenderer<Player extends PlayerLikeEntity & ClientPlayerLi
         }
 
         if (wearable.isSaddlebags() && state.race.supportsLegacySaddlebags() && state.attributes.isEmbedded(wearable)) {
-            return getTexture(state);
+            return getTextureLocation(state);
         }
 
         return wearable.getDefaultTexture();

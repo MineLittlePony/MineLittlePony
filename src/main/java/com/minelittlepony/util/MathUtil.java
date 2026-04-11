@@ -1,18 +1,18 @@
 package com.minelittlepony.util;
 
-import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.Mth;
 
 public interface MathUtil {
     interface Angles {
         float
-            _270_DEG = 270 * MathHelper.RADIANS_PER_DEGREE,
-            _90_DEG = 90 * MathHelper.RADIANS_PER_DEGREE,
-            _30_DEG = 30 * MathHelper.RADIANS_PER_DEGREE
+            _270_DEG = 270 * Mth.DEG_TO_RAD,
+            _90_DEG = 90 * Mth.DEG_TO_RAD,
+            _30_DEG = 30 * Mth.DEG_TO_RAD
         ;
     }
 
     static double clampLimit(double num, double limit) {
-        return MathHelper.clamp(num, -limit, limit);
+        return Mth.clamp(num, -limit, limit);
     }
 
     static int mod(int value, int mod) {
@@ -21,16 +21,6 @@ public interface MathUtil {
         while (value < 0) value += mod;
 
         return value;
-    }
-
-    @Deprecated(forRemoval = true)
-    static float interpolateDegress(float prev, float current, float partialTicks) {
-        float difference = current - prev;
-
-        while (difference < -180) difference += 360;
-        while (difference >= 180) difference -= 360;
-
-        return prev + partialTicks * difference;
     }
 
     static boolean compareFloats(float a, float b) {

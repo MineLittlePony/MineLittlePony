@@ -1,7 +1,7 @@
 package com.minelittlepony.api.pony.meta;
 
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
-import net.minecraft.util.math.ColorHelper;
+import net.minecraft.util.ARGB;
 
 import org.joml.Vector2i;
 
@@ -29,7 +29,7 @@ public interface TriggerPixel<T> {
         return image -> {
             int color = image.getColor(x, y);
 
-            if (ColorHelper.getAlpha(color) < 255) {
+            if (ARGB.alpha(color) < 255) {
                 return (T)def;
             }
             return lookup.getOrDefault(color & 0x00FFFFFF, def);
@@ -54,14 +54,14 @@ public interface TriggerPixel<T> {
         };
         return image -> {
             int color = image.getColor(x, y);
-            if (ColorHelper.getAlpha(color) < 255) {
+            if (ARGB.alpha(color) < 255) {
                 return def;
             }
             @SuppressWarnings("unchecked")
             Set<T> values = EnumSet.noneOf((Class<T>)def.def().getClass());
-            if (flagReader.readFlag(ColorHelper.getRed(color), values)
-                    | flagReader.readFlag(ColorHelper.getGreen(color), values)
-                    | flagReader.readFlag(ColorHelper.getBlue(color), values)) {
+            if (flagReader.readFlag(ARGB.red(color), values)
+                    | flagReader.readFlag(ARGB.green(color), values)
+                    | flagReader.readFlag(ARGB.blue(color), values)) {
                 return new Flags<>(def.def(), values, color & 0x00FFFFFF);
             }
             return def;

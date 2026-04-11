@@ -1,14 +1,19 @@
 package com.minelittlepony.api.pony.meta;
 
-import net.minecraft.util.StringIdentifiable;
+import io.netty.buffer.ByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.util.StringRepresentable;
 
-import java.util.Arrays;
-import java.util.List;
+import com.mojang.serialization.Codec;
+
+import java.util.*;
+import java.util.function.Supplier;
 
 /**
  * Interface for enums that can be parsed from an image trigger pixel value.
  */
-public interface TValue<T> extends StringIdentifiable {
+public interface TValue<T> extends StringRepresentable {
     /**
      * Gets the pixel colour matching this enum value.
      */
@@ -27,7 +32,7 @@ public interface TValue<T> extends StringIdentifiable {
     String name();
 
     @Override
-    default String asString() {
+    default String getSerializedName() {
         return name();
     }
 
@@ -70,4 +75,21 @@ public interface TValue<T> extends StringIdentifiable {
             return List.of();
         }
     }
+
+    static <T extends Enum<T> & TValue<? super T>> Codecs<T, EnumCodec<T>> codecs(Supplier<T[]> valueGetter) {
+        final T[] values = valueGetter.get();
+        return new Codecs<>(
+                StringRepresentable.fromEnum(() -> values),
+                ByteBufCodecs.idMapper(id -> values[id], Enum::ordinal)
+        );
+    }
+
+    static <T extends Enum<T> & TValue<? super T>> EnumCodec<T> enumCodec(Supplier<T[]> valueGetter) {
+        return StringRepresentable.fromEnum(valueGetter);
+    }
+
+    public record Codecs<T extends TValue<? super T>, C extends Codec<T>>(
+            C codec,
+            StreamCodec<ByteBuf, T> streamCodec
+    ) {}
 }

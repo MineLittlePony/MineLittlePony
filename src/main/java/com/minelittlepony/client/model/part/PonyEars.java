@@ -1,15 +1,15 @@
 package com.minelittlepony.client.model.part;
 
-import net.minecraft.client.model.ModelPart;
-import net.minecraft.client.render.VertexConsumer;
-import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.util.math.MathHelper;
+import net.minecraft.client.model.geom.ModelPart;
+import net.minecraft.util.Mth;
 
 import com.minelittlepony.api.model.PonyModel;
 import com.minelittlepony.api.model.SubModel;
 import com.minelittlepony.client.render.entity.state.PonyRenderState;
 import com.minelittlepony.mson.api.*;
 import com.minelittlepony.mson.api.model.PartBuilder;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
 
 public class PonyEars implements SubModel<PonyRenderState>, MsonModel {
     private final ModelPart right;
@@ -29,38 +29,38 @@ public class PonyEars implements SubModel<PonyRenderState>, MsonModel {
 
     @Override
     public void setAngles(PonyModel<PonyRenderState> model, PonyRenderState state) {
-        left.resetTransform();
-        right.resetTransform();
+        left.resetPose();
+        right.resetPose();
 
         if (state.attributes.isHorsey) {
-            left.originX = -1;
-            right.originX = 1;
-            left.originY = right.originY = 1;
-            left.originZ = right.originZ = 1.5F;
+            left.x = -1;
+            right.x = 1;
+            left.y = right.y = 1;
+            left.z = right.z = 1.5F;
         }
 
-        float limbSpeed = MathHelper.clamp(state.limbSwingAmplitude, 0, 1);
+        float limbSpeed = Mth.clamp(state.walkAnimationPos, 0, 1);
 
         float forwardFold = 0.14F * limbSpeed;
         float sidewaysFlop = 0.11F * limbSpeed;
 
-        right.pitch += forwardFold;
-        left.pitch += forwardFold;
+        right.xRot += forwardFold;
+        left.xRot += forwardFold;
 
-        right.roll -= sidewaysFlop;
-        left.roll  += sidewaysFlop;
+        right.zRot -= sidewaysFlop;
+        left.zRot  += sidewaysFlop;
 
-        float floppyness = Math.abs(MathHelper.sin(state.age / 99F));
+        float floppyness = Math.abs(Mth.sin(state.ageInTicks / 99F));
         if (floppyness > 0.99F) {
-            boolean leftFlop = MathHelper.sin(state.age / 5F) > 0.5F;
-            (leftFlop ? left : right).roll +=
-                    0.01F * MathHelper.sin(state.age / 2F)
-                  + 0.015F * MathHelper.cos(state.age / 3F);
+            boolean leftFlop = Mth.sin(state.ageInTicks / 5F) > 0.5F;
+            (leftFlop ? left : right).zRot +=
+                    0.01F * Mth.sin(state.ageInTicks / 2F)
+                  + 0.015F * Mth.cos(state.ageInTicks / 3F);
         }
     }
 
     @Override
-    public void accept(MatrixStack stack, VertexConsumer vertices, int overlay, int light, int color) {
+    public void accept(PoseStack stack, VertexConsumer vertices, int overlay, int light, int color) {
     }
 
     @Override

@@ -1,7 +1,7 @@
 package com.minelittlepony.client.model.entity.race;
 
-import net.minecraft.client.model.ModelPart;
-import net.minecraft.util.math.MathHelper;
+import net.minecraft.client.model.geom.ModelPart;
+import net.minecraft.util.Mth;
 
 import com.minelittlepony.client.render.entity.state.PonyRenderState;
 
@@ -18,6 +18,6 @@ public class ChangelingModel<T extends PonyRenderState> extends AlicornModel<T> 
 
     @Override
     public float getWingRotationFactor(T state) {
-        return state.attributes.isFlying ? MathHelper.sin(state.age * 3) + WINGS_HALF_SPREAD_ANGLE : WINGS_RAISED_ANGLE;
+        return state.attributes.isFlying ? Mth.sin(state.ageInTicks * 3) + WINGS_HALF_SPREAD_ANGLE : WINGS_RAISED_ANGLE;
     }
 }

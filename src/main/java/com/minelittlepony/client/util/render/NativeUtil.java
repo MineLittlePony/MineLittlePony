@@ -1,12 +1,13 @@
 package com.minelittlepony.client.util.render;
 
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.texture.*;
-import net.minecraft.resource.Resource;
-import net.minecraft.util.Identifier;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.texture.*;
+import net.minecraft.resources.Identifier;
+import net.minecraft.server.packs.resources.Resource;
 
 import com.minelittlepony.api.pony.meta.TriggerPixel;
 import com.mojang.blaze3d.buffers.*;
+import com.mojang.blaze3d.platform.NativeImage;
 import com.mojang.blaze3d.systems.CommandEncoder;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.textures.GpuTexture;
@@ -15,8 +16,10 @@ import java.io.InputStream;
 import java.util.function.Consumer;
 
 public class NativeUtil {
+    private static final Minecraft CLIENT = Minecraft.getInstance();
+
     public static void parseImage(Identifier resource, Consumer<TriggerPixel.Mat> consumer, Consumer<Exception> fail) {
-        MinecraftClient.getInstance().execute(() -> {
+        CLIENT.execute(() -> {
             if (!RenderSystem.isOnRenderThread()) {
                 RenderSystem.queueFencedTask(() -> _parseImage(resource, consumer, fail, 0));
                 return;
@@ -27,39 +30,35 @@ public class NativeUtil {
 
     private static void _parseImage(Identifier resource, Consumer<TriggerPixel.Mat> consumer, Consumer<Exception> fail, int attempt) {
         try {
-            MinecraftClient mc = MinecraftClient.getInstance();
-            TextureManager textures = mc.getTextureManager();
-
+            TextureManager textures = CLIENT.getTextureManager();
             AbstractTexture loadedTexture = textures.getTexture(resource);
 
-            if (loadedTexture instanceof NativeImageBackedTexture nibt) {
-                NativeImage image = nibt.getImage();
+            if (loadedTexture instanceof DynamicTexture nibt) {
+                NativeImage image = nibt.getPixels();
                 if (image != null) {
-                    consumer.accept(image::getColorArgb);
+                    consumer.accept(image::getPixel);
                     return;
                 }
             }
 
-            Resource res = mc.getResourceManager().getResource(resource).orElse(null);
+            Resource res = CLIENT.getResourceManager().getResource(resource).orElse(null);
             if (res != null) {
-                try (InputStream inputStream = res.getInputStream()) {
+                try (InputStream inputStream = res.open()) {
                     try (NativeImage image = NativeImage.read(inputStream)) {
-                        consumer.accept(image::getColorArgb);
+                        consumer.accept(image::getPixel);
                     }
                     return;
                 }
             }
 
-            __reconstructNativeImage(resource, consumer, fail, attempt);
+            __reconstructNativeImage(loadedTexture, consumer, fail, attempt);
         } catch (Exception e) {
             fail.accept(e);
         }
     }
 
-    private static void __reconstructNativeImage(Identifier resource, Consumer<TriggerPixel.Mat> consumer, Consumer<Exception> fail, int attempt) {
-        MinecraftClient mc = MinecraftClient.getInstance();
-
-        GpuTexture texture = mc.getTextureManager().getTexture(resource).getGlTexture();
+    private static void __reconstructNativeImage(AbstractTexture loadedTexture, Consumer<TriggerPixel.Mat> consumer, Consumer<Exception> fail, int attempt) {
+        GpuTexture texture = loadedTexture.getTexture();
 
         int format = texture.getFormat().pixelSize();
         int width  = texture.getWidth(0);

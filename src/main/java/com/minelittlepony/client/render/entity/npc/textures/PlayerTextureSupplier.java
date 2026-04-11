@@ -1,10 +1,10 @@
 package com.minelittlepony.client.render.entity.npc.textures;
 
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.component.type.ProfileComponent;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.util.Identifier;
+import net.minecraft.client.Minecraft;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.Util;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.item.component.ResolvableProfile;
 
 import com.minelittlepony.api.pony.Pony;
 
@@ -14,9 +14,9 @@ import java.util.function.Function;
 public class PlayerTextureSupplier {
     public static <T extends LivingEntity> TextureSupplier<T> create(TextureSupplier<T> fallback) {
         Function<String, CompletableFuture<Identifier>> customNameCache = Util.memoize(name -> {
-            return MinecraftClient.getInstance().getPlayerSkinCache().getFuture(ProfileComponent.ofDynamic(name)).thenApply(entry -> {
+            return Minecraft.getInstance().playerSkinRenderCache().lookup(ResolvableProfile.createUnresolved(name)).thenApply(entry -> {
                 return entry
-                        .map(i -> i.getTextures().body().texturePath())
+                        .map(i -> i.playerSkin().body().texturePath())
                         .filter(skin -> !Pony.getManager().getPony(skin).race().isHuman())
                         .orElse(null);
             });

@@ -1,10 +1,11 @@
 package com.minelittlepony.client.mixin;
 
-import net.minecraft.client.render.*;
+import net.minecraft.client.DeltaTracker;
+import net.minecraft.client.renderer.GameRenderer;
 
-import org.joml.Matrix4f;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.At.Shift;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
@@ -12,32 +13,23 @@ import com.minelittlepony.api.model.RenderPass;
 
 @Mixin(GameRenderer.class)
 abstract class MixinGameRenderer {
-    @Inject(method = "renderWorld", at = @At("HEAD"))
-    private void beforeRenderWorld(RenderTickCounter counter, CallbackInfo info) {
+    @Inject(method = "renderLevel", at = @At("HEAD"))
+    private void beforeRenderWorld(DeltaTracker counter, CallbackInfo info) {
         RenderPass.swap(RenderPass.WORLD);
     }
 
-    @Inject(method = "renderWorld", at = @At("RETURN"))
-    private void afterRenderWorld(RenderTickCounter counter, CallbackInfo info) {
-        RenderPass.swap(RenderPass.GUI);
-    }
-}
-
-@Mixin(value = WorldRenderer.class, priority = 0)
-abstract class MixinWorldRenderer {
-    @Inject(method = "render", at = @At(
+    @Inject(method = "renderLevel", at = @At(
             value = "INVOKE",
-            target = "net.minecraft.client.render.VertexConsumerProvider$Immediate.drawCurrentLayer()V",
+            target = "net/minecraft/client/renderer/LevelRenderer.renderLevel(Lcom/mojang/blaze3d/resource/GraphicsResourceAllocator;Lnet/minecraft/client/DeltaTracker;ZLnet/minecraft/client/renderer/state/level/CameraRenderState;Lorg/joml/Matrix4fc;Lcom/mojang/blaze3d/buffers/GpuBufferSlice;Lorg/joml/Vector4f;ZLnet/minecraft/client/renderer/chunk/ChunkSectionsToRender;)V",
+            shift = Shift.AFTER,
             ordinal = 0
     ))
-    private void onRender(
-            RenderTickCounter counter,
-            boolean renderBlockOutline,
-            Camera camera,
-            GameRenderer gameRenderer,
-            LightmapTextureManager lightmapTextureManager,
-            Matrix4f matrix4f,
-            Matrix4f matrix4f2, CallbackInfo info) {
+    private void beforeRenderHud(DeltaTracker counter, CallbackInfo info) {
         RenderPass.swap(RenderPass.HUD);
+    }
+
+    @Inject(method = "renderLevel", at = @At("RETURN"))
+    private void afterRenderWorld(DeltaTracker counter, CallbackInfo info) {
+        RenderPass.swap(RenderPass.GUI);
     }
 }

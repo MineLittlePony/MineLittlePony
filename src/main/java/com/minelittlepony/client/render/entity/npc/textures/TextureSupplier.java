@@ -1,9 +1,9 @@
 package com.minelittlepony.client.render.entity.npc.textures;
 
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.util.Identifier;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.Util;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
 
 import com.minelittlepony.client.MineLittlePony;
 
@@ -25,12 +25,12 @@ public interface TextureSupplier<T> extends Function<T, Identifier> {
     Identifier apply(T key);
 
     static TextureSupplier<String> formatted(String domain, String path) {
-        return key -> Identifier.of(domain, String.format(path, key));
+        return key -> Identifier.fromNamespaceAndPath(domain, String.format(path, key));
     }
 
     static <T extends Entity> TextureSupplier<T> ofVariations(Identifier poolId, TextureSupplier<T> fallback) {
         return entity -> {
-            return MineLittlePony.getInstance().getVariatedTextures().get(poolId).getId(entity.getUuid()).orElse(fallback.apply(entity));
+            return MineLittlePony.getInstance().getVariatedTextures().get(poolId).getId(entity.getUUID()).orElse(fallback.apply(entity));
         };
     }
 
@@ -42,7 +42,7 @@ public interface TextureSupplier<T> extends Function<T, Identifier> {
                     .orElse(null);
         });
         return entity -> {
-            Identifier override = entity.hasCustomName() ? cache.apply(entity.getCustomName().getString(), entity.getUuid()) : null;
+            Identifier override = entity.hasCustomName() ? cache.apply(entity.getCustomName().getString(), entity.getUUID()) : null;
             if (override != null) {
                 return override;
             }
@@ -51,11 +51,11 @@ public interface TextureSupplier<T> extends Function<T, Identifier> {
     }
 
     static <A> TextureSupplier<A> of(Identifier texture) {
-        return a -> texture;
+        return _ -> texture;
     }
 
     static <A> TextureSupplier<A> memoize(Function<A, Identifier> func, Function<A, String> keyFunc) {
         final Map<String, Identifier> cache = new ConcurrentHashMap<>();
-        return a -> cache.computeIfAbsent(keyFunc.apply(a), k -> func.apply(a));
+        return a -> cache.computeIfAbsent(keyFunc.apply(a), _ -> func.apply(a));
     }
 }

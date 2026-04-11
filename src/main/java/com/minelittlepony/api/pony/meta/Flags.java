@@ -1,12 +1,15 @@
 package com.minelittlepony.api.pony.meta;
 
-import net.minecraft.network.PacketByteBuf;
+import io.netty.buffer.ByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
 
 import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import java.util.*;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 public record Flags<T extends Enum<T> & TValue<T>> (
@@ -24,29 +27,30 @@ public record Flags<T extends Enum<T> & TValue<T>> (
         ).apply(i, Flags::new))).xmap(Either::unwrap, Either::left);
     }
 
+    public static <B extends ByteBuf, T extends Enum<T> & TValue<T>> StreamCodec<B, Flags<T>> streamCodec(T def, Supplier<T[]> valuesGetter) {
+        return StreamCodec.composite(
+                valueSetCodec(valuesGetter), Flags::values,
+                ByteBufCodecs.INT, Flags::colorCode,
+                (values, colorCode) -> of(def, colorCode, values)
+        );
+    }
+
+    private static <T extends Enum<T> & TValue<T>> StreamCodec<ByteBuf, Set<T>> valueSetCodec(Supplier<T[]> valuesGetter) {
+        final T[] values = valuesGetter.get();
+        return ByteBufCodecs.INT.apply(ByteBufCodecs.list()).map(indexesList -> {
+            @SuppressWarnings("unchecked")
+            Set<T> set = EnumSet.noneOf(values[0].getClass());
+            indexesList.forEach(ordinal -> set.add(values[ordinal]));
+            return set;
+        }, set -> set.stream().map(Enum::ordinal).toList());
+    }
+
     public static <T extends Enum<T> & TValue<T>> Flags<T> of(T def) {
-        return new Flags<>(def, Set.<T>of(), 0);
+        return of(def, 0, Set.of());
     }
 
     public static <T extends Enum<T> & TValue<T>> Flags<T> of(T def, int colorCode, Set<T> values) {
         return new Flags<>(def, values, colorCode);
-    }
-
-    public static <T extends Enum<T> & TValue<T>> Flags<T> read(T def, PacketByteBuf buffer) {
-        int length = buffer.readVarInt();
-        @SuppressWarnings("unchecked")
-        Set<T> values = EnumSet.noneOf((Class<T>)def.getClass());
-        @SuppressWarnings("unchecked")
-        T[] all = (T[])def.getClass().getEnumConstants();
-        for (int i = 0; i < length; i++) {
-            values.add(all[buffer.readInt()]);
-        }
-        return of(def, buffer.readInt(), values);
-    }
-
-    public void write(PacketByteBuf buffer) {
-        buffer.writeCollection(values, (buf, value) -> buf.writeInt(value.ordinal()));
-        buffer.writeInt(colorCode);
     }
 
     @Override

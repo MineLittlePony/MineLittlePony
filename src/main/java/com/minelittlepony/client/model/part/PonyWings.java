@@ -1,9 +1,7 @@
 package com.minelittlepony.client.model.part;
 
-import net.minecraft.client.model.ModelPart;
-import net.minecraft.client.render.VertexConsumer;
-import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.util.math.MathHelper;
+import net.minecraft.client.model.geom.ModelPart;
+import net.minecraft.util.Mth;
 
 import com.minelittlepony.api.model.*;
 import com.minelittlepony.api.pony.meta.Wearable;
@@ -11,6 +9,8 @@ import com.minelittlepony.client.render.entity.state.PonyRenderState;
 import com.minelittlepony.mson.api.ModelView;
 import com.minelittlepony.mson.api.MsonModel;
 import com.minelittlepony.util.MathUtil;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
 
 public class PonyWings<S extends PonyRenderState> implements SubModel<S>, MsonModel {
 
@@ -63,15 +63,15 @@ public class PonyWings<S extends PonyRenderState> implements SubModel<S>, MsonMo
     public void setAngles(PonyModel<S> model, S state) {
         float flap = 0;
 
-        if (state.handSwingProgress > 0) {
-            flap = MathHelper.sin(MathHelper.sqrt(state.handSwingProgress) * MathHelper.TAU);
+        if (state.attackTime > 0) {
+            flap = Mth.sin(Mth.sqrt(state.attackTime) * Mth.TWO_PI);
         } else {
-            float pi = MathHelper.PI * (float) Math.pow(state.limbSwingAmplitude, 16);
+            float pi = Mth.PI * (float) Math.pow(state.walkAnimationPos, 16);
 
-            float mve = state.limbAmplitudeInverse * 0.6662f; // magic number ahoy (actually 2/3)
-            float srt = state.limbSwingAmplitude * 0.25F;
+            float mve = state.speedValue * 0.6662f; // magic number ahoy (actually 2/3)
+            float srt = state.walkAnimationPos * 0.25F;
 
-            flap = MathHelper.cos(mve + pi) * srt;
+            flap = Mth.cos(mve + pi) * srt;
         }
 
         float flapAngle = MathUtil.Angles._270_DEG;
@@ -82,7 +82,7 @@ public class PonyWings<S extends PonyRenderState> implements SubModel<S>, MsonMo
                 flapAngle -= 1F;
             }
         } else {
-            flapAngle = MathUtil.Angles._270_DEG - 0.9F + (float)Math.sin(state.age * 0.1F) / 15F;
+            flapAngle = MathUtil.Angles._270_DEG - 0.9F + (float)Math.sin(state.ageInTicks * 0.1F) / 15F;
         }
 
         if (!state.attributes.isFlying) {
@@ -108,8 +108,8 @@ public class PonyWings<S extends PonyRenderState> implements SubModel<S>, MsonMo
         rightWing.setAngles(model, state, -flap, -flapAngle);
 
         if (legacyWing != rightWing) {
-            rightWing.root.hidden = useLegacyWing;
-            legacyWing.root.hidden = !useLegacyWing;
+            rightWing.root.skipDraw = useLegacyWing;
+            legacyWing.root.skipDraw = !useLegacyWing;
             legacyWing.open = extended;
             legacyWing.bags = bags;
             legacyWing.setAngles(model, state, -flap, -flapAngle);
@@ -128,32 +128,32 @@ public class PonyWings<S extends PonyRenderState> implements SubModel<S>, MsonMo
     }
 
     @Override
-    public void accept(MatrixStack matrices, VertexConsumer vertices, int overlay, int light, int color) {
+    public void accept(PoseStack matrices, VertexConsumer vertices, int overlay, int light, int color) {
         if (visible) {
-            MatrixStack transform = new MatrixStack();
-            matrices.push();
+            PoseStack transform = new PoseStack();
+            matrices.pushPose();
             if (state != null) {
-                transform.push();
+                transform.pushPose();
                 pegasus.transform(state, BodyPart.WINGS, transform);
-                matrices.peek().getPositionMatrix().mul(transform.peek().getPositionMatrix());
-                matrices.peek().getNormalMatrix().mul(transform.peek().getNormalMatrix());
-                transform.pop();
+                matrices.last().pose().mul(transform.last().pose());
+                matrices.last().normal().mul(transform.last().normal());
+                transform.popPose();
             }
             leftWing.render(matrices, vertices, overlay, light, color);
-            matrices.pop();
-            matrices.push();
+            matrices.popPose();
+            matrices.pushPose();
             if (state != null) {
-                transform.push();
+                transform.pushPose();
                 transform.scale(-1, 1, 1);
                 pegasus.transform(state, BodyPart.WINGS, transform);
                 transform.scale(-1, 1, 1);
-                matrices.peek().getPositionMatrix().mul(transform.peek().getPositionMatrix());
-                matrices.peek().getNormalMatrix().mul(transform.peek().getNormalMatrix());
-                transform.pop();
+                matrices.last().pose().mul(transform.last().pose());
+                matrices.last().normal().mul(transform.last().normal());
+                transform.popPose();
             }
             rightWing.render(matrices, vertices, overlay, light, color);
             legacyWing.render(matrices, vertices, overlay, light, color);
-            matrices.pop();
+            matrices.popPose();
         }
     }
 
@@ -184,26 +184,26 @@ public class PonyWings<S extends PonyRenderState> implements SubModel<S>, MsonMo
         }
 
         public void setAngles(PonyModel<S> model, S state, float swing, float roll) {
-            root.originY = root.getDefaultTransform().y() + (bags ? 0.198F / wingScale : 0);
+            root.y = root.getInitialPose().y() + (bags ? 0.198F / wingScale : 0);
             root.xScale = wingScale;
             root.yScale = wingScale;
             root.zScale = wingScale;
             extended.visible = open;
             folded.visible = !open;
-            folded.yaw = swing * walkingRotationSpeed;
+            folded.yRot = swing * walkingRotationSpeed;
             if (state.race.hasBugWings()) {
-                extended.yaw = folded.yaw;
+                extended.yRot = folded.yRot;
             }
 
-            extended.roll = roll;
+            extended.zRot = roll;
             if (state.race.hasBugWings()) {
-                folded.roll = roll;
+                folded.zRot = roll;
             }
 
             model.transform(state, BodyPart.WINGS, root);
         }
 
-        public void render(MatrixStack matrices, VertexConsumer vertices, int overlay, int light, int color) {
+        public void render(PoseStack matrices, VertexConsumer vertices, int overlay, int light, int color) {
             root.render(matrices, vertices, overlay, light, color);
         }
     }

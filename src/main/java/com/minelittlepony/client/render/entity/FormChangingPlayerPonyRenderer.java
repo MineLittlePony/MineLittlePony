@@ -1,19 +1,20 @@
 package com.minelittlepony.client.render.entity;
 
+import net.minecraft.client.entity.ClientAvatarEntity;
+import net.minecraft.client.renderer.entity.EntityRendererProvider;
+import net.minecraft.resources.Identifier;
+import net.minecraft.world.entity.Avatar;
+
 import com.minelittlepony.api.pony.*;
 
 import java.util.function.Predicate;
 
-import net.minecraft.client.network.ClientPlayerLikeEntity;
-import net.minecraft.client.render.entity.EntityRendererFactory;
-import net.minecraft.entity.PlayerLikeEntity;
-import net.minecraft.util.Identifier;
 
-public class FormChangingPlayerPonyRenderer<Player extends PlayerLikeEntity & ClientPlayerLikeEntity> extends PlayerPonyRenderer<Player> {
+public class FormChangingPlayerPonyRenderer<Player extends Avatar & ClientAvatarEntity> extends PlayerPonyRenderer<Player> {
     private final Identifier alternateFormSkinId;
     private final Predicate<Player> formModifierPredicate;
 
-    public FormChangingPlayerPonyRenderer(EntityRendererFactory.Context context,
+    public FormChangingPlayerPonyRenderer(EntityRendererProvider.Context context,
             boolean slim, Identifier alternateFormSkinId, Predicate<Player> formModifierPredicate) {
         super(context, slim);
         this.alternateFormSkinId = alternateFormSkinId;

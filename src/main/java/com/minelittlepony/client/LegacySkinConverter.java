@@ -1,7 +1,7 @@
 package com.minelittlepony.client;
 
 import com.minelittlepony.common.event.SkinFilterCallback;
-import net.minecraft.client.texture.NativeImage;
+import com.mojang.blaze3d.platform.NativeImage;
 
 import static com.minelittlepony.common.event.SkinFilterCallback.copy;
 

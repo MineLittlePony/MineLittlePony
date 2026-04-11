@@ -1,20 +1,21 @@
 package com.minelittlepony.client.render.entity.feature;
 
-import net.minecraft.client.render.*;
-import net.minecraft.client.render.command.OrderedRenderCommandQueue;
-import net.minecraft.client.render.entity.feature.FeatureRenderer;
-import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.util.Identifier;
+import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.client.renderer.entity.layers.RenderLayer;
+import net.minecraft.client.renderer.rendertype.RenderTypes;
+import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.resources.Identifier;
 
 import com.minelittlepony.client.model.ClientPonyModel;
 import com.minelittlepony.client.render.PonyRenderContext;
 import com.minelittlepony.client.render.entity.npc.textures.TextureSupplier;
 import com.minelittlepony.client.render.entity.state.PonyRenderState;
+import com.mojang.blaze3d.vertex.PoseStack;
 
 public class GlowingEyesFeature<
         S extends PonyRenderState,
         M extends ClientPonyModel<S>
-    > extends FeatureRenderer<S, M> {
+    > extends RenderLayer<S, M> {
 
     private final TextureSupplier<S> textureSupplier;
 
@@ -29,8 +30,7 @@ public class GlowingEyesFeature<
 
 
     @Override
-    public void render(MatrixStack matrices, OrderedRenderCommandQueue queue, int light, S state, float limbAngle, float limbDistance) {
-        queue.getBatchingQueue(1)
-            .submitModel(this.getContextModel(), state, matrices, RenderLayers.eyes(textureSupplier.apply(state)), light, OverlayTexture.DEFAULT_UV, -1, null, state.outlineColor, null);
+    public void submit(PoseStack matrices, SubmitNodeCollector queue, int light, S state, float xRot, float yRot) {
+        queue.order(1).submitModel(getParentModel(), state, matrices, RenderTypes.eyes(textureSupplier.apply(state)), light, OverlayTexture.NO_OVERLAY, -1, null, state.outlineColor, null);
     }
 }

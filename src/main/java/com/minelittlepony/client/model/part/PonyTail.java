@@ -1,9 +1,7 @@
 package com.minelittlepony.client.model.part;
 
-import net.minecraft.client.model.ModelPart;
-import net.minecraft.client.render.VertexConsumer;
-import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.util.math.MathHelper;
+import net.minecraft.client.model.geom.ModelPart;
+import net.minecraft.util.Mth;
 
 import com.minelittlepony.api.model.*;
 import com.minelittlepony.api.pony.meta.TailShape;
@@ -11,6 +9,8 @@ import com.minelittlepony.client.model.AbstractPonyModel;
 import com.minelittlepony.client.render.entity.state.PonyRenderState;
 import com.minelittlepony.mson.api.*;
 import com.minelittlepony.util.MathUtil;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
 
 import java.util.List;
 import java.util.stream.IntStream;
@@ -46,30 +46,30 @@ public class PonyTail implements SubModel<PonyRenderState>, MsonModel {
     @Override
     public void setAngles(PonyModel<PonyRenderState> model, PonyRenderState state) {
         boolean rainboom = state.attributes.isSwimming || state.attributes.isGoingFast;
-        tail.roll = rainboom ? 0 : MathHelper.cos(state.limbAmplitudeInverse * 0.8F) * 0.2f * state.limbSwingAmplitude;
-        tail.yaw = state.wobbleAmount * 5;
+        tail.zRot = rainboom ? 0 : Mth.cos(state.speedValue * 0.8F) * 0.2f * state.walkAnimationPos;
+        tail.yRot = state.wobbleAmount * 5;
 
         if (state.attributes.isCrouching && !rainboom) {
-            tail.setOrigin(0, 0, TAIL_SNEAKING_Z);
-            tail.pitch = -model.getBodyPart(BodyPart.BODY).pitch + 0.1F;
+            tail.setPos(0, 0, TAIL_SNEAKING_Z);
+            tail.xRot = -model.getBodyPart(BodyPart.BODY).xRot + 0.1F;
         } else if (state.attributes.isSitting) {
-            tail.originZ = TAIL_RIDING_Z;
-            tail.originY = TAIL_RIDING_Y;
-            tail.pitch = MathHelper.PI / 5;
+            tail.z = TAIL_RIDING_Z;
+            tail.y = TAIL_RIDING_Y;
+            tail.xRot = Mth.PI / 5;
         } else {
-            tail.setOrigin(0, 0, TAIL_Z);
+            tail.setPos(0, 0, TAIL_Z);
             if (rainboom) {
-                tail.pitch = MathUtil.Angles._90_DEG + MathHelper.sin(state.limbAmplitudeInverse) / 10;
+                tail.xRot = MathUtil.Angles._90_DEG + Mth.sin(state.speedValue) / 10;
             } else {
-                tail.pitch = state.limbSwingAmplitude / 2;
+                tail.xRot = state.walkAnimationPos / 2;
 
-                swingX(state.age);
+                swingX(state.ageInTicks);
             }
         }
 
         if (rainboom) {
-            tail.originY += 6;
-            tail.originZ++;
+            tail.y += 6;
+            tail.z++;
         }
 
         for (int i = 0; i < segments.size(); i++) {
@@ -78,9 +78,9 @@ public class PonyTail implements SubModel<PonyRenderState>, MsonModel {
     }
 
     private void swingX(float ticks) {
-        float sinTickFactor = MathHelper.sin(ticks * 0.067f) * 0.05f;
-        tail.pitch += sinTickFactor;
-        tail.yaw += sinTickFactor;
+        float sinTickFactor = Mth.sin(ticks * 0.067f) * 0.05f;
+        tail.xRot += sinTickFactor;
+        tail.yRot += sinTickFactor;
     }
 
     @Override
@@ -91,17 +91,17 @@ public class PonyTail implements SubModel<PonyRenderState>, MsonModel {
     }
 
     @Override
-    public void accept(MatrixStack matrices, VertexConsumer vertices, int overlay, int light, int color) {
+    public void accept(PoseStack matrices, VertexConsumer vertices, int overlay, int light, int color) {
         if (tail.visible) {
-            matrices.push();
-            model.body.applyTransform(matrices);
-            tail.applyTransform(matrices);
+            matrices.pushPose();
+            model.body.translateAndRotate(matrices);
+            tail.translateAndRotate(matrices);
 
             for (int i = 0; i < segments.size(); i++) {
                 segments.get(i).render(matrices, vertices, i, overlay, light, color);
             }
 
-            matrices.pop();
+            matrices.popPose();
         }
     }
 
@@ -120,49 +120,49 @@ public class PonyTail implements SubModel<PonyRenderState>, MsonModel {
             horsey = attributes.isHorsey;
 
             if (attributes.isHorsey) {
-                tree.pitch = 0.5F;
+                tree.xRot = 0.5F;
                 HORSEY_TAIL_PIVOT.set(tree);
             } else {
-                tree.resetTransform();
+                tree.resetPose();
             }
         }
 
-        public void render(MatrixStack matrices, VertexConsumer vertices, int index, int overlay, int light, int color) {
+        public void render(PoseStack matrices, VertexConsumer vertices, int index, int overlay, int light, int color) {
             if (!tree.visible) {
                 return;
             }
 
             if (horsey || shape == TailShape.STRAIGHT) {
-                tree.yaw = 0;
+                tree.yRot = 0;
                 tree.render(matrices, vertices, overlay, light, color);
                 return;
             }
 
-            matrices.push();
+            matrices.pushPose();
             if (shape == TailShape.BUMPY) {
                 matrices.translate(0, 0, -9/16F);
-                float scale = 1 + MathHelper.cos(index + 5) / 2F;
+                float scale = 1 + Mth.cos(index + 5) / 2F;
                 matrices.scale(scale, 1, scale);
                 matrices.translate(1 / 16F * scale - 0.1F, 0, -2 / 16F * scale);
-                tree.originZ = 9;
+                tree.z = 9;
             }
             if (shape == TailShape.SWIRLY) {
                 matrices.translate(0, 0, -6/16F);
-                float scale = 1 + MathHelper.cos(index + 10) / 5F;
+                float scale = 1 + Mth.cos(index + 10) / 5F;
                 matrices.scale(1, 1, scale);
                 matrices.translate(0, 0, -2 / 16F * scale);
-                tree.originZ = 9;
+                tree.z = 9;
             }
             if (shape == TailShape.SPIKY) {
                 matrices.translate(0, 0, -6/16F);
-                float scale = 1 + MathHelper.cos(index + 10) / 5F;
+                float scale = 1 + Mth.cos(index + 10) / 5F;
                 matrices.scale(1, 1, scale);
                 matrices.translate(0, 0, -2 / 16F * scale);
-                tree.yaw = 0.2F * (index % 2 - 1);
-                tree.originZ = 9;
+                tree.yRot = 0.2F * (index % 2 - 1);
+                tree.z = 9;
             }
             tree.render(matrices, vertices, overlay, light, color);
-            matrices.pop();
+            matrices.popPose();
         }
     }
 }

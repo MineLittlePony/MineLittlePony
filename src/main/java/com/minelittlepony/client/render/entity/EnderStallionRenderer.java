@@ -8,45 +8,43 @@ import com.minelittlepony.client.model.ModelType;
 import com.minelittlepony.client.model.entity.EnderStallionModel;
 import com.minelittlepony.client.render.entity.feature.*;
 import com.minelittlepony.client.render.entity.npc.textures.TextureSupplier;
+import com.minelittlepony.common.util.Untyped;
+import com.mojang.blaze3d.vertex.PoseStack;
 
-import net.minecraft.block.BlockState;
-import net.minecraft.client.item.ItemModelManager;
-import net.minecraft.client.render.command.OrderedRenderCommandQueue;
-import net.minecraft.client.render.entity.EntityRendererFactory;
-import net.minecraft.client.render.entity.feature.StuckArrowsFeatureRenderer;
-import net.minecraft.client.render.state.CameraRenderState;
-import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.mob.EndermanEntity;
-import net.minecraft.entity.mob.HostileEntity;
-import net.minecraft.item.ItemDisplayContext;
-import net.minecraft.util.Arm;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.math.MathHelper;
+import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.client.renderer.entity.EntityRendererProvider;
+import net.minecraft.client.renderer.entity.layers.ArrowLayer;
+import net.minecraft.client.renderer.item.ItemModelResolver;
+import net.minecraft.client.renderer.state.level.CameraRenderState;
+import net.minecraft.resources.Identifier;
+import net.minecraft.util.Mth;
+import net.minecraft.world.entity.HumanoidArm;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.monster.EnderMan;
+import net.minecraft.world.item.ItemDisplayContext;
+import net.minecraft.world.level.block.state.BlockState;
 
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Random;
 
-public class EnderStallionRenderer extends PonyRenderer<EndermanEntity, EnderStallionRenderer.State, EnderStallionModel> {
+public class EnderStallionRenderer extends PonyRenderer<EnderMan, EnderStallionRenderer.State, EnderStallionModel> {
     public static final Identifier ENDERMAN = MineLittlePony.id("textures/entity/enderman/enderman_pony.png");
     private static final Identifier EYES = MineLittlePony.id("textures/entity/enderman/enderman_pony_eyes.png");
 
     private final Random rnd = new Random();
-    private final ItemModelManager itemModelManager;
 
-    public EnderStallionRenderer(EntityRendererFactory.Context context) {
+    public EnderStallionRenderer(EntityRendererProvider.Context context) {
         super(context, ModelType.ENDERMAN, TextureSupplier.of(ENDERMAN));
-        itemModelManager = context.getItemModelManager();;
     }
 
-    @SuppressWarnings({"rawtypes", "unchecked"})
+    @SuppressWarnings({"unchecked", "rawtypes"})
     @Override
-    protected void addFeatures(EntityRendererFactory.Context context) {
+    protected void addFeatures(EntityRendererProvider.Context context) {
         addPonyFeature(createHeldItemFeature(context));
-        addPonyFeature(new StuckArrowsFeatureRenderer<>((PonyRenderer)this, context));
-        addFeature(new GlowingEyesFeature<>(this, EYES));
-        addFeature(new PonyBodyPartFeature<>(this, m -> m instanceof ModelWithHorn, m -> ((ModelWithHorn)m).getHorn()));
+        addPonyFeature(new ArrowLayer<>(Untyped.cast(this), context));
+        addLayer(new GlowingEyesFeature<>(this, EYES));
+        addLayer(new PonyBodyPartFeature<>(this, m -> ((ModelWithHorn)m).getHorn(), m -> m instanceof ModelWithHorn));
     }
 
     @Override
@@ -55,12 +53,12 @@ public class EnderStallionRenderer extends PonyRenderer<EndermanEntity, EnderSta
     }
 
     @Override
-    public void render(State entity, MatrixStack matrices, OrderedRenderCommandQueue queue, CameraRenderState camera) {
+    public void submit(State entity, PoseStack matrices, SubmitNodeCollector queue, CameraRenderState camera) {
         if (entity.angry) {
             matrices.translate(rnd.nextGaussian() / 50, 0, rnd.nextGaussian() / 50);
         }
 
-        super.render(entity, matrices, queue, camera);
+        super.submit(entity, matrices, queue, camera);
     }
 
     public class State extends SkeleponyRenderer.State {
@@ -70,24 +68,23 @@ public class EnderStallionRenderer extends PonyRenderer<EndermanEntity, EnderSta
         public boolean isBoss;
 
         @Override
-        public void updateState(ItemModelManager resolver, LivingEntity entity, Models<?> models, Pony pony, ModelAttributes.Mode mode) {
-            carriedBlock = entity instanceof EndermanEntity man ? man.getCarriedBlock() : null;
+        public void updateState(ItemModelResolver resolver, LivingEntity entity, Models<?> models, Pony pony, ModelAttributes.Mode mode) {
+            carriedBlock = entity instanceof EnderMan man ? man.getCarriedBlock() : null;
             super.updateState(resolver, entity, models, pony, mode);
-            isAttacking = entity instanceof HostileEntity h && h.isAttacking();
-            angry = entity instanceof EndermanEntity man && man.isAngry();
-            attributes.wingsSpread = isAttacking || hurt;
-            attributes.wingAngle = (isAttacking ? -0.6F : MathHelper.sin(age)) + ModelWithWings.WINGS_HALF_SPREAD_ANGLE;
+            angry = entity instanceof EnderMan man && man.isAngry();
+            attributes.wingsSpread = isAttacking || hasRedOverlay;
+            attributes.wingAngle = (isAttacking ? -0.6F : Mth.sin(ageInTicks)) + ModelWithWings.WINGS_HALF_SPREAD_ANGLE;
         }
 
         @Override
-        protected void updateHeldItems(ItemModelManager resolver, LivingEntity entity) {
+        protected void updateHeldItems(ItemModelResolver resolver, LivingEntity entity) {
             if (carriedBlock != null) {
-                if (mainArm == Arm.RIGHT) {
-                    itemModelManager.updateForLivingEntity(rightHandItemState, carriedBlock.getBlock().asItem().getDefaultStack(), ItemDisplayContext.THIRD_PERSON_RIGHT_HAND, entity);
-                    rightHeldItem.updateItemRenderState(this, itemModelManager, carriedBlock.getBlock().asItem().getDefaultStack(), ItemDisplayContext.THIRD_PERSON_RIGHT_HAND, entity);
+                if (mainArm == HumanoidArm.RIGHT) {
+                    resolver.updateForLiving(rightHandItemState, carriedBlock.getBlock().asItem().getDefaultInstance(), ItemDisplayContext.THIRD_PERSON_RIGHT_HAND, entity);
+                    rightHeldItem.updateItemRenderState(this, resolver, carriedBlock.getBlock().asItem().getDefaultInstance(), ItemDisplayContext.THIRD_PERSON_RIGHT_HAND, entity);
                 } else {
-                    itemModelManager.updateForLivingEntity(leftHandItemState, carriedBlock.getBlock().asItem().getDefaultStack(), ItemDisplayContext.THIRD_PERSON_LEFT_HAND, entity);
-                    leftHeldItem.updateItemRenderState(this, itemModelManager, carriedBlock.getBlock().asItem().getDefaultStack(), ItemDisplayContext.THIRD_PERSON_LEFT_HAND, entity);
+                    resolver.updateForLiving(leftHandItemState, carriedBlock.getBlock().asItem().getDefaultInstance(), ItemDisplayContext.THIRD_PERSON_LEFT_HAND, entity);
+                    leftHeldItem.updateItemRenderState(this, resolver, carriedBlock.getBlock().asItem().getDefaultInstance(), ItemDisplayContext.THIRD_PERSON_LEFT_HAND, entity);
                 }
             } else {
                 rightHandItemState.clear();
@@ -97,8 +94,8 @@ public class EnderStallionRenderer extends PonyRenderer<EndermanEntity, EnderSta
 
         @Override
         protected Race computeRace(@Nullable LivingEntity entity, Pony pony) {
-            boolean isAlicorn = entity.getUuid().getLeastSignificantBits() % 3 == 0;
-            isBoss = !isAlicorn && entity.getUuid().getLeastSignificantBits() % 90 == 0;
+            boolean isAlicorn = entity.getUUID().getLeastSignificantBits() % 3 == 0;
+            isBoss = !isAlicorn && entity.getUUID().getLeastSignificantBits() % 90 == 0;
             return isAlicorn ? (pony.race().hasHorn() ? Race.ALICORN : Race.PEGASUS) : pony.race();
         }
     }

@@ -1,7 +1,9 @@
 package com.minelittlepony.client.compat.hdskins;
 
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.text.Text;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.network.chat.Component;
+import net.minecraft.util.ARGB;
+import net.minecraft.util.CommonColors;
 
 import org.joml.Quaternionf;
 
@@ -13,6 +15,7 @@ import com.minelittlepony.hdskins.client.gui.Carousel;
 import com.minelittlepony.hdskins.client.gui.PlayerBodyWidget;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
@@ -39,48 +42,48 @@ class LegendOverlayWidget implements Carousel.Element, ITextContext {
     }
 
     @Override
-    public void render(DrawContext context, Bounds bounds, int mouseX, int mouseY, Quaternionf rotation) {
-        PonyData data = Pony.getManager().getPony(player.get().playerState.skinTextures.body().texturePath()).metadata();
+    public void extractRenderState(GuiGraphicsExtractor context, Bounds bounds, int mouseX, int mouseY, Quaternionf rotation) {
+        PonyData data = Pony.getManager().getPony(player.get().playerState.skin.body().texturePath()).metadata();
         int[] index = new int[1];
         data.attributes().forEach((key, value) -> {
-            context.getMatrices().pushMatrix();
+            context.pose().pushMatrix();
             int i = index[0]++;
             int x = frame.left;
             int y = frame.top + (i * 10 + 20);
-            context.getMatrices().translate(x, y);
+            context.pose().translate(x, y);
             drawLegendBlock(context, i, x, y, mouseX - x, mouseY - y, key, value);
-            context.getMatrices().popMatrix();
+            context.pose().popMatrix();
         });
     }
 
-    private void drawLegendBlock(DrawContext context, int index, int x, int y, int mouseX, int mouseY, String key, TValue<?> value) {
+    private void drawLegendBlock(GuiGraphicsExtractor context, int index, int x, int y, int mouseX, int mouseY, String key, TValue<?> value) {
         context.fill(0, 0, LEGEND_BLOCK_BOUNDS.width, LEGEND_BLOCK_BOUNDS.height, 0xFF003333);
-        context.fill(1, 1, LEGEND_BLOCK_BOUNDS.width - 1, LEGEND_BLOCK_BOUNDS.height - 1, value.colorCode() | 0xFF000000);
+        context.fill(1, 1, LEGEND_BLOCK_BOUNDS.width - 1, LEGEND_BLOCK_BOUNDS.height - 1, ARGB.color(1F, value.colorCode()));
 
         char symbol = value.name().charAt(0);
         if (symbol == '[') {
             symbol = key.charAt(0);
         }
 
-        context.drawTextWithShadow(getFont(), Text.literal(String.valueOf(symbol).toUpperCase()), 2, 1, 0xFFFFFFFF);
+        context.text(getFont(), Component.literal(String.valueOf(symbol).toUpperCase()), 2, 1, CommonColors.WHITE);
 
         if (LEGEND_BLOCK_BOUNDS.contains(mouseX, mouseY)) {
-            List<Text> lines = value.getOptions().stream().map(option -> {
+            List<Component> lines = value.getOptions().stream().map(option -> {
                 boolean selected = value.matches(option);
-                return Text.literal((selected ? "* " : "  ") + option.name()).styled(s -> {
+                return Component.literal((selected ? "* " : "  ") + option.name()).withStyle(s -> {
                     int color = option.getChannelAdjustedColorCode();
                     return (color == 0 ? s : s.withColor(color)).withItalic(selected);
                 });
             }).collect(Collectors.toList());
 
-            lines.add(0, Text.of(key.toUpperCase() + ": " + value.getHexValue()));
+            lines.add(0, Component.literal(key.toUpperCase() + ": " + value.getHexValue()));
             if (lines.size() == 1) {
-                lines.add(Text.literal(value.name()).styled(s -> {
+                lines.add(Component.literal(value.name()).withStyle(s -> {
                     int color = value.getChannelAdjustedColorCode();
                     return color == 0 ? s : s.withColor(value.colorCode());
                 }));
             }
-            context.drawTooltip(getFont(), lines, x + mouseX + 2, y + mouseY + 10);
+            context.setTooltipForNextFrame(getFont(), lines, Optional.empty(), x + mouseX + 2, y + mouseY + 10);
         }
     }
 }

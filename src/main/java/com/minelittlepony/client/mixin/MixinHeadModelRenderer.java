@@ -1,27 +1,25 @@
 package com.minelittlepony.client.mixin;
 
-import net.minecraft.block.SkullBlock;
+import net.minecraft.client.renderer.special.*;
+import net.minecraft.world.level.block.SkullBlock;
 
-import net.minecraft.client.render.item.model.special.HeadModelRenderer;
-import net.minecraft.client.render.item.model.special.SpecialModelRenderer;
-
+import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.*;
 import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
+import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import com.minelittlepony.client.render.blockentity.skull.PonyHeadModelRenderer;
-import com.minelittlepony.client.render.blockentity.skull.PonySkullRenderer;
 
-@Mixin(HeadModelRenderer.Unbaked.class)
+import java.util.Optional;
+
+@Mixin(value = { SkullSpecialRenderer.Unbaked.class, PlayerHeadSpecialRenderer.Unbaked.class })
 abstract class MixinHeadModelRenderer_Unbaked {
-    @Shadow
-    private @Final SkullBlock.SkullType kind;
-
-    @Inject(method = "bake", at = @At("RETURN"), cancellable = true)
-    private void onBake(SpecialModelRenderer.BakeContext context, CallbackInfoReturnable<SpecialModelRenderer<?>> info) {
-        if (info.getReturnValue() instanceof HeadModelRenderer p) {
-            info.setReturnValue(new PonyHeadModelRenderer(p, PonySkullRenderer.INSTANCE.getSkullState(kind, null)));
+    @ModifyReturnValue(method = "bake", at = @At("RETURN"))
+    private /*synthetic bridge*/ SpecialModelRenderer<?> onBake(@Nullable SpecialModelRenderer<?> renderer) {
+        Object self = this;
+        if (self instanceof SkullSpecialRenderer.Unbaked a) {
+            return renderer instanceof SkullSpecialRenderer r ? new PonyHeadModelRenderer(r, a.kind(), a.textureOverride(), a.animation()) : renderer;
         }
+        return renderer instanceof PlayerHeadSpecialRenderer r ? new PonyHeadModelRenderer(r, SkullBlock.Types.PLAYER, Optional.empty(), 0F) : renderer;
     }
 }

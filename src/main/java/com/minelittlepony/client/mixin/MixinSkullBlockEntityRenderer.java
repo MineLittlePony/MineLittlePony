@@ -1,19 +1,17 @@
 package com.minelittlepony.client.mixin;
 
-import net.minecraft.block.SkullBlock;
-import net.minecraft.block.entity.SkullBlockEntity;
-import net.minecraft.client.render.RenderLayer;
-import net.minecraft.client.render.block.entity.BlockEntityRenderer;
-import net.minecraft.client.render.block.entity.SkullBlockEntityModel;
-import net.minecraft.client.render.block.entity.SkullBlockEntityRenderer;
-import net.minecraft.client.render.block.entity.state.SkullBlockEntityRenderState;
-import net.minecraft.client.render.command.ModelCommandRenderer;
-import net.minecraft.client.render.command.OrderedRenderCommandQueue;
-import net.minecraft.client.render.state.CameraRenderState;
-import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.math.Direction;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.client.model.object.skull.SkullModelBase;
+import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
+import net.minecraft.client.renderer.blockentity.SkullBlockRenderer;
+import net.minecraft.client.renderer.blockentity.state.SkullBlockRenderState;
+import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
+import net.minecraft.client.renderer.rendertype.RenderType;
+import net.minecraft.client.renderer.state.level.CameraRenderState;
+import net.minecraft.resources.Identifier;
+import net.minecraft.world.level.block.SkullBlock;
+import net.minecraft.world.level.block.entity.SkullBlockEntity;
+import net.minecraft.world.phys.Vec3;
 
 import org.spongepowered.asm.mixin.*;
 import org.spongepowered.asm.mixin.injection.At;
@@ -23,62 +21,50 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import com.minelittlepony.api.config.PonyConfig;
 import com.minelittlepony.client.render.blockentity.skull.PonySkullRenderer;
+import com.mojang.blaze3d.vertex.PoseStack;
 
 import org.jetbrains.annotations.Nullable;
 
-@Mixin(value = SkullBlockEntityRenderer.class, priority = 2000)
-abstract class MixinSkullBlockEntityRenderer implements BlockEntityRenderer<SkullBlockEntity, SkullBlockEntityRenderState> {
-    @Inject(
-        method = "render(Lnet/minecraft/client/render/block/entity/state/SkullBlockEntityRenderState;Lnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/command/OrderedRenderCommandQueue;Lnet/minecraft/client/render/state/CameraRenderState;)V",
-        at = @At("HEAD"))
-    public void render(
-            SkullBlockEntityRenderState state,
-            MatrixStack matrices,
-            OrderedRenderCommandQueue queue,
-            CameraRenderState camera,
-            CallbackInfo info
-        ) {
+@Mixin(value = SkullBlockRenderer.class, priority = 2000)
+abstract class MixinSkullBlockEntityRenderer implements BlockEntityRenderer<SkullBlockEntity, SkullBlockRenderState> {
+    @Inject(method = "submit", at = @At("HEAD"))
+    private void onSubmit(SkullBlockRenderState state, PoseStack matrices, SubmitNodeCollector frame, CameraRenderState camera, CallbackInfo info) {
         PonySkullRenderer.INSTANCE.pushState(state.getData(PonySkullRenderer.DATA_KEY));
     }
 
-    @Inject(
-        method = "render(Lnet/minecraft/util/math/Direction;FFLnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/command/OrderedRenderCommandQueue;ILnet/minecraft/client/render/block/entity/SkullBlockEntityModel;Lnet/minecraft/client/render/RenderLayer;ILnet/minecraft/client/render/command/ModelCommandRenderer$CrumblingOverlayCommand;)V",
-        at = @At("HEAD"),
-        cancellable = true)
-    private static void onRenderSkull(@Nullable Direction direction,
-            float yaw, float poweredTicks,
-            MatrixStack matrices, OrderedRenderCommandQueue queue,
-            int light,
-            SkullBlockEntityModel model, RenderLayer layer,
-            int outlineColor,
-            @Nullable ModelCommandRenderer.CrumblingOverlayCommand crumblingOverlay,
+    @Inject(method = "submitSkull", at = @At("HEAD"), cancellable = true)
+    private void onSubmitSkull(
+            final float animationValue,
+            final PoseStack matrices,
+            final SubmitNodeCollector frame,
+            final int light,
+            final SkullModelBase model,
+            final RenderType renderType,
+            final int outline,
+            @Nullable final ModelFeatureRenderer.CrumblingOverlay breakProgress,
             CallbackInfo info) {
         var state = PonySkullRenderer.INSTANCE.popState();
-        if (!info.isCancelled() && state != null && state.render(direction, yaw, poweredTicks, matrices, queue, light, outlineColor, crumblingOverlay)) {
+        if (!info.isCancelled() && state != null && state.render(matrices, frame, light, outline, breakProgress)) {
             info.cancel();
         }
     }
 
-    @Inject(
-        method = "updateRenderState",
-        at = @At("RETURN"))
+    @Inject(method = "extractRenderState", at = @At("RETURN"))
     private void onUpdateRenderState(
-            SkullBlockEntity entity,
-            SkullBlockEntityRenderState state,
-            float tickDelta,
-            Vec3d cameraPos,
-            @Nullable ModelCommandRenderer.CrumblingOverlayCommand crumbling,
+            final SkullBlockEntity entity,
+            final SkullBlockRenderState state,
+            final float tickDelta,
+            final Vec3 cameraPosition,
+            @Nullable final ModelFeatureRenderer.CrumblingOverlay breakProgress,
             CallbackInfo info
         ) {
-        state.setData(PonySkullRenderer.DATA_KEY, PonySkullRenderer.INSTANCE.getSkullState(state.skullType, entity.getOwner(), null));
+        state.setData(PonySkullRenderer.DATA_KEY, PonySkullRenderer.INSTANCE.getSkullState(state.skullType, entity.getOwnerProfile(), null, state.animationProgress));
     }
 
-    @ModifyReturnValue(
-        method = "getCutoutRenderLayer(Lnet/minecraft/block/SkullBlock$SkullType;Lnet/minecraft/util/Identifier;)Lnet/minecraft/client/render/RenderLayer;",
-        at = @At("RETURN"))
-    private static RenderLayer replaceRenderLayer(RenderLayer layer, SkullBlock.SkullType skullType, Identifier overrideTexture) {
+    @ModifyReturnValue(method = "getSkullRenderType", at = @At("RETURN"))
+    private static RenderType replaceRenderLayer(RenderType layer, SkullBlock.Type skullType, @Nullable Identifier overrideTexture) {
         if (overrideTexture == null) {
-            var state = PonySkullRenderer.INSTANCE.getSkullState(skullType, null, overrideTexture);
+            var state = PonySkullRenderer.INSTANCE.getSkullState(skullType, null, overrideTexture, 0);
             if (state != null && state.model().canRender(PonyConfig.getInstance())) {
                 PonySkullRenderer.INSTANCE.pushState(state);
                 return state.layer();

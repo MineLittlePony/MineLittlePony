@@ -1,7 +1,7 @@
 package com.minelittlepony.client.compat.iris;
 
 import net.fabricmc.loader.api.FabricLoader;
-import net.minecraft.client.render.RenderLayer;
+import net.minecraft.client.renderer.rendertype.RenderType;
 
 import org.jetbrains.annotations.Nullable;
 
@@ -18,7 +18,7 @@ public interface IrisApiCompat {
         return isIrisLoaded() && IrisApiCompatImpl.isOnShadowPass();
     }
 
-    static @Nullable RenderLayer wrapExactlyOnce(@Nullable RenderLayer layer) {
+    static @Nullable RenderType wrapExactlyOnce(@Nullable RenderType layer) {
         if (layer == null || !isIrisLoaded()) {
             return layer;
         }

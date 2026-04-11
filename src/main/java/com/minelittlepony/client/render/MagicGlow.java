@@ -1,22 +1,23 @@
 package com.minelittlepony.client.render;
 
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gl.GpuSampler;
-import net.minecraft.client.gl.RenderPipelines;
-import net.minecraft.client.render.*;
-import net.minecraft.client.render.RenderSetup.OutlineMode;
-import net.minecraft.client.render.command.OrderedRenderCommandQueue;
-import net.minecraft.client.texture.*;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.*;
+import net.minecraft.client.renderer.rendertype.*;
+import net.minecraft.client.renderer.rendertype.RenderSetup.OutlineProperty;
+import net.minecraft.client.renderer.texture.*;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.*;
 
 import org.jetbrains.annotations.Nullable;
 
-import com.mojang.blaze3d.pipeline.BlendFunction;
-import com.mojang.blaze3d.pipeline.RenderPipeline;
-import com.mojang.blaze3d.platform.DepthTestFunction;
-import com.mojang.blaze3d.vertex.VertexFormat;
+import com.mojang.blaze3d.pipeline.*;
+import com.mojang.blaze3d.platform.CompareOp;
+import com.mojang.blaze3d.platform.NativeImage;
+import com.mojang.blaze3d.textures.GpuSampler;
+import com.mojang.blaze3d.vertex.*;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.function.*;
 
 import com.google.common.base.Suppliers;
@@ -28,65 +29,64 @@ import com.minelittlepony.common.util.render.RenderLayerUtil;
 
 public interface MagicGlow {
     RenderPipeline /*ENTITY_EYES*/ ENTITY_MAGIC_GLOW_PIPELINE = RenderPipelines.register(
-            RenderPipeline.builder(RenderPipelines.TRANSFORMS_PROJECTION_FOG_SNIPPET)
+            RenderPipeline.builder(RenderPipelines.MATRICES_FOG_SNIPPET)
                 .withLocation("pipeline/magic_glow")
                 .withVertexShader(MineLittlePony.id("core/magic"))
                 .withFragmentShader(MineLittlePony.id("core/magic"))
                 .withSampler("Sampler0")
-                .withBlend(BlendFunction.LIGHTNING)
-                .withDepthWrite(false)
+                .withColorTargetState(new ColorTargetState(Optional.of(BlendFunction.LIGHTNING), ColorTargetState.WRITE_COLOR))
                 .withCull(false) /*added*/
-                .withDepthTestFunction(DepthTestFunction.LESS_DEPTH_TEST) /*added*/
-                .withVertexFormat(VertexFormats.POSITION_COLOR_TEXTURE_OVERLAY_LIGHT_NORMAL, VertexFormat.DrawMode.QUADS)
+                .withDepthStencilState(new DepthStencilState(CompareOp.LESS_THAN_OR_EQUAL, false)) /*added*/
+                .withVertexFormat(DefaultVertexFormat.ENTITY, VertexFormat.Mode.QUADS)
                 .build()
         );
     Identifier NO_TEXTURE_ID = MineLittlePony.id("magic_solid");
-    Supplier<NativeImageBackedTexture> EMPTY_TEXTURE = Suppliers.memoize(() -> {
+    Supplier<DynamicTexture> EMPTY_TEXTURE = Suppliers.memoize(() -> {
         NativeImage image = new NativeImage(1, 1, false);
-        image.setColor(0, 0, Colors.WHITE);
-        var texture = new NativeImageBackedTexture(() -> "Solid Color", image);
+        image.setPixel(0, 0, CommonColors.WHITE);
+        var texture = new DynamicTexture(() -> "Solid Color", image);
         texture.upload();
         return texture;
     });
 
 
-    BiFunction<Boolean, Identifier, RenderLayer> TEXTURED = Util.memoize((shaders, texture) -> {
+    BiFunction<Boolean, Identifier, RenderType> TEXTURED = Util.memoize((shaders, texture) -> {
         @Nullable
         Supplier<GpuSampler> sampler = null;
         if (texture == null) {
             AbstractTexture resource = EMPTY_TEXTURE.get();
-            MinecraftClient.getInstance().getTextureManager().registerTexture(NO_TEXTURE_ID, resource);
+            Minecraft.getInstance().getTextureManager().register(NO_TEXTURE_ID, resource);
             sampler = resource::getSampler;
             texture = NO_TEXTURE_ID;
         }
-        return RenderLayer.of("mlp_magic_glow_textured", RenderSetup.builder(shaders ? RenderPipelines.ENTITY_EYES : ENTITY_MAGIC_GLOW_PIPELINE)
-            .texture("Sampler0", texture, sampler)
-            .layeringTransform(LayeringTransform.VIEW_OFFSET_Z_LAYERING)
-            .outputTarget(OutputTarget.MAIN_TARGET)
-            .outlineMode(OutlineMode.NONE)
-            .build()
+        return RenderType.create("mlp_magic_glow_textured", RenderSetup.builder(shaders ? RenderPipelines.EYES : ENTITY_MAGIC_GLOW_PIPELINE)
+            .withTexture("Sampler0", texture, sampler)
+            .setLayeringTransform(LayeringTransform.VIEW_OFFSET_Z_LAYERING)
+            .setOutputTarget(OutputTarget.MAIN_TARGET)
+            .setOutline(OutlineProperty.NONE)
+            .createRenderSetup()
         );
     });
 
-    public static RenderLayer getRenderLayer() {
+    public static RenderType getRenderLayer() {
         return getTextured(null);
     }
 
-    public static RenderLayer getTextured(Identifier texture) {
+    public static RenderType getTextured(Identifier texture) {
         return TEXTURED.apply(IrisApiCompat.areShadersEnabled(), texture);
     }
 
     @SuppressWarnings("deprecation")
-    public static OrderedRenderCommandQueue getQueue(int color, OrderedRenderCommandQueue queue, List<MagicOverlayRenderCommandQueue.Pass> passes) {
-        if (queue instanceof MagicOverlayRenderCommandQueue p) {
-            queue = p.unwrap();
+    public static SubmitNodeCollector getQueue(int color, SubmitNodeCollector frame, List<MagicOverlayRenderCommandQueue.Pass> passes) {
+        if (frame instanceof MagicOverlayRenderCommandQueue p) {
+            frame = p.unwrap();
         }
-        return new MagicOverlayOrderedRenderCommandQueue(queue, layer -> {
-            if (!layer.getVertexFormat().getElements().containsAll(VertexFormats.POSITION_COLOR_TEXTURE_OVERLAY_LIGHT_NORMAL.getElements())) {
+        return new MagicOverlayOrderedRenderCommandQueue(frame, layer -> {
+            if (!layer.format().getElements().containsAll(DefaultVertexFormat.ENTITY.getElements())) {
                 return null;
             }
 
-            return getTextured(RenderLayerUtil.getTexture(layer).orElse(SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE));
+            return getTextured(RenderLayerUtil.getTexture(layer).orElse(TextureAtlas.LOCATION_BLOCKS));
         }, color, passes);
     }
 

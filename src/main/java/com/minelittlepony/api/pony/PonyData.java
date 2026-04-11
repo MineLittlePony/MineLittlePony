@@ -1,5 +1,8 @@
 package com.minelittlepony.api.pony;
 
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.util.Util;
 
 import org.jetbrains.annotations.Nullable;
@@ -72,19 +75,29 @@ public record PonyData (
     private static final Function<Race, PonyData> OF_RACE = Util.memoize(race -> new PonyData(race, TailLength.FULL, TailShape.STRAIGHT, Gender.MARE, SizePreset.NORMAL, DEFAULT_MAGIC_COLOR, true, 0, Wearable.EMPTY_FLAGS));
     public static final PonyData NULL = OF_RACE.apply(Race.HUMAN);
 
-    public static final Codec<PonyData> CODEC = RecordCodecBuilder.create(i -> {
-        return i.group(
-                Race.CODEC.fieldOf("race").forGetter(PonyData::race),
-                TailLength.CODEC.fieldOf("tailLength").forGetter(PonyData::tailLength),
-                TailShape.CODEC.fieldOf("tailShape").forGetter(PonyData::tailShape),
-                Gender.CODEC.fieldOf("gender").forGetter(PonyData::gender),
-                SizePreset.CODEC.xmap(s -> (Size)s, s -> (SizePreset)s).fieldOf("size").forGetter(PonyData::size),
-                Codec.INT.fieldOf("glowColor").forGetter(PonyData::glowColor),
-                Codec.BOOL.optionalFieldOf("noSkin", false).forGetter(PonyData::noSkin),
-                Codec.INT.optionalFieldOf("priority", 0).forGetter(PonyData::priority),
-                Wearable.FLAGS_CODEC.fieldOf("gear").forGetter(PonyData::gear)
-        ).apply(i, PonyData::new);
-    });
+    public static final Codec<PonyData> CODEC = RecordCodecBuilder.create(i -> i.group(
+        Race.CODECS.codec().fieldOf("race").forGetter(PonyData::race),
+        TailLength.CODECS.codec().fieldOf("tailLength").forGetter(PonyData::tailLength),
+        TailShape.CODECS.codec().fieldOf("tailShape").forGetter(PonyData::tailShape),
+        Gender.CODECS.codec().fieldOf("gender").forGetter(PonyData::gender),
+        SizePreset.CODEC.xmap(s -> (Size)s, s -> (SizePreset)s).fieldOf("size").forGetter(PonyData::size),
+        Codec.INT.fieldOf("glowColor").forGetter(PonyData::glowColor),
+        Codec.BOOL.optionalFieldOf("noSkin", false).forGetter(PonyData::noSkin),
+        Codec.INT.optionalFieldOf("priority", 0).forGetter(PonyData::priority),
+        Wearable.FLAGS_CODEC.fieldOf("gear").forGetter(PonyData::gear)
+    ).apply(i, PonyData::new));
+    public static final StreamCodec<FriendlyByteBuf, PonyData> STREAM_CODEC = StreamCodec.composite(
+        Race.CODECS.streamCodec(), PonyData::race,
+        TailLength.CODECS.streamCodec(), PonyData::tailLength,
+        TailShape.CODECS.streamCodec(), PonyData::tailShape,
+        Gender.CODECS.streamCodec(), PonyData::gender,
+        SizePreset.STREAM_CODEC, PonyData::size,
+        ByteBufCodecs.INT, PonyData::glowColor,
+        ByteBufCodecs.BOOL, PonyData::noSkin,
+        ByteBufCodecs.INT, PonyData::priority,
+        Flags.streamCodec(Wearable.NONE, Wearable::values), PonyData::gear,
+        PonyData::new
+    );
 
     public static PonyData emptyOf(Race race) {
         return OF_RACE.apply(race);

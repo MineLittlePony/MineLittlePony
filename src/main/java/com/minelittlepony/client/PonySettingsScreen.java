@@ -1,10 +1,5 @@
 package com.minelittlepony.client;
 
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.text.*;
-
 import com.minelittlepony.api.config.PonyConfig;
 import com.minelittlepony.client.render.MobRenderers;
 import com.minelittlepony.common.client.gui.GameGui;
@@ -18,6 +13,11 @@ import com.minelittlepony.common.client.gui.element.Slider;
 import com.minelittlepony.common.client.gui.element.Toggle;
 import com.minelittlepony.common.util.settings.Setting;
 
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.network.chat.Component;
+
 import org.jetbrains.annotations.Nullable;
 
 /**
@@ -29,13 +29,13 @@ public class PonySettingsScreen extends GameGui {
     private static final String PONY_LEVEL = OPTIONS_PREFIX + "ponylevel";
     private static final String MOB_PREFIX = "minelp.mobs.";
 
-    public static final Text SCALE_MEGA = Text.translatable("minelp.debug.scale.meg");
-    public static final Text SCALE_MAX = Text.translatable("minelp.debug.scale.max");
-    public static final Text SCALE_MID = Text.translatable("minelp.debug.scale.mid");
-    public static final Text SCALE_SHOW = Text.translatable("minelp.debug.scale.sa");
-    public static final Text SCALE_MIN = Text.translatable("minelp.debug.scale.min");
+    public static final Component SCALE_MEGA = Component.translatable("minelp.debug.scale.meg");
+    public static final Component SCALE_MAX = Component.translatable("minelp.debug.scale.max");
+    public static final Component SCALE_MID = Component.translatable("minelp.debug.scale.mid");
+    public static final Component SCALE_SHOW = Component.translatable("minelp.debug.scale.sa");
+    public static final Component SCALE_MIN = Component.translatable("minelp.debug.scale.min");
 
-    public static HorseButtonFactory buttonFactory = (screen, parent, row, RIGHT, content) -> {
+    public static HorseButtonFactory buttonFactory = (_, _, row, RIGHT, content) -> {
         content.addButton(new Button(RIGHT, row += 20, 150, 20))
             .setEnabled(false)
             .getStyle()
@@ -50,7 +50,7 @@ public class PonySettingsScreen extends GameGui {
     private final boolean hiddenOptions;
 
     public PonySettingsScreen(@Nullable Screen parent) {
-        super(Text.literal(OPTIONS_PREFIX + "title"), parent);
+        super(Component.literal(OPTIONS_PREFIX + "title"), parent);
         content.margin.top = 30;
         content.margin.bottom = 30;
         content.getContentPadding().top = 10;
@@ -58,7 +58,7 @@ public class PonySettingsScreen extends GameGui {
         content.getContentPadding().bottom = 20;
         content.getContentPadding().left = 10;
 
-        hiddenOptions = MinecraftClient.getInstance().isCtrlPressed() && MinecraftClient.getInstance().isShiftPressed();
+        hiddenOptions = Minecraft.getInstance().hasControlDown() && Minecraft.getInstance().hasShiftDown();
     }
 
     @Override
@@ -83,7 +83,7 @@ public class PonySettingsScreen extends GameGui {
 
         addButton(new Label(width / 2, 5).setCentered()).getStyle().setText(getTitle().getString());
         addButton(new Button(width / 2 - 100, height - 25))
-            .onClick(sender -> finish())
+            .onClick(_ -> finish())
             .getStyle()
                 .setText("gui.done");
 
@@ -91,10 +91,10 @@ public class PonySettingsScreen extends GameGui {
 
         content.addButton(new EnumSlider<>(LEFT, row += 20, config.ponyLevel.get())
                 .onChange(config.ponyLevel::set)
-                .setTextFormat(sender -> Text.translatable(PONY_LEVEL + "." + sender.getValue().name().toLowerCase()))
+                .setTextFormat(sender -> Component.translatable(PONY_LEVEL + "." + sender.getValue().name().toLowerCase()))
                 .setTooltipFormat(sender -> Tooltip.of(PONY_LEVEL + "." + sender.getValue().name().toLowerCase() + ".tooltip", 200)));
 
-        boolean allowCameraChange = client.player == null || client.player.isCreative() || client.player.isSpectator() || client.isInSingleplayer();
+        boolean allowCameraChange = minecraft.player == null || minecraft.player.isCreative() || minecraft.player.isSpectator() || minecraft.isSingleplayer();
 
         if (hiddenOptions && allowCameraChange) {
             content.addButton(new Label(LEFT, row += 30)).getStyle().setText("minelp.debug.scale");
@@ -122,22 +122,22 @@ public class PonySettingsScreen extends GameGui {
                 .onChange(i == config.horsieMode ? (v -> {
                     v = ((Setting<Boolean>)i).set(v);
 
-                    MineLittlePony.getInstance().getRenderDispatcher().initialise(MinecraftClient.getInstance().getEntityRenderDispatcher(), true);
+                    MineLittlePony.getInstance().getRenderDispatcher().initialise(minecraft.getEntityRenderDispatcher(), true);
                     return v;
                 }) : i == config.fillycam ? (v -> {
                     v = ((Setting<Boolean>)i).set(v);
-                    clearAndInit();
+                    rebuildWidgets();
                     return v;
                 }): (Setting<Boolean>)i)
                 .setEnabled(enabled);
             button.getStyle().setText(OPTIONS_PREFIX + i.name().toLowerCase());
             if (!enabled) {
                 button.getStyle()
-                    .setTooltip(Text.translatable(OPTIONS_PREFIX + "option.disabled"))
+                    .setTooltip(Component.translatable(OPTIONS_PREFIX + "option.disabled"))
                     .setTooltipOffset(0, 0);
             } else if (i == config.disablebucketfix) {
                 button.getStyle()
-                    .setTooltip(Text.translatable(OPTIONS_PREFIX + i.name().toLowerCase() + ".tooltip"))
+                    .setTooltip(Component.translatable(OPTIONS_PREFIX + i.name().toLowerCase() + ".tooltip"))
                     .setTooltipOffset(0, 0);
             }
         }
@@ -176,7 +176,7 @@ public class PonySettingsScreen extends GameGui {
         buttonFactory.renderOption(this, parent, row, RIGHT, content);
     }
 
-    public Text describeCurrentScale(AbstractSlider<Float> sender) {
+    public Component describeCurrentScale(AbstractSlider<Float> sender) {
         float value = sender.getValue();
         if (value >= 3) {
             return SCALE_MEGA;
@@ -198,13 +198,13 @@ public class PonySettingsScreen extends GameGui {
         value = Math.round(value);
         value /= 100F;
 
-        return Text.translatable("minelp.debug.scale.value", value);
+        return Component.translatable("minelp.debug.scale.value", value);
     }
 
     @Override
-    public void render(DrawContext context, int mouseX, int mouseY, float tickDelta) {
-        super.render(context, mouseX, mouseY, tickDelta);
-        content.render(context, mouseX, mouseY, tickDelta);
+    public void extractRenderState(GuiGraphicsExtractor context, int mouseX, int mouseY, float tickDelta) {
+        super.extractRenderState(context, mouseX, mouseY, tickDelta);
+        content.extractRenderState(context, mouseX, mouseY, tickDelta);
     }
 
     @Override

@@ -1,8 +1,8 @@
 package com.minelittlepony.client;
 
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.component.type.ProfileComponent;
-import net.minecraft.util.Identifier;
+import net.minecraft.client.Minecraft;
+import net.minecraft.resources.Identifier;
+import net.minecraft.world.item.component.ResolvableProfile;
 
 import org.jetbrains.annotations.Nullable;
 
@@ -15,6 +15,6 @@ public class ClientSkinsProxy extends SkinsProxy {
         if (profile == null) {
             return null;
         }
-        return MinecraftClient.getInstance().getPlayerSkinCache().get(ProfileComponent.ofStatic(profile)).getTextures().body().texturePath();
+        return Minecraft.getInstance().playerSkinRenderCache().getOrDefault(ResolvableProfile.createResolved(profile)).playerSkin().body().texturePath();
     }
 }

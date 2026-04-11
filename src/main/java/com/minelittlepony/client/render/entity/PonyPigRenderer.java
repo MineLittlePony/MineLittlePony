@@ -1,35 +1,34 @@
 package com.minelittlepony.client.render.entity;
 
-import net.minecraft.client.model.Dilation;
-import net.minecraft.client.render.command.OrderedRenderCommandQueue;
-import net.minecraft.client.render.entity.EntityRendererFactory;
-import net.minecraft.client.render.entity.PigEntityRenderer;
-import net.minecraft.client.render.entity.feature.*;
-import net.minecraft.client.render.entity.model.*;
-import net.minecraft.client.render.entity.state.PigEntityRenderState;
-import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.util.Colors;
+import net.minecraft.client.model.animal.pig.PigModel;
+import net.minecraft.client.model.geom.builders.CubeDeformation;
+import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.client.renderer.entity.*;
+import net.minecraft.client.renderer.entity.layers.RenderLayer;
+import net.minecraft.client.renderer.entity.state.PigRenderState;
+import net.minecraft.util.CommonColors;
 
 import com.minelittlepony.api.pony.meta.Wearable;
+import com.mojang.blaze3d.vertex.PoseStack;
 
-public class PonyPigRenderer extends PigEntityRenderer {
-    public PonyPigRenderer(EntityRendererFactory.Context context) {
+public class PonyPigRenderer extends PigRenderer {
+    public PonyPigRenderer(EntityRendererProvider.Context context) {
         super(context);
-        addFeature(new CrownFeature(this));
+        addLayer(new CrownFeature(this));
     }
 
-    private final class CrownFeature extends FeatureRenderer<PigEntityRenderState, PigEntityModel> {
-        private final PigEntityModel model;
+    private final class CrownFeature extends RenderLayer<PigRenderState, PigModel> {
+        private final PigModel model;
 
-        public CrownFeature(FeatureRendererContext<PigEntityRenderState, PigEntityModel> context) {
+        public CrownFeature(RenderLayerParent<PigRenderState, PigModel> context) {
             super(context);
-            model = new PigEntityModel(PigEntityModel.getTexturedModelData(new Dilation(0.5F)).createModel());
+            model = new PigModel(PigModel.createBodyLayer(new CubeDeformation(0.5F)).bakeRoot());
         }
 
         @Override
-        public void render(MatrixStack matrices, OrderedRenderCommandQueue queue, int light, PigEntityRenderState state, float limbDistance, float limbAngle) {
-            if (state.displayName != null && state.displayName.getString().equalsIgnoreCase("technoblade")) {
-                renderModel(model, Wearable.CROWN.getDefaultTexture(), matrices, queue, light, state, Colors.WHITE, 0);
+        public void submit(PoseStack matrices, SubmitNodeCollector frame, int light, PigRenderState state, float yRot, float xRot) {
+            if (state.nameTag != null && state.nameTag.getString().equalsIgnoreCase("technoblade")) {
+                coloredCutoutModelCopyLayerRender(model, Wearable.CROWN.getDefaultTexture(), matrices, frame, light, state, CommonColors.WHITE, 0);
             }
         }
     }

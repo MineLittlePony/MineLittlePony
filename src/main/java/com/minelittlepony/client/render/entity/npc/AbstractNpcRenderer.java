@@ -1,9 +1,9 @@
 package com.minelittlepony.client.render.entity.npc;
 
-import net.minecraft.client.render.entity.EntityRendererFactory;
-import net.minecraft.entity.mob.MobEntity;
-import net.minecraft.util.Identifier;
-import net.minecraft.village.*;
+import net.minecraft.client.renderer.entity.EntityRendererProvider;
+import net.minecraft.resources.Identifier;
+import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.npc.villager.VillagerDataHolder;
 
 import com.minelittlepony.api.model.Models;
 import com.minelittlepony.api.model.gear.Gear;
@@ -14,12 +14,12 @@ import com.minelittlepony.client.render.entity.PonyRenderer;
 import com.minelittlepony.client.render.entity.npc.textures.*;
 
 abstract class AbstractNpcRenderer<
-        T extends MobEntity & VillagerDataContainer,
+        T extends Mob & VillagerDataHolder,
         S extends SillyPonyTextureSupplier.State
     > extends PonyRenderer<T, S, ClientPonyModel<S>> {
     private final NpcClothingFeature<T, S, ClientPonyModel<S>, AbstractNpcRenderer<T, S>> clothing;
 
-    public AbstractNpcRenderer(EntityRendererFactory.Context context, String type, TextureSupplier<T> textureSupplier, TextureSupplier<String> formatter) {
+    public AbstractNpcRenderer(EntityRendererProvider.Context context, String type, TextureSupplier<T> textureSupplier, TextureSupplier<String> formatter) {
         super(context, ModelType.getPlayerModel(Race.EARTH).steveKey(), SillyPonyTextureSupplier.create(textureSupplier, formatter));
         clothing = new NpcClothingFeature<>(this, type);
         this.manager.setModelsLookup(race -> {
@@ -30,7 +30,7 @@ abstract class AbstractNpcRenderer<
             initializeModel(models.body());
             return models;
         });
-        addFeature(clothing);
+        addLayer(clothing);
     }
 
     @Override

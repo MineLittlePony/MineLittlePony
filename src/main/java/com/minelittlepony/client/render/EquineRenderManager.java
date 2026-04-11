@@ -11,22 +11,22 @@ import com.minelittlepony.client.PonyDataLoader;
 import com.minelittlepony.client.model.ClientPonyModel;
 import com.minelittlepony.client.render.entity.state.PonyRenderState;
 import com.minelittlepony.mson.api.ModelKey;
+import com.mojang.blaze3d.vertex.PoseStack;
 
 import java.util.*;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
 import net.fabricmc.api.EnvType;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.item.ItemModelManager;
-import net.minecraft.client.render.entity.model.EntityModel;
-import net.minecraft.client.render.entity.state.EntityRenderState;
-import net.minecraft.client.render.entity.state.PlayerEntityRenderState;
-import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.entity.*;
-import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.model.EntityModel;
+import net.minecraft.client.renderer.entity.state.AvatarRenderState;
+import net.minecraft.client.renderer.entity.state.EntityRenderState;
+import net.minecraft.client.renderer.item.ItemModelResolver;
 import net.minecraft.util.Util;
-import net.minecraft.util.math.Box;
+import net.minecraft.world.entity.*;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.phys.AABB;
 
 import org.jetbrains.annotations.Nullable;
 
@@ -49,7 +49,7 @@ public class EquineRenderManager<
     public EquineRenderManager(PonyRenderContext<T, S, M> context, Transformer<? super S> transformer, Models<M> models) {
         this.context = context;
         this.transformer = transformer;
-        setModelsLookup(race -> models);
+        setModelsLookup(_ -> models);
     }
 
     public EquineRenderManager(PonyRenderContext<T, S, M> context, Transformer<? super S> transformer, ModelKey<? super M> key) {
@@ -72,7 +72,7 @@ public class EquineRenderManager<
         return modelsLookup.apply(race);
     }
 
-    public Box getBoundingBox(T entity, Box box) {
+    public AABB getBoundingBox(T entity, AABB box) {
 
         if (entity.isSleeping() || !PonyConfig.getInstance().frustrum.get()) {
             return box;
@@ -83,33 +83,33 @@ public class EquineRenderManager<
         return DebugBoundingBoxRenderer.applyScale(scale, box);
     }
 
-    public Box getHitbox(T entity) {
+    public AABB getHitbox(T entity) {
         Pony pony = context.getEntityPony(entity);
         float scale = (entity.isBaby() ? SizePreset.FOAL : pony.size()).scaleFactor();
         return DebugBoundingBoxRenderer.applyScale(scale, entity.getBoundingBox());
     }
 
-    public void completeStateUpdate(PlayerEntityRenderState state) {
+    public void completeStateUpdate(AvatarRenderState state) {
         if (state instanceof PreviewRenderState previewer) {
             previewer.completeStateUpdate(modelsLookup.apply(previewer.getRace()));
         }
     }
 
-    public void updateState(T entity, S state, ModelAttributes.Mode mode, ItemModelManager resolver) {
+    public void updateState(T entity, S state, ModelAttributes.Mode mode, ItemModelResolver resolver) {
         state.entityType = entity.getType();
         Pony pony = context.getEntityPony(entity);
         state.updateState(resolver, entity, modelsLookup.apply(pony.race()), pony, mode);
     }
 
-    public void setupTransforms(S state, MatrixStack stack, float animationProgress, float bodyYaw) {
+    public void setupTransforms(S state, PoseStack stack, float bodyRot, float entityScale) {
         float s = state.attributes.size.scaleFactor();
         stack.scale(s, s, s);
 
-        if (state instanceof PlayerEntityRenderState && state.attributes.isSitting) {
+        if (state instanceof AvatarRenderState && state.attributes.isSitting) {
             stack.translate(0, 0.125D, 0);
         }
 
-        transformer.setupTransforms(state, stack, animationProgress, bodyYaw);
+        transformer.setupTransforms(state, stack, bodyRot, entityScale);
 
         if (RenderPass.getCurrent() == RenderPass.WORLD) {
             state.posture.transform(state, stack);
@@ -117,7 +117,7 @@ public class EquineRenderManager<
     }
 
     public interface Transformer<S extends PonyRenderState> {
-        void setupTransforms(S state, MatrixStack stack, float animationProgress, float bodyYaw);
+        void setupTransforms(S state, PoseStack stack, float bodyRot, float entityScale);
     }
 
     public interface RegistrationHandler {
@@ -134,9 +134,9 @@ public class EquineRenderManager<
         private Optional<Pony> lastTransmittedPony = Optional.empty();
         private boolean seated;
 
-        private final PlayerLikeEntity player;
+        private final Avatar player;
 
-        public SyncedPony(PlayerLikeEntity player) {
+        public SyncedPony(Avatar player) {
             this.player = player;
         }
 
@@ -148,15 +148,15 @@ public class EquineRenderManager<
             return lastPonyData.get().orElse(PonyData.NULL);
         }
 
-        public EntityDimensions modifyEyeHeight(EntityDimensions dimensions, EntityPose pose) {
+        public EntityDimensions modifyEyeHeight(EntityDimensions dimensions, Pose pose) {
             Pony pony = lastRenderedPony.orElse(null);
             float factor = pony == null || pony.race().isHuman() ? 1 : pony.size().eyeHeightFactor();
             if (factor == 1) {
                 return dimensions;
             }
             float eyeHeight = dimensions.eyeHeight() * factor;
-            if (player.hasVehicle()) {
-                eyeHeight += player.getVehicleAttachmentPos(player.getVehicle()).getY();
+            if (player.isPassenger()) {
+                eyeHeight += player.getVehicleAttachmentPoint(player.getVehicle()).y();
             }
 
             return dimensions.withEyeHeight(eyeHeight);
@@ -165,20 +165,20 @@ public class EquineRenderManager<
         public void synchronize() {
             Pony pony = Pony.getManager().getPony(player);
             boolean changed = pony.compareTo(lastRenderedPony.orElse(null)) != 0;
-            boolean seated = player.hasVehicle();
+            boolean seated = player.isPassenger();
 
             if (changed || seated != this.seated) {
                 lastRenderedPony = Optional.of(pony);
                 lastPonyData = pony.metadataGetter();
-                player.calculateDimensions();
+                player.refreshDimensions();
             }
             this.seated = seated;
 
             @Nullable
-            PlayerEntity clientPlayer = MinecraftClient.getInstance().player;
+            Player clientPlayer = Minecraft.getInstance().player;
 
             if (ClientChannel.isRegistered() && pony.compareTo(lastTransmittedPony.orElse(null)) != 0) {
-                if (clientPlayer != null && (Objects.equals(player, clientPlayer) || Objects.equals(player.getUuid(), clientPlayer.getGameProfile().id()))) {
+                if (clientPlayer != null && (Objects.equals(player, clientPlayer) || Objects.equals(player.getUUID(), clientPlayer.getGameProfile().id()))) {
                     if (ClientChannel.broadcastPonyData(pony.metadata())) {
                         lastTransmittedPony = Optional.of(pony);
                     }

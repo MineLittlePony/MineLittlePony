@@ -1,11 +1,11 @@
 package com.minelittlepony.server;
 
-import net.minecraft.component.DataComponentTypes;
-import net.minecraft.component.type.ProfileComponent;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.PlayerLikeEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.util.Identifier;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.resources.Identifier;
+import net.minecraft.world.entity.Avatar;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.component.ResolvableProfile;
 
 import org.jetbrains.annotations.Nullable;
 
@@ -24,7 +24,7 @@ import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 public class ServerPonyManager implements PonyManager {
-    static final Pony NULL_PONY = new Pony(Identifier.ofVanilla("null"), () -> Optional.of(PonyData.NULL));
+    static final Pony NULL_PONY = new Pony(Identifier.withDefaultNamespace("null"), () -> Optional.of(PonyData.NULL));
 
     private final LoadingCache<Identifier, Pony> poniesCache = CacheBuilder.newBuilder()
             .expireAfterAccess(30, TimeUnit.SECONDS)
@@ -61,7 +61,7 @@ public class ServerPonyManager implements PonyManager {
 
     @Override
     public Optional<Pony> getPony(LivingEntity entity) {
-        if (entity instanceof PlayerEntity player) {
+        if (entity instanceof Player player) {
             return Optional.ofNullable(getPony(player));
         }
         return Optional.empty();
@@ -73,7 +73,7 @@ public class ServerPonyManager implements PonyManager {
     }
 
     @Override
-    public Pony getPony(PlayerLikeEntity player) {
+    public Pony getPony(Avatar player) {
         return getPony(SkinsProxy.getInstance().getSkinTexture(getProfile(player)), null);
     }
 
@@ -87,17 +87,17 @@ public class ServerPonyManager implements PonyManager {
 
 
     @Nullable
-    private static GameProfile getProfile(PlayerLikeEntity player) {
+    private static GameProfile getProfile(Avatar player) {
         if (player instanceof ForcedPony) {
             return null;
         }
 
-        ProfileComponent profile = player.get(DataComponentTypes.PROFILE);
+        ResolvableProfile profile = player.get(DataComponents.PROFILE);
         if (profile != null) {
-            return profile.getGameProfile();
+            return profile.partialProfile();
         }
 
-        if (player instanceof PlayerEntity p && p.getGameProfile() != null) {
+        if (player instanceof Player p && p.getGameProfile() != null) {
             return p.getGameProfile();
         }
 

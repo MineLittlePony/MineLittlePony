@@ -1,12 +1,13 @@
 package com.minelittlepony.client.util.render;
 
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.texture.*;
-import net.minecraft.resource.ResourceManager;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.math.ColorHelper;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.texture.*;
+import net.minecraft.resources.Identifier;
+import net.minecraft.server.packs.resources.ResourceManager;
+import net.minecraft.util.ARGB;
 
 import com.google.common.base.Preconditions;
+import com.mojang.blaze3d.platform.NativeImage;
 
 import java.io.IOException;
 import java.util.List;
@@ -15,13 +16,13 @@ public class TextureFlattener {
 
     public static void flatten(List<Identifier> textures, Identifier output) {
         Preconditions.checkArgument(textures.size() > 0, "Must have at least one image to flatten");
-        MinecraftClient.getInstance().getTextureManager().registerTexture(output, new ResourceTexture(output) {
+        Minecraft.getInstance().getTextureManager().registerAndLoad(output, new SimpleTexture(output) {
             @Override
             public TextureContents loadContents(ResourceManager resourceManager) throws IOException {
-                NativeImage image = NativeImage.read(resourceManager.getResourceOrThrow(textures.get(0)).getInputStream());
+                NativeImage image = NativeImage.read(resourceManager.getResourceOrThrow(textures.get(0)).open());
 
                 for (int i = 1; i < textures.size(); i++) {
-                    try (NativeImage data = NativeImage.read(resourceManager.getResourceOrThrow(textures.get(i)).getInputStream())) {
+                    try (NativeImage data = NativeImage.read(resourceManager.getResourceOrThrow(textures.get(i)).open())) {
                         copyOver(data, image);
                     }
                 }
@@ -47,9 +48,9 @@ public class TextureFlattener {
     }
 
     public static void copy(NativeImage from, NativeImage to, int x, int y) {
-        int color = from.getColorArgb(x, y);
-        if (ColorHelper.getAlpha(color) > 0) {
-            to.setColorArgb(x, y, color);
+        int color = from.getPixel(x, y);
+        if (ARGB.alpha(color) > 0) {
+            to.setPixel(x, y, color);
         }
     }
 }

@@ -1,6 +1,6 @@
 package com.minelittlepony.client.compat.hdskins;
 
-import net.minecraft.util.Identifier;
+import net.minecraft.resources.Identifier;
 
 import com.minelittlepony.api.pony.meta.*;
 import com.minelittlepony.client.render.entity.SeaponyRenderer;

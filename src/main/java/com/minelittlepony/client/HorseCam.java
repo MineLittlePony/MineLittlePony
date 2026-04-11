@@ -1,12 +1,11 @@
 package com.minelittlepony.client;
 
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.util.hit.BlockHitResult;
-import net.minecraft.util.hit.HitResult;
-import net.minecraft.util.math.*;
-import net.minecraft.world.RaycastContext;
+import net.minecraft.client.Minecraft;
+import net.minecraft.util.Mth;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.ClipContext;
+import net.minecraft.world.phys.*;
 
 import org.jetbrains.annotations.Nullable;
 
@@ -26,16 +25,16 @@ public class HorseCam {
                 return pitch;
             }
 
-            MinecraftClient client = MinecraftClient.getInstance();
-            PlayerEntity player = client.player;
+            Minecraft client = Minecraft.getInstance();
+            Player player = client.player;
 
-            if (player == null || client.isInSingleplayer() || client.isIntegratedServerRunning()) {
+            if (player == null || client.isSingleplayer() || client.isLocalServer()) {
                 return pitch;
             }
 
             // noop
             // Only run when the player has an item in their hands. Can't check for buckets specifically since mods exist.
-            if (player.getMainHandStack().isEmpty() && player.getOffHandStack().isEmpty()) {
+            if (player.getMainHandItem().isEmpty() && player.getOffhandItem().isEmpty()) {
                 return pitch;
             }
 
@@ -50,10 +49,10 @@ public class HorseCam {
                 final float alteredHeight = player.getEyeHeight(player.getPose());
 
                 // only change the angle if required
-                if (!MathHelper.approximatelyEquals(vanillaHeight, alteredHeight) && client.targetedEntity == null) {
+                if (!Mth.equal(vanillaHeight, alteredHeight) && client.crosshairPickEntity == null) {
                     // noop
                     // Ignore misses, helps with bows, arrows, and projectiles
-                    if (client.crosshairTarget != null && client.crosshairTarget.getType() == HitResult.Type.BLOCK) {
+                    if (client.hitResult != null && client.hitResult.getType() == HitResult.Type.BLOCK) {
                         return rescaleCameraPitch(player, alteredHeight, vanillaHeight, pitch);
                     }
                 }
@@ -74,8 +73,8 @@ public class HorseCam {
      * @return The new pitch value, otherwise the original value passed in.
      */
     public static float rescaleCameraPitch(Entity entity, double fromHeight, double toHeight, float originalPitch) {
-        Vec3d start = entity.getEntityPos().add(0, fromHeight, 0);
-        Vec3d end = getRaycastPos(entity, start, originalPitch);
+        Vec3 start = entity.position().add(0, fromHeight, 0);
+        Vec3 end = getRaycastPos(entity, start, originalPitch);
 
         if (end == null) {
             return originalPitch;
@@ -97,16 +96,16 @@ public class HorseCam {
         return (float)newPitch;
     }
 
-    public static @Nullable Vec3d getRaycastPos(Entity entity, Vec3d start, float pitch) {
-        BlockHitResult hit = entity.getEntityWorld().raycast(new RaycastContext(
+    public static @Nullable Vec3 getRaycastPos(Entity entity, Vec3 start, float pitch) {
+        BlockHitResult hit = entity.level().clip(new ClipContext(
                 start,
-                start.add(entity.getRotationVector(pitch, entity.getYaw()).multiply(16)),
-                RaycastContext.ShapeType.OUTLINE, RaycastContext.FluidHandling.NONE, entity)
+                start.add(entity.calculateViewVector(pitch, entity.getXRot()).scale(16)),
+                ClipContext.Block.OUTLINE, ClipContext.Fluid.NONE, entity)
         );
-        return hit == null ? null : hit.getPos();
+        return hit == null ? null : hit.getLocation();
     }
 
-    private static double horizontalDistance(Vec3d from, Vec3d to) {
+    private static double horizontalDistance(Vec3 from, Vec3 to) {
         double diffX = to.x - from.x;
         double diffZ = to.z - from.z;
         return Math.sqrt(diffX * diffX + diffZ * diffZ);

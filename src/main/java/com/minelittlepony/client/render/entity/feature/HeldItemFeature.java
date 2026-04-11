@@ -3,51 +3,53 @@ package com.minelittlepony.client.render.entity.feature;
 import com.minelittlepony.client.model.ClientPonyModel;
 import com.minelittlepony.client.render.*;
 import com.minelittlepony.client.render.entity.state.PonyRenderState;
+import com.minelittlepony.common.util.Untyped;
+import com.mojang.blaze3d.vertex.PoseStack;
 
-import net.minecraft.client.render.LightmapTextureManager;
-import net.minecraft.client.render.command.OrderedRenderCommandQueue;
-import net.minecraft.client.render.entity.feature.PlayerHeldItemFeatureRenderer;
-import net.minecraft.client.render.entity.state.PlayerEntityRenderState;
-import net.minecraft.client.render.item.ItemRenderState;
-import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.Arm;
+import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.client.renderer.entity.layers.PlayerItemInHandLayer;
+import net.minecraft.client.renderer.entity.state.AvatarRenderState;
+import net.minecraft.client.renderer.item.ItemStackRenderState;
+import net.minecraft.util.LightCoordsUtil;
+import net.minecraft.world.entity.HumanoidArm;
+import net.minecraft.world.item.ItemStack;
 
 public class HeldItemFeature<
         S extends PonyRenderState,
         M extends ClientPonyModel<S>
-    > extends PlayerHeldItemFeatureRenderer<PlayerEntityRenderState, M> {
+    > extends PlayerItemInHandLayer<AvatarRenderState, M> {
 
     public HeldItemFeature(PonyRenderContext<?, S, M> context) {
         super(context.upcast());
     }
 
-    @SuppressWarnings(value = {"unchecked"})
     @Deprecated
     @Override
-    public final void render(MatrixStack matrices, OrderedRenderCommandQueue queue, int light, PlayerEntityRenderState state, float limbAngle, float limbDistance) {
-        render(matrices, queue, light, (S)state, limbAngle, limbDistance);
+    public final void submit(PoseStack matrices, SubmitNodeCollector frame, int light, AvatarRenderState state, float limbAngle, float limbDistance) {
+        render(matrices, frame, light, Untyped.cast(state), limbAngle, limbDistance);
     }
 
-    public void render(MatrixStack matrices, OrderedRenderCommandQueue queue, int light, S state, float limbAngle, float limbDistance) {
+    public void render(PoseStack matrices, SubmitNodeCollector frame, int light, S state, float limbAngle, float limbDistance) {
         if (!state.leftHandItemState.isEmpty() || !state.rightHandItemState.isEmpty()) {
-            renderItem(state, state.rightHandItemState, state.rightHandItem, state.rightHeldItem, Arm.RIGHT, matrices, queue, light);
-            renderItem(state, state.leftHandItemState, state.leftHandItem, state.leftHeldItem, Arm.LEFT, matrices, queue, light);
+            renderItem(state, state.rightHandItemState, state.rightHandItemStack, state.rightHeldItem, HumanoidArm.RIGHT, matrices, frame, light);
+            renderItem(state, state.leftHandItemState, state.leftHandItemStack, state.leftHeldItem, HumanoidArm.LEFT, matrices, frame, light);
         }
     }
 
-    protected void renderItem(S state, ItemRenderState item, ItemStack stack, PonyRenderState.HeldItemRenderState glintLessItem, Arm arm, MatrixStack matrices, OrderedRenderCommandQueue queue, int light) {
-        if (!item.isEmpty()) {
-            matrices.push();
-            getContextModel().transformHeldItem(state, arm, matrices);
-
-            renderItem(state, item, stack, arm, matrices, queue, light);
-
-            if (!glintLessItem.glintlessHandItemState.isEmpty()) {
-                queue = MagicGlow.getQueue(state.glowColor, queue, LevitatingItemRenderer.getThirdPersonLevitatingItemTransformPasses(state, glintLessItem));
-                renderItem(state, glintLessItem.glintlessHandItemState, stack, arm, matrices, queue, LightmapTextureManager.MAX_LIGHT_COORDINATE);
-            }
-            matrices.pop();
+    protected void renderItem(S state, ItemStackRenderState item, ItemStack stack, PonyRenderState.HeldItemRenderState glintLessItem, HumanoidArm arm, PoseStack matrices, SubmitNodeCollector queue, int light) {
+        if (item.isEmpty()) {
+            return;
         }
+
+        matrices.pushPose();
+        getParentModel().transformHeldItem(state, arm, matrices);
+
+        submitArmWithItem(state, item, stack, arm, matrices, queue, light);
+
+        if (!glintLessItem.glintlessHandItemState.isEmpty()) {
+            queue = MagicGlow.getQueue(state.glowColor, queue, LevitatingItemRenderer.getThirdPersonLevitatingItemTransformPasses(state, glintLessItem));
+            submitArmWithItem(state, glintLessItem.glintlessHandItemState, stack, arm, matrices, queue, LightCoordsUtil.FULL_BRIGHT);
+        }
+        matrices.popPose();
     }
 }

@@ -1,6 +1,6 @@
 package com.minelittlepony.client.model.armour;
 
-import net.minecraft.client.render.entity.equipment.EquipmentModel;
+import net.minecraft.client.resources.model.EquipmentClientInfo;
 
 import com.minelittlepony.client.model.*;
 import com.minelittlepony.mson.api.ModelKey;
@@ -18,7 +18,7 @@ public enum ArmourVariant {
         this.outerModel = outer;
     }
 
-    public ModelKey<ClientPonyModel<?>> getDefaultModel(EquipmentModel.LayerType layerType) {
-        return layerType == EquipmentModel.LayerType.HUMANOID_LEGGINGS ? innerModel : outerModel;
+    public ModelKey<ClientPonyModel<?>> getDefaultModel(EquipmentClientInfo.LayerType layerType) {
+        return layerType == EquipmentClientInfo.LayerType.HUMANOID_LEGGINGS ? innerModel : outerModel;
     }
 }

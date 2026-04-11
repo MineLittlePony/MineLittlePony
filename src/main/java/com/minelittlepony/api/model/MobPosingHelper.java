@@ -1,8 +1,8 @@
 package com.minelittlepony.api.model;
 
-import net.minecraft.client.model.ModelPart;
-import net.minecraft.util.Arm;
-import net.minecraft.util.math.MathHelper;
+import net.minecraft.client.model.geom.ModelPart;
+import net.minecraft.util.Mth;
+import net.minecraft.world.entity.HumanoidArm;
 
 import com.minelittlepony.mson.util.PartUtil;
 
@@ -16,39 +16,39 @@ public final class MobPosingHelper {
      * @param ticks         Render partial ticks
      */
     public static void rotateArmHolding(ModelPart arm, float direction, float swingProgress, float ticks) {
-        float swing = MathHelper.sin(swingProgress * MathHelper.PI);
-        float roll = MathHelper.sin((1 - (1 - swingProgress) * (1 - swingProgress)) * MathHelper.PI);
+        float swing = Mth.sin(swingProgress * Mth.PI);
+        float roll = Mth.sin((1 - (1 - swingProgress) * (1 - swingProgress)) * Mth.PI);
 
-        float cos = MathHelper.cos(ticks * 0.09F) * 0.05F + 0.05F;
-        float sin = MathHelper.sin(ticks * 0.067F) / 10;
+        float cos = Mth.cos(ticks * 0.09F) * 0.05F + 0.05F;
+        float sin = Mth.sin(ticks * 0.067F) / 10;
 
-        arm.pitch = -1.5707964F;
-        arm.pitch -= swing * 1.2F - roll * 0.4F;
-        arm.pitch += sin;
+        arm.xRot = -1.5707964F;
+        arm.xRot -= swing * 1.2F - roll * 0.4F;
+        arm.xRot += sin;
 
-        arm.yaw = direction * (0.1F - swing * 0.6F);
-        arm.roll = cos;
+        arm.yRot = direction * (0.1F - swing * 0.6F);
+        arm.zRot = cos;
     }
 
     public static void rotateUndeadArms(PonyModel.AttributedHolder attributes, PonyModel<?> model, float limbAngle, float ticks) {
         if (islookAngleRight(limbAngle)) {
-            ModelPart rightArm = model.getForeLeg(Arm.RIGHT);
+            ModelPart rightArm = model.getForeLeg(HumanoidArm.RIGHT);
             rotateArmHolding(rightArm, 1, attributes.getSwingAmount(), ticks);
             if (attributes.getAttributes().isSitting) {
-                rightArm.pitch += 0.6F;
+                rightArm.xRot += 0.6F;
             }
             PartUtil.shift(rightArm, 0.5F, 1.5F, 3);
         } else {
-            ModelPart leftArm = model.getForeLeg(Arm.LEFT);
+            ModelPart leftArm = model.getForeLeg(HumanoidArm.LEFT);
             rotateArmHolding(leftArm, -1, attributes.getSwingAmount(), ticks);
             if (attributes.getAttributes().isSitting) {
-                leftArm.pitch += 0.6F;
+                leftArm.xRot += 0.6F;
             }
             PartUtil.shift(leftArm, -0.5F, 1.5F, 3);
         }
     }
 
     public static boolean islookAngleRight(float limbAngle) {
-        return MathHelper.sin(limbAngle / 20) < 0;
+        return Mth.sin(limbAngle / 20) < 0;
     }
 }

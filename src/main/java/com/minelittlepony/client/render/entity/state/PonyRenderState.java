@@ -1,26 +1,23 @@
 package com.minelittlepony.client.render.entity.state;
 
-import net.minecraft.block.*;
-import net.minecraft.block.SkullBlock.SkullType;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.item.ItemModelManager;
-import net.minecraft.client.render.entity.equipment.EquipmentModel;
-import net.minecraft.client.render.entity.feature.ArmorFeatureRenderer;
-import net.minecraft.client.render.entity.state.PlayerEntityRenderState;
-import net.minecraft.client.render.item.ItemRenderState;
-import net.minecraft.component.DataComponentTypes;
-import net.minecraft.component.type.ProfileComponent;
-import net.minecraft.entity.*;
-import net.minecraft.entity.mob.AbstractPiglinEntity;
-import net.minecraft.entity.mob.ZombifiedPiglinEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.*;
-import net.minecraft.item.consume.UseAction;
-import net.minecraft.registry.Registries;
-import net.minecraft.util.Arm;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.world.EmptyBlockView;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.entity.layers.HumanoidArmorLayer;
+import net.minecraft.client.renderer.entity.state.AvatarRenderState;
+import net.minecraft.client.renderer.item.ItemModelResolver;
+import net.minecraft.client.renderer.item.ItemStackRenderState;
+import net.minecraft.client.resources.model.EquipmentClientInfo;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.util.Mth;
+import net.minecraft.world.entity.*;
+import net.minecraft.world.entity.monster.piglin.AbstractPiglin;
+import net.minecraft.world.entity.monster.zombie.ZombifiedPiglin;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.*;
+import net.minecraft.world.item.component.ResolvableProfile;
+import net.minecraft.world.level.EmptyBlockGetter;
+import net.minecraft.world.level.block.*;
 
 import org.jetbrains.annotations.Nullable;
 
@@ -36,7 +33,7 @@ import com.minelittlepony.client.transform.PonyPosture;
 
 import java.util.*;
 
-public class PonyRenderState extends PlayerEntityRenderState implements PonyModel.AttributedHolder, PonifiedRenderState {
+public class PonyRenderState extends AvatarRenderState implements PonyModel.AttributedHolder, PonifiedRenderState {
     public final ModelAttributes attributes = new ModelAttributes();
 
     public float vehicleOffset;
@@ -64,28 +61,28 @@ public class PonyRenderState extends PlayerEntityRenderState implements PonyMode
 
     public PonyPosture posture = PonyPosture.STANDING;
 
-    public void updateState(ItemModelManager resolver,
+    public void updateState(ItemModelResolver resolver,
             Map<EquipmentSlot, ItemStack> equipment,
-            Map<Arm, ItemStack> armStacks,
+            Map<HumanoidArm, ItemStack> armStacks,
             Pony pony, ModelAttributes.Mode mode) {
-        this.equippedHeadStack = equipment.getOrDefault(EquipmentSlot.HEAD, ItemStack.EMPTY);
+        headEquipment = equipment.getOrDefault(EquipmentSlot.HEAD, ItemStack.EMPTY);
         this.pony = pony;
-        baby = attributes.size == SizePreset.FOAL;
+        isBaby = attributes.size == SizePreset.FOAL;
         race = pony.race();
         glowColor = attributes.metadata.glowColor();
         vehicleOffset = 0;
         riderOffset = getRiderYOffset();
         nameplateYOffset = getNamePlateYOffset();
         legOutset = getLegOutset();
-        isInSneakingPose = attributes.isCrouching && !attributes.isLyingDown;
+        isCrouching = attributes.isCrouching && !attributes.isLyingDown;
         sleepingInBed = false;
         submergedInWater = false;
-        wobbleAmount = handSwingProgress <= 0 ? 0 : MathHelper.sin(MathHelper.sqrt(handSwingProgress) * MathHelper.PI * 2) * 0.04F;
+        wobbleAmount = attackTime <= 0 ? 0 : Mth.sin(Mth.sqrt(attackTime) * Mth.PI * 2) * 0.04F;
         if (hasMagicGlow()) {
             wobbleAmount *= 0.5;
         }
         if (attributes.isSitting) {
-            pose = EntityPose.SITTING;
+            pose = Pose.SITTING;
         }
 
         headVisible = true;
@@ -94,10 +91,8 @@ public class PonyRenderState extends PlayerEntityRenderState implements PonyMode
         isTechnoblade = false;
 
         // Adjust cape angles
-        // capePitch
-        field_53537 *= 0.3F;
-        // capeRoll
-        field_53538 *= 3F;
+        capeFlap *= 0.3F;
+        capeLean *= 3F;
 
         equippedHeads.clear();
         hasHeadBlock = false;
@@ -108,41 +103,41 @@ public class PonyRenderState extends PlayerEntityRenderState implements PonyMode
             hasHeadBlock |= state.opaque;
         }
 
-        rightHeldItem.updateItemRenderState(this, resolver, armStacks.getOrDefault(Arm.RIGHT, ItemStack.EMPTY), ItemDisplayContext.THIRD_PERSON_RIGHT_HAND, null);
-        leftHeldItem.updateItemRenderState(this, resolver, armStacks.getOrDefault(Arm.LEFT, ItemStack.EMPTY), ItemDisplayContext.THIRD_PERSON_LEFT_HAND, null);
+        rightHeldItem.updateItemRenderState(this, resolver, armStacks.getOrDefault(HumanoidArm.RIGHT, ItemStack.EMPTY), ItemDisplayContext.THIRD_PERSON_RIGHT_HAND, null);
+        leftHeldItem.updateItemRenderState(this, resolver, armStacks.getOrDefault(HumanoidArm.LEFT, ItemStack.EMPTY), ItemDisplayContext.THIRD_PERSON_LEFT_HAND, null);
     }
 
     @SuppressWarnings("unchecked")
-    public void updateState(ItemModelManager resolver, @Nullable LivingEntity entity, Models<?> models, Pony pony, ModelAttributes.Mode mode) {
-        this.equippedHeadStack = entity.getEquippedStack(EquipmentSlot.HEAD);
+    public void updateState(ItemModelResolver resolver, @Nullable LivingEntity entity, Models<?> models, Pony pony, ModelAttributes.Mode mode) {
+        headEquipment = entity.getItemBySlot(EquipmentSlot.HEAD);
         this.pony = pony;
         if (entity != null) {
             attributes.updateLivingState(entity, pony, mode);
-            attributes.checkRainboom(entity, models.body(), age);
+            attributes.checkRainboom(entity, models.body(), ageInTicks);
         }
         attributes.size = PonyDisplayTags.of(entity).size().orElseGet(() -> computeSize(entity, attributes.size));
-        baby = attributes.size == SizePreset.FOAL;
+        isBaby = attributes.size == SizePreset.FOAL;
         race = PonyDisplayTags.of(entity).race().orElseGet(() -> computeRace(entity, pony));
         glowColor = PonyDisplayTags.of(entity).magicColor().orElse(attributes.metadata.glowColor());
-        vehicleOffset = hasVehicle && entity != null ? entity.getVehicle().getEyeHeight(pose) : 0;
+        vehicleOffset = isPassenger && entity != null ? entity.getVehicle().getEyeHeight(pose) : 0;
         riderOffset = getRiderYOffset();
         nameplateYOffset = getNamePlateYOffset();
         legOutset = getLegOutset();
-        isInSneakingPose = attributes.isCrouching && !attributes.isLyingDown;
-        sleepingInBed = entity != null && entity.getSleepingPosition().isPresent() && entity.getEntityWorld().getBlockState(entity.getSleepingPosition().get()).getBlock() instanceof BedBlock;
-        submergedInWater = entity != null && entity.isSubmergedInWater();
-        wobbleAmount = handSwingProgress <= 0 ? 0 : MathHelper.sin(MathHelper.sqrt(handSwingProgress) * MathHelper.PI * 2) * 0.04F;
+        isCrouching = attributes.isCrouching && !attributes.isLyingDown;
+        sleepingInBed = entity != null && entity.getSleepingPos().isPresent() && entity.level().getBlockState(entity.getSleepingPos().get()).getBlock() instanceof BedBlock;
+        submergedInWater = entity != null && entity.isUnderWater();
+        wobbleAmount = attackTime <= 0 ? 0 : Mth.sin(Mth.sqrt(attackTime) * Mth.PI * 2) * 0.04F;
         if (hasMagicGlow()) {
             wobbleAmount *= 0.5;
         }
         if (attributes.isSitting) {
-            pose = EntityPose.SITTING;
+            pose = Pose.SITTING;
         }
 
         // Prevent head from rendering for ourselves if we are sleeping in first person mode
-        headVisible = entity != MinecraftClient.getInstance().getCameraEntity()
-                || !MinecraftClient.getInstance().options.getPerspective().isFirstPerson()
-                || MinecraftClient.getInstance().gameRenderer.getCamera().getCameraPos().squaredDistanceTo(entity.getCameraPosVec(age - (int)age)) > 1
+        headVisible = entity != Minecraft.getInstance().getCameraEntity()
+                || !Minecraft.getInstance().options.getCameraType().isFirstPerson()
+                || Minecraft.getInstance().gameRenderer.getMainCamera().position().distanceToSqr(entity.getEyePosition(ageInTicks - (int)ageInTicks)) > 1
                 || RenderPass.getCurrent() != RenderPass.WORLD;
 
         if (entity != null) {
@@ -151,23 +146,21 @@ public class PonyRenderState extends PlayerEntityRenderState implements PonyMode
         // Hide the horn glow if we're being rendered during an iris shadow pass
         hornGlowVisible = !IrisApiCompat.isOnShadowPass() && models.body() instanceof ModelWithHorn h && h.isCasting(this);
         isTechnoblade = ((
-                    entity instanceof AbstractPiglinEntity
-                 || entity instanceof PlayerEntity
-                 || entity instanceof ZombifiedPiglinEntity
-             ) && displayName != null && displayName.getString().equalsIgnoreCase("technoblade")
+                    entity instanceof AbstractPiglin
+                 || entity instanceof Player
+                 || entity instanceof ZombifiedPiglin
+             ) && nameTag != null && nameTag.getString().equalsIgnoreCase("technoblade")
          );
 
         // Adjust cape angles
-        // capePitch
-        field_53537 *= 0.3F;
-        // capeRoll
-        field_53538 *= 3F;
+        capeFlap *= 0.3F;
+        capeLean *= 3F;
 
         ArmourRendererPlugin plugin = ArmourRendererPlugin.INSTANCE.get();
 
         equippedHeads.clear();
         hasHeadBlock = false;
-        for (ItemStack stack : plugin.getArmorStacks(entity, EquipmentSlot.HEAD, EquipmentModel.LayerType.HUMANOID, ArmourRendererPlugin.ArmourType.SKULL)) {
+        for (ItemStack stack : plugin.getArmorStacks(entity, EquipmentSlot.HEAD, EquipmentClientInfo.LayerType.HUMANOID, ArmourRendererPlugin.ArmourType.SKULL)) {
             EquippedHeadRenderState state = EquippedHeadRenderState.of(resolver, stack, entity);
             if (!state.isEmpty()) {
                 equippedHeads.add(state);
@@ -181,17 +174,17 @@ public class PonyRenderState extends PlayerEntityRenderState implements PonyMode
             posture.updateState(entity, this);
         }
 
-        this.pitch = attributes.isSleeping ? 0.1f : this.pitch;
-        if (entity instanceof PlayerLikeEntity) {
-            relativeHeadYaw = attributes.isSleeping ? (Math.signum(MathHelper.wrapDegrees(relativeHeadYaw)) * 1.3F) : relativeHeadYaw;
+        xRot = attributes.isSleeping ? 0.1f : xRot;
+        if (entity instanceof Avatar) {
+            yRot = attributes.isSleeping ? (Math.signum(Mth.wrapDegrees(yRot)) * 1.3F) : yRot;
         }
 
         PonyRenderStatePrepareCallback.EVENT.invoker().onPonyRenderStatePrepared(this, models.body(), mode);
     }
 
-    protected void updateHeldItems(ItemModelManager resolver, LivingEntity entity) {
-        rightHeldItem.updateItemRenderState(this, resolver, entity.getStackInArm(Arm.RIGHT), ItemDisplayContext.THIRD_PERSON_RIGHT_HAND, entity);
-        leftHeldItem.updateItemRenderState(this, resolver, entity.getStackInArm(Arm.LEFT), ItemDisplayContext.THIRD_PERSON_LEFT_HAND, entity);
+    protected void updateHeldItems(ItemModelResolver resolver, LivingEntity entity) {
+        rightHeldItem.updateItemRenderState(this, resolver, entity.getItemHeldByArm(HumanoidArm.RIGHT), ItemDisplayContext.THIRD_PERSON_RIGHT_HAND, entity);
+        leftHeldItem.updateItemRenderState(this, resolver, entity.getItemHeldByArm(HumanoidArm.LEFT), ItemDisplayContext.THIRD_PERSON_LEFT_HAND, entity);
     }
 
     protected Race computeRace(@Nullable LivingEntity entity, Pony pony) {
@@ -216,7 +209,7 @@ public class PonyRenderState extends PlayerEntityRenderState implements PonyMode
      */
     @Override
     public float getSwingAmount() {
-        return this.handSwingProgress;
+        return attackTime;
     }
 
     protected float getLegOutset() {
@@ -241,17 +234,17 @@ public class PonyRenderState extends PlayerEntityRenderState implements PonyMode
 
     private float getNamePlateYOffset() {
         // We start by negating the height calculation done by mahjong.
-        float y = -(height + 0.5F);
+        float y = -(boundingBoxHeight + 0.5F);
 
         // Then we add our own offsets.
         y += attributes.visualHeight * attributes.size.scaleFactor() + 0.25F;
         y += vehicleOffset;
 
-        if (isInSneakingPose) {
+        if (isCrouching) {
             y -= 0.25F;
         }
 
-        if (isInPose(EntityPose.SLEEPING)) {
+        if (hasPose(Pose.SLEEPING)) {
             y += 0.5F;
         }
 
@@ -263,12 +256,12 @@ public class PonyRenderState extends PlayerEntityRenderState implements PonyMode
         return attributes;
     }
 
-    public HeldItemRenderState getHeldItem(Arm arm) {
-        return arm == Arm.LEFT ? leftHeldItem : rightHeldItem;
+    public HeldItemRenderState getHeldItem(HumanoidArm arm) {
+        return arm == HumanoidArm.LEFT ? leftHeldItem : rightHeldItem;
     }
 
     public static class HeldItemRenderState {
-        public UseAction action = UseAction.NONE;
+        public ItemUseAnimation action = ItemUseAnimation.NONE;
         public boolean forwardFacing;
         public boolean chargedCrossbow;
         public boolean repositionFirstPerson;
@@ -278,36 +271,36 @@ public class PonyRenderState extends PlayerEntityRenderState implements PonyMode
         public float levitatingItemZDrift;
         public float levitatingItemScale;
 
-        public final ItemRenderState glintlessHandItemState = new ItemRenderState();
+        public final ItemStackRenderState glintlessHandItemState = new ItemStackRenderState();
 
-        public void updateItemRenderState(PonyRenderState state, ItemModelManager resolver, ItemStack stack, ItemDisplayContext context, @Nullable LivingEntity entity) {
-            action = stack.getUseAction();
-            forwardFacing = PonyConfig.getInstance().forwardHoldingItems.get().contains(Registries.ITEM.getId(stack.getItem()));
-            chargedCrossbow = action == UseAction.CROSSBOW && CrossbowItem.isCharged(stack);
-            repositionFirstPerson = state.itemUseTime <= 0 || action == UseAction.NONE || chargedCrossbow;
-            handHeldTool = action == UseAction.BOW
-                    || action == UseAction.CROSSBOW
-                    || action == UseAction.BLOCK
-                    || stack.contains(DataComponentTypes.TOOL)
+        public void updateItemRenderState(PonyRenderState state, ItemModelResolver resolver, ItemStack stack, ItemDisplayContext context, @Nullable LivingEntity entity) {
+            action = stack.getUseAnimation();
+            forwardFacing = PonyConfig.getInstance().forwardHoldingItems.get().contains(BuiltInRegistries.ITEM.getKey(stack.getItem()));
+            chargedCrossbow = action == ItemUseAnimation.CROSSBOW && CrossbowItem.isCharged(stack);
+            repositionFirstPerson = state.ticksUsingItem <= 0 || action == ItemUseAnimation.NONE || chargedCrossbow;
+            handHeldTool = action == ItemUseAnimation.BOW
+                    || action == ItemUseAnimation.CROSSBOW
+                    || action == ItemUseAnimation.BLOCK
+                    || stack.has(DataComponents.TOOL)
                     || forwardFacing;
 
             if (PonyConfig.getInstance().tpsmagic.get() && state.hasMagicGlow()) {
                 float driftStrength = 0.002F;
-                levitatingItemXDrift = MathHelper.sin(state.age / 20F) * driftStrength;
-                levitatingItemZDrift = MathHelper.cos((state.age + 20) / 20F) * driftStrength;
+                levitatingItemXDrift = Mth.sin(state.ageInTicks / 20F) * driftStrength;
+                levitatingItemZDrift = Mth.cos((state.ageInTicks + 20) / 20F) * driftStrength;
 
-                levitatingItemScale = 0.2F + (MathHelper.sin(state.age / 10F) + 1) * driftStrength * 6;
+                levitatingItemScale = 0.2F + (Mth.sin(state.ageInTicks / 10F) + 1) * driftStrength * 6;
 
-                Boolean glintOverride = stack.get(DataComponentTypes.ENCHANTMENT_GLINT_OVERRIDE);
-                stack.set(DataComponentTypes.ENCHANTMENT_GLINT_OVERRIDE, false);
+                Boolean glintOverride = stack.get(DataComponents.ENCHANTMENT_GLINT_OVERRIDE);
+                stack.set(DataComponents.ENCHANTMENT_GLINT_OVERRIDE, false);
 
                 if (entity == null) {
-                    resolver.clearAndUpdate(glintlessHandItemState, stack, context, null, null, 0);
+                    resolver.updateForTopItem(glintlessHandItemState, stack, context, null, null, 0);
                 } else {
-                    resolver.updateForLivingEntity(glintlessHandItemState, stack, context, entity);
+                    resolver.updateForLiving(glintlessHandItemState, stack, context, entity);
                 }
 
-                stack.set(DataComponentTypes.ENCHANTMENT_GLINT_OVERRIDE, glintOverride);
+                stack.set(DataComponents.ENCHANTMENT_GLINT_OVERRIDE, glintOverride);
             } else {
                 glintlessHandItemState.clear();
             }
@@ -315,27 +308,27 @@ public class PonyRenderState extends PlayerEntityRenderState implements PonyMode
     }
 
     public record EquippedHeadRenderState(
-            ItemRenderState item,
+            ItemStackRenderState item,
             boolean opaque,
-            @Nullable SkullType skullType,
-            @Nullable ProfileComponent wearingSkullProfile) {
-        static final EquippedHeadRenderState EMPTY = new EquippedHeadRenderState(new ItemRenderState(), false, null, null);
+            @Nullable SkullBlock.Type skullType,
+            @Nullable ResolvableProfile wearingSkullProfile) {
+        static final EquippedHeadRenderState EMPTY = new EquippedHeadRenderState(new ItemStackRenderState(), false, null, null);
 
-        public static EquippedHeadRenderState of(ItemModelManager resolver, ItemStack stack, @Nullable LivingEntity entity) {
+        public static EquippedHeadRenderState of(ItemModelResolver resolver, ItemStack stack, @Nullable LivingEntity entity) {
             if (stack.isEmpty()) {
                 return EMPTY;
             }
 
             if (stack.getItem() instanceof BlockItem b && b.getBlock() instanceof AbstractSkullBlock skullBlock) {
-                return new EquippedHeadRenderState(EMPTY.item(), skullBlock.getDefaultState().isSolidBlock(EmptyBlockView.INSTANCE, BlockPos.ORIGIN), skullBlock.getSkullType(), stack.get(DataComponentTypes.PROFILE));
+                return new EquippedHeadRenderState(EMPTY.item(), skullBlock.defaultBlockState().isCollisionShapeFullBlock(EmptyBlockGetter.INSTANCE, BlockPos.ZERO), skullBlock.getType(), stack.get(DataComponents.PROFILE));
             }
 
-            if (!ArmorFeatureRenderer.hasModel(stack, EquipmentSlot.HEAD)) {
-                ItemRenderState item = new ItemRenderState();
+            if (!HumanoidArmorLayer.shouldRender(stack, EquipmentSlot.HEAD)) {
+                ItemStackRenderState item = new ItemStackRenderState();
                 if (entity != null) {
-                    resolver.updateForLivingEntity(item, stack, ItemDisplayContext.HEAD, entity);
+                    resolver.updateForLiving(item, stack, ItemDisplayContext.HEAD, entity);
                 } else {
-                    resolver.clearAndUpdate(item, stack, ItemDisplayContext.HEAD, null, null, 0);
+                    resolver.updateForTopItem(item, stack, ItemDisplayContext.HEAD, null, null, 0);
                 }
                 if (!item.isEmpty()) {
                     return new EquippedHeadRenderState(item, false, null, null);

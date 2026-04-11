@@ -1,14 +1,15 @@
 package com.minelittlepony.client.mixin;
 
+import net.minecraft.client.Camera;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
+
 import org.spongepowered.asm.mixin.*;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.ModifyArg;
 
 import com.minelittlepony.api.pony.Pony;
 
-import net.minecraft.client.render.Camera;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.LivingEntity;
 
 @Mixin(Camera.class)
 abstract class MixinCamera {
@@ -22,7 +23,7 @@ abstract class MixinCamera {
 
     @ModifyArg(method = "update(Lnet/minecraft/world/BlockView;Lnet/minecraft/entity/Entity;ZZF)V", at = @At(value = "INVOKE", target = "java/lang/Math.max(FF)F"), index = 1)
     private float adjustVehicleCameraDistance(float value) {
-        if (focusedEntity.hasVehicle() && focusedEntity.getVehicle() instanceof LivingEntity l) {
+        if (focusedEntity.isPassenger() && focusedEntity.getVehicle() instanceof LivingEntity l) {
             return value * minelp_getDistanceScale(l);
         }
         return value * minelp_getDistanceScale(focusedEntity);

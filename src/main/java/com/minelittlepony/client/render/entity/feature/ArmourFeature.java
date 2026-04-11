@@ -7,23 +7,23 @@ import com.minelittlepony.client.model.armour.*;
 import com.minelittlepony.client.render.PonyRenderContext;
 import com.minelittlepony.client.render.entity.state.PonyRenderState;
 import com.minelittlepony.client.util.render.MatrixStackUtil;
+import com.mojang.blaze3d.vertex.PoseStack;
 
 import java.util.*;
 
 import net.fabricmc.fabric.api.client.rendering.v1.ArmorRenderer;
 import net.fabricmc.fabric.impl.client.rendering.ArmorRendererRegistryImpl;
-import net.minecraft.client.render.command.OrderedRenderCommandQueue;
-import net.minecraft.client.render.entity.equipment.EquipmentModel;
-import net.minecraft.client.render.entity.equipment.EquipmentModelLoader;
-import net.minecraft.client.render.entity.model.BipedEntityModel;
-import net.minecraft.client.texture.SpriteAtlasTexture;
-import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.component.DataComponentTypes;
-import net.minecraft.component.type.EquippableComponent;
-import net.minecraft.entity.EquipmentSlot;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.item.*;
+import net.minecraft.client.model.HumanoidModel;
+import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.client.renderer.texture.TextureAtlas;
+import net.minecraft.client.resources.model.EquipmentAssetManager;
+import net.minecraft.client.resources.model.EquipmentClientInfo;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.util.Unit;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.equipment.Equippable;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -40,34 +40,33 @@ public class ArmourFeature<
 
     private final PonifiedEquipmentRenderer equipmentRenderer;
 
-    public ArmourFeature(PonyRenderContext<T, S, M> context, EquipmentModelLoader modelLoader, SpriteAtlasTexture armorTrimsAtlas) {
+    public ArmourFeature(PonyRenderContext<T, S, M> context, EquipmentAssetManager equipmentAssets, TextureAtlas armorTrimsAtlas) {
         super(context);
-        this.equipmentRenderer = new PonifiedEquipmentRenderer(modelLoader, armorTrimsAtlas);
+        this.equipmentRenderer = new PonifiedEquipmentRenderer(equipmentAssets, armorTrimsAtlas);
     }
 
     @Override
-    public void render(MatrixStack matrices, OrderedRenderCommandQueue queue, int light, S entity, float limbDistance, float limbAngle) {
-        renderArmor(getContext().getEquineManager().lookupModel(entity), matrices, queue, light, entity, limbDistance, limbAngle, equipmentRenderer);
+    public void submit(PoseStack matrices, SubmitNodeCollector queue, int light, S entity, float xRot, float yRot) {
+        renderArmor(getContext().getEquineManager().lookupModel(entity), matrices, queue, light, entity, equipmentRenderer);
     }
 
     public static <S extends PonyRenderState, V extends ClientPonyModel<S>> void renderArmor(
-            Models<V> pony, MatrixStack matrices,
-            OrderedRenderCommandQueue queue, int light, S entity,
-            float limbDistance, float limbAngle, PonifiedEquipmentRenderer equipmentRenderer) {
+            Models<V> pony, PoseStack matrices,
+            SubmitNodeCollector queue, int light, S entity,
+            PonifiedEquipmentRenderer equipmentRenderer) {
 
         for (EquipmentSlot i : EquipmentSlot.values()) {
             if (i.getType() == EquipmentSlot.Type.HUMANOID_ARMOR) {
-                renderArmor(pony, matrices, queue, light, entity, limbDistance, limbAngle, i, EquipmentModel.LayerType.HUMANOID_LEGGINGS, equipmentRenderer);
-                renderArmor(pony, matrices, queue, light, entity, limbDistance, limbAngle, i, EquipmentModel.LayerType.HUMANOID, equipmentRenderer);
+                renderArmor(pony, matrices, queue, light, entity, i, EquipmentClientInfo.LayerType.HUMANOID_LEGGINGS, equipmentRenderer);
+                renderArmor(pony, matrices, queue, light, entity, i, EquipmentClientInfo.LayerType.HUMANOID, equipmentRenderer);
             }
         }
     }
 
     private static <S extends PonyRenderState, V extends ClientPonyModel<S>> void renderArmor(
-            Models<V> models, MatrixStack matrices,
-            OrderedRenderCommandQueue queue, int light, S entity,
-            float limbDistance, float limbAngle,
-            EquipmentSlot armorSlot, EquipmentModel.LayerType layerType, PonifiedEquipmentRenderer equipmentRenderer) {
+            Models<V> models, PoseStack matrices,
+            SubmitNodeCollector queue, int light, S entity,
+            EquipmentSlot armorSlot, EquipmentClientInfo.LayerType layerType, PonifiedEquipmentRenderer equipmentRenderer) {
 
         ArmourRendererPlugin plugin = ArmourRendererPlugin.INSTANCE.get();
 
@@ -80,12 +79,12 @@ public class ArmourFeature<
 
     private static <S extends PonyRenderState, V extends ClientPonyModel<S>> void render(
             EquipmentSlot slot,
-            EquipmentModel.LayerType layerType,
+            EquipmentClientInfo.LayerType layerType,
             S state,
             Models<V> models,
             ItemStack stack,
-            MatrixStack matrices,
-            OrderedRenderCommandQueue queue,
+            PoseStack matrices,
+            SubmitNodeCollector queue,
             int light, PonifiedEquipmentRenderer equipmentRenderer
         ) {
         if (!FABRIC_API_FAILURE && PonyConfig.getInstance().enableFabricModelsApiSupport.get()) {
@@ -98,13 +97,13 @@ public class ArmourFeature<
                 FABRIC_API_FAILURE = true;
             }
         }
-        EquippableComponent equippableComponent = stack.get(DataComponentTypes.EQUIPPABLE);
+        Equippable equippableComponent = stack.get(DataComponents.EQUIPPABLE);
         if (hasModel(equippableComponent, slot) && (slot != EquipmentSlot.HEAD || state.headVisible)) {
-            equipmentRenderer.render(slot, layerType, equippableComponent.assetId().orElseThrow(), state, models, stack, matrices, queue, light, null, state.outlineColor, 1);
+            equipmentRenderer.renderLayers(slot, layerType, equippableComponent.assetId().orElseThrow(), state, models, stack, matrices, queue, light, null, state.outlineColor, 1);
         }
     }
 
-    private static boolean hasModel(@Nullable EquippableComponent component, EquipmentSlot slot) {
+    private static boolean hasModel(@Nullable Equippable component, EquipmentSlot slot) {
         return component != null && component.assetId().isPresent() && component.slot() == slot;
     }
 
@@ -114,18 +113,18 @@ public class ArmourFeature<
         @SuppressWarnings({"rawtypes", "unchecked"})
         private static <S extends PonyRenderState, V extends ClientPonyModel<S>> boolean renderArmor(
                 ItemStack stack,
-                Models<V> models, MatrixStack matrices,
-                OrderedRenderCommandQueue queue, int light, S entity,
-                EquipmentSlot armorSlot, EquipmentModel.LayerType layerType) {
+                Models<V> models, PoseStack matrices,
+                SubmitNodeCollector queue, int light, S entity,
+                EquipmentSlot armorSlot, EquipmentClientInfo.LayerType layerType) {
             ArmorRenderer renderer = ArmorRendererRegistryImpl.get(stack.getItem());
 
             if (renderer != null && !FAILING_RENDERERS.containsKey(renderer)) {
-                MatrixStack isolation = MatrixStackUtil.pushIsolation(matrices);
+                PoseStack isolation = MatrixStackUtil.pushIsolation(matrices);
                 try {
-                    isolation.push();
+                    isolation.pushPose();
                     models.body().transform(entity, getBodyPart(armorSlot), isolation);
-                    renderer.render(isolation, queue, stack, entity, armorSlot, light, (BipedEntityModel)models.body());
-                    isolation.pop();
+                    renderer.render(isolation, queue, stack, entity, armorSlot, light, (HumanoidModel)models.body());
+                    isolation.popPose();
                 } catch (Throwable t) {
                     LOGGER.error("Exception occured whilst rendering custom armor via fabric api. Renderer {} has been disabled", renderer, t);
                     FAILING_RENDERERS.put(renderer, Unit.INSTANCE);

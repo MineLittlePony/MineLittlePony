@@ -1,9 +1,9 @@
 package com.minelittlepony.client.model.entity;
 
-import net.minecraft.client.model.ModelPart;
-import net.minecraft.client.render.RenderLayers;
-import net.minecraft.client.render.entity.model.EntityModel;
-import net.minecraft.util.math.MathHelper;
+import net.minecraft.client.model.EntityModel;
+import net.minecraft.client.model.geom.ModelPart;
+import net.minecraft.client.renderer.rendertype.RenderTypes;
+import net.minecraft.util.Mth;
 
 import com.minelittlepony.client.render.entity.VexRenderer;
 
@@ -18,7 +18,7 @@ public class ParaspriteModel extends EntityModel<VexRenderer.State> {
     private final ModelPart rightWing2;
 
     public ParaspriteModel(ModelPart root) {
-        super(root, RenderLayers::entityTranslucent);
+        super(root, RenderTypes::entityTranslucent);
         body = root.getChild("body");
         jaw = body.getChild("jaw");
         lips = body.getChild("lips");
@@ -29,33 +29,23 @@ public class ParaspriteModel extends EntityModel<VexRenderer.State> {
     }
 
     @Override
-    public void setAngles(VexRenderer.State state) {
-        root.pitch = state.bodyPitch;
-        body.pitch = 0;
-        root.pitch = state.pitch * MathHelper.RADIANS_PER_DEGREE;
-        root.yaw = state.relativeHeadYaw * MathHelper.RADIANS_PER_DEGREE;
+    public void setupAnim(VexRenderer.State state) {
+        root.xRot = state.bodyPitch;
+        body.xRot = 0;
+        root.xRot = state.xRot * Mth.DEG_TO_RAD;
+        root.yRot = state.yRot * Mth.DEG_TO_RAD;
 
-        jaw.originY = Math.max(0, 1.2F * state.jawOpenAmount);
-        lips.originY = jaw.originY - 0.9F;
+        jaw.y = Math.max(0, 1.2F * state.jawOpenAmount);
+        lips.y = jaw.y - 0.9F;
         lips.visible = state.jawOpenAmount > 0;
-        body.pitch += 0.3F * state.jawOpenAmount;
-        jaw.pitch = 0.4F * state.jawOpenAmount;
-        lips.pitch = 0.2F * state.jawOpenAmount;
+        body.xRot += 0.3F * state.jawOpenAmount;
+        jaw.xRot = 0.4F * state.jawOpenAmount;
+        lips.xRot = 0.2F * state.jawOpenAmount;
 
-        leftWing.pitch = 0;
-        leftWing.roll = state.wingRoll;
-        leftWing.yaw = state.wingYaw;
+        leftWing.setRotation(0, state.wingYaw, state.wingRoll);
+        rightWing.setRotation(0, -state.wingYaw, -state.wingRoll);
 
-        rightWing.pitch = 0;
-        rightWing.roll = -state.wingRoll;
-        rightWing.yaw = -state.wingYaw;
-
-        leftWing2.pitch = 0;
-        leftWing2.roll = state.innerWingRoll;
-        leftWing2.yaw = state.innerWingPitch;
-
-        rightWing2.pitch = 0;
-        rightWing2.roll = -state.innerWingRoll;
-        rightWing2.yaw = -state.innerWingPitch;
+        leftWing2.setRotation(0, state.innerWingPitch, state.innerWingRoll);
+        rightWing2.setRotation(0, -state.innerWingPitch, -state.innerWingRoll);
     }
 }

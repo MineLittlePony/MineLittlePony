@@ -1,8 +1,8 @@
 package com.minelittlepony.api.model;
 
-import net.minecraft.client.render.entity.equipment.EquipmentModel;
-import net.minecraft.item.ItemStack;
+import net.minecraft.client.resources.model.EquipmentClientInfo;
 import net.minecraft.util.Util;
+import net.minecraft.world.item.ItemStack;
 
 import com.minelittlepony.client.model.ClientPonyModel;
 import com.minelittlepony.client.model.armour.*;
@@ -27,7 +27,7 @@ public record Models<M extends PonyModel<?>> (
         this(Util.memoize(k -> k.createModel()), key.createModel());
     }
 
-    public ClientPonyModel<?> getArmourModel(ItemStack stack, EquipmentModel.LayerType layerType, ArmourVariant variant) {
+    public ClientPonyModel<?> getArmourModel(ItemStack stack, EquipmentClientInfo.LayerType layerType, ArmourVariant variant) {
         return armor.apply(ArmorModelRegistry.getModelKey(stack.getItem(), layerType, variant));
     }
 

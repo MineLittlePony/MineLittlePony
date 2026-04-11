@@ -1,13 +1,13 @@
 package com.minelittlepony.client.transform;
 
-import net.minecraft.client.model.ModelPart;
-import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.client.model.geom.ModelPart;
 
 import org.joml.Vector3f;
 
 import com.minelittlepony.api.model.*;
 import com.minelittlepony.api.pony.meta.Size;
 import com.minelittlepony.api.pony.meta.SizePreset;
+import com.mojang.blaze3d.vertex.PoseStack;
 
 import java.util.Arrays;
 import java.util.Map;
@@ -17,7 +17,7 @@ import java.util.stream.Collectors;
 public enum PonyTransformation {
     NORMAL(SizePreset.NORMAL) {
         @Override
-        public void transform(ModelAttributes attributes, BodyPart part, MatrixStack stack) {
+        public void transform(ModelAttributes attributes, BodyPart part, PoseStack stack) {
             switch (part) {
                 case NECK:
                     if (attributes.isCrouching) stack.translate(-0.03F, 0.03F, 0.13F);
@@ -36,7 +36,7 @@ public enum PonyTransformation {
     },
     STOCKY(SizePreset.STOCKY) {
         @Override
-        public void transform(ModelAttributes attributes, BodyPart part, MatrixStack stack) {
+        public void transform(ModelAttributes attributes, BodyPart part, PoseStack stack) {
             switch (part) {
                 case NECK:
                     stack.translate(0, 0, -0.045F);
@@ -64,7 +64,7 @@ public enum PonyTransformation {
 
         @Override
         public void transform(ModelAttributes attributes, BodyPart bodyPart, ModelPart part) {
-            part.scale(switch (bodyPart) {
+            part.offsetScale(switch (bodyPart) {
                 case HEAD -> new Vector3f(0.02F);
                 case NECK -> new Vector3f(0.3F, 0, 0.1F);
                 case BODY -> new Vector3f(0.4F, 0.3F, 0.1F);
@@ -75,7 +75,7 @@ public enum PonyTransformation {
     },
     LANKY(SizePreset.LANKY) {
         @Override
-        public void transform(ModelAttributes attributes, BodyPart part, MatrixStack stack) {
+        public void transform(ModelAttributes attributes, BodyPart part, PoseStack stack) {
             switch (part) {
                 case NECK:
                     if (attributes.isCrouching) stack.translate(0, -0.1F, 0.15F);
@@ -98,7 +98,7 @@ public enum PonyTransformation {
 
         @Override
         public void transform(ModelAttributes attributes, BodyPart bodyPart, ModelPart part) {
-            part.scale(switch (bodyPart) {
+            part.offsetScale(switch (bodyPart) {
                 case HEAD -> new Vector3f(0.05F);
                 case NECK -> new Vector3f(0, 0.3F, 0);
                 case BODY -> new Vector3f(-0.1F, 0.2F, -0.1F);
@@ -109,7 +109,7 @@ public enum PonyTransformation {
     },
     BULKY(SizePreset.BULKY) {
         @Override
-        public void transform(ModelAttributes attributes, BodyPart part, MatrixStack stack) {
+        public void transform(ModelAttributes attributes, BodyPart part, PoseStack stack) {
             switch (part) {
                 case NECK:
                     if (attributes.isCrouching) stack.translate(-0.03F, -0.091F, 0.09F);
@@ -134,7 +134,7 @@ public enum PonyTransformation {
 
         @Override
         public void transform(ModelAttributes attributes, BodyPart bodyPart, ModelPart part) {
-            part.scale(switch (bodyPart) {
+            part.offsetScale(switch (bodyPart) {
                 case NECK -> new Vector3f(0, 0.3F, 0);
                 case BODY -> new Vector3f(0.15F, 0.2F, 0.2F);
                 case LEGS -> new Vector3f(0.15F, 0.12F, 0.15F);
@@ -144,7 +144,7 @@ public enum PonyTransformation {
     },
     FOAL(SizePreset.FOAL) {
         @Override
-        public void transform(ModelAttributes attributes, BodyPart part, MatrixStack stack) {
+        public void transform(ModelAttributes attributes, BodyPart part, PoseStack stack) {
             switch (part) {
                 case NECK:
                     if (attributes.isCrouching) stack.translate(0F, 0, 0.1F);
@@ -172,7 +172,7 @@ public enum PonyTransformation {
 
         @Override
         public void transform(ModelAttributes attributes, BodyPart bodyPart, ModelPart part) {
-            part.scale(switch (bodyPart) {
+            part.offsetScale(switch (bodyPart) {
                 case HEAD -> new Vector3f(0.3F);
                 case HORN -> new Vector3f(-0.1F, -0.1F, -0.1F);
                 case LEGS -> new Vector3f(0, -0.19F, 0);
@@ -183,7 +183,7 @@ public enum PonyTransformation {
     },
     TALL(SizePreset.TALL) {
         @Override
-        public void transform(ModelAttributes attributes, BodyPart part, MatrixStack stack) {
+        public void transform(ModelAttributes attributes, BodyPart part, PoseStack stack) {
             switch (part) {
                 case NECK:
                     stack.translate(0, -0.21F, 0);
@@ -217,10 +217,10 @@ public enum PonyTransformation {
         @Override
         public void transform(ModelAttributes attributes, BodyPart bodyPart, ModelPart part) {
             if (bodyPart == BodyPart.HORN) {
-                part.originY += 4;
-                part.originZ += 3;
+                part.y += 4;
+                part.z += 3;
             }
-            part.scale(switch (bodyPart) {
+            part.offsetScale(switch (bodyPart) {
                 case NECK -> new Vector3f(0, 0.28F, 0);
                 case HORN -> new Vector3f(0, 0.7F, 0);
                 case LEGS -> new Vector3f(0, 0.18F, 0);
@@ -231,7 +231,7 @@ public enum PonyTransformation {
     },
     YEARLING(SizePreset.YEARLING) {
         @Override
-        public void transform(ModelAttributes attributes, BodyPart part, MatrixStack stack) {
+        public void transform(ModelAttributes attributes, BodyPart part, PoseStack stack) {
             switch (part) {
                 case NECK:
                     stack.translate(0, -0.1F, 0);
@@ -260,7 +260,7 @@ public enum PonyTransformation {
 
         @Override
         public void transform(ModelAttributes attributes, BodyPart bodyPart, ModelPart part) {
-            part.scale(switch (bodyPart) {
+            part.offsetScale(switch (bodyPart) {
                 case NECK -> new Vector3f(0, 0.3F, 0);
                 case HEAD -> new Vector3f(0.15F);
                 case LEGS -> new Vector3f(0, 0.18F, 0);
@@ -270,7 +270,7 @@ public enum PonyTransformation {
     },
     SQUAT(SizePreset.SQUAT) {
         @Override
-        public void transform(ModelAttributes attributes, BodyPart part, MatrixStack stack) {
+        public void transform(ModelAttributes attributes, BodyPart part, PoseStack stack) {
             switch (part) {
                 case NECK:
                     if (!attributes.isLyingDown || attributes.isSwimming) stack.translate(0, 0.1F, 0);
@@ -303,7 +303,7 @@ public enum PonyTransformation {
 
         @Override
         public void transform(ModelAttributes attributes, BodyPart bodyPart, ModelPart part) {
-            part.scale(switch (bodyPart) {
+            part.offsetScale(switch (bodyPart) {
                 case NECK -> new Vector3f(0.4F, 0, 0.1F);
                 case HEAD -> new Vector3f(0.15F);
                 case BACK, BODY -> new Vector3f(0.4F, 0.3F, 0);
@@ -322,7 +322,7 @@ public enum PonyTransformation {
         this.size = size;
     }
 
-    public abstract void transform(ModelAttributes attributes, BodyPart part, MatrixStack stack);
+    public abstract void transform(ModelAttributes attributes, BodyPart part, PoseStack stack);
 
     public void transform(ModelAttributes attributes, BodyPart bodyPart, ModelPart part) {
 

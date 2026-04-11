@@ -1,11 +1,12 @@
 package com.minelittlepony.client.transform;
 
+import net.minecraft.world.entity.LivingEntity;
+
 import com.minelittlepony.client.render.entity.state.PonyRenderState;
 import com.minelittlepony.common.util.animation.MotionCompositor;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.math.Axis;
 
-import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.util.math.RotationAxis;
-import net.minecraft.entity.LivingEntity;
 
 public class PostureFlight extends PonyPosture {
     private final MotionCompositor compositor = new MotionCompositor();
@@ -21,9 +22,9 @@ public class PostureFlight extends PonyPosture {
     public void updateState(LivingEntity entity, PonyRenderState state) {
         super.updateState(entity, state);
 
-        double motionX = entity.getX() - entity.lastX;
-        double motionY = entity.isOnGround() ? 0 : entity.getY() - entity.lastY;
-        double motionZ = entity.getZ() - entity.lastZ;
+        double motionX = entity.getX() - entity.xo;
+        double motionY = entity.onGround() ? 0 : entity.getY() - entity.yo;
+        double motionZ = entity.getZ() - entity.zo;
 
         state.attributes.motionPitch = (float)compositor.calculateIncline(entity, motionX, motionY, motionZ);
         state.attributes.motionRoll = (float)compositor.calculateRoll(entity, motionX * xScale,  motionY, motionZ * xScale);
@@ -31,9 +32,9 @@ public class PostureFlight extends PonyPosture {
     }
 
     @Override
-    public void transform(PonyRenderState state, MatrixStack stack) {
-        stack.multiply(RotationAxis.POSITIVE_X.rotationDegrees(state.attributes.motionPitch));
-        stack.multiply(RotationAxis.POSITIVE_Z.rotationDegrees(state.attributes.motionRoll));
+    public void transform(PonyRenderState state, PoseStack stack) {
+        stack.mulPose(Axis.XP.rotationDegrees(state.attributes.motionPitch));
+        stack.mulPose(Axis.ZP.rotationDegrees(state.attributes.motionRoll));
         stack.translate(0, yOffset, 0);
     }
 }

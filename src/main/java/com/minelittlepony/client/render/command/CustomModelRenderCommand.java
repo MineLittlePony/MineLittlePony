@@ -1,40 +1,40 @@
 package com.minelittlepony.client.render.command;
 
-import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.Model;
-import net.minecraft.client.render.*;
-import net.minecraft.client.render.command.*;
-import net.minecraft.client.render.command.ModelCommandRenderer.CrumblingOverlayCommand;
-import net.minecraft.client.render.model.ModelBaker;
-import net.minecraft.client.texture.Sprite;
-import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.client.util.math.MatrixStack.Entry;
+import net.minecraft.client.renderer.*;
+import net.minecraft.client.renderer.MultiBufferSource.BufferSource;
+import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
+import net.minecraft.client.renderer.rendertype.RenderType;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.client.resources.model.ModelBakery;
 
 import org.jetbrains.annotations.Nullable;
 
 import com.minelittlepony.client.compat.iris.IrisApiCompat;
+import com.mojang.blaze3d.vertex.*;
 
 import java.util.function.*;
 
 public record CustomModelRenderCommand<S>(
-        MatrixStack matrices,
-        OrderedRenderCommandQueueImpl.ModelCommand<S> command,
-        RenderLayer layer,
-        @Nullable BiFunction<CustomModelRenderCommand<S>, VertexConsumerProvider, VertexConsumer> bufferFunc,
-        @Nullable Predicate<CustomModelRenderCommand<S>> anglesFunc) implements OrderedRenderCommandQueue.Custom {
+        PoseStack matrices,
+        SubmitNodeStorage.ModelSubmit<S> command,
+        RenderType layer,
+        @Nullable BiFunction<CustomModelRenderCommand<S>, BufferSource, VertexConsumer> bufferFunc,
+        @Nullable Predicate<CustomModelRenderCommand<S>> anglesFunc) implements SubmitNodeCollector.CustomGeometryRenderer {
 
     public static <S> void submit(
-            RenderCommandQueue queue,
+            OrderedSubmitNodeCollector queue,
             Model<? super S> model, S state,
-            MatrixStack matrices, RenderLayer renderLayer,
+            PoseStack matrices, RenderType renderLayer,
             int light, int overlay, int tint,
-            @Nullable Sprite sprite, int outline,
-            @Nullable ModelCommandRenderer.CrumblingOverlayCommand crumblingOverlay,
-            @Nullable BiFunction<CustomModelRenderCommand<S>, VertexConsumerProvider, VertexConsumer> layerFunc,
+            @Nullable TextureAtlasSprite sprite, int outline,
+            @Nullable ModelFeatureRenderer.CrumblingOverlay crumblingOverlay,
+            @Nullable BiFunction<CustomModelRenderCommand<S>, BufferSource, VertexConsumer> layerFunc,
             @Nullable Predicate<CustomModelRenderCommand<S>> anglesFunc) {
-        queue.submitCustom(matrices, renderLayer, new CustomModelRenderCommand<>(
-                new MatrixStack(),
-                IrisApiCompat.iris$capture(new OrderedRenderCommandQueueImpl.ModelCommand<>(matrices.peek().copy(), model, state, light, overlay, tint, sprite, outline, crumblingOverlay)),
+        queue.submitCustomGeometry(matrices, renderLayer, new CustomModelRenderCommand<>(
+                new PoseStack(),
+                IrisApiCompat.iris$capture(new SubmitNodeStorage.ModelSubmit<>(matrices.last().copy(), model, state, light, overlay, tint, sprite, outline, crumblingOverlay)),
                 renderLayer,
                 layerFunc,
                 anglesFunc
@@ -42,60 +42,60 @@ public record CustomModelRenderCommand<S>(
     }
 
     public static <S> void submit(
-            RenderCommandQueue queue,
+            OrderedSubmitNodeCollector queue,
             Model<? super S> model, S state,
-            MatrixStack matrices, RenderLayer renderLayer,
+            PoseStack matrices, RenderType renderLayer,
             int light, int overlay, int outline,
-            @Nullable CrumblingOverlayCommand crumblingOverlay,
-            @Nullable BiFunction<CustomModelRenderCommand<S>, VertexConsumerProvider, VertexConsumer> layerFunc,
+            @Nullable ModelFeatureRenderer.CrumblingOverlay crumblingOverlay,
+            @Nullable BiFunction<CustomModelRenderCommand<S>, BufferSource, VertexConsumer> layerFunc,
             @Nullable Predicate<CustomModelRenderCommand<S>> anglesFunc) {
         submit(queue, model, state, matrices, renderLayer, light, overlay, -1, null, outline, crumblingOverlay, layerFunc, anglesFunc);
     }
 
     @Override
-    public void render(Entry matricesEntry, VertexConsumer buffer) {
-        var provider = MinecraftClient.getInstance().getBufferBuilders().getEntityVertexConsumers();
+    public void render(PoseStack.Pose pose, VertexConsumer buffer) {
+        var provider = Minecraft.getInstance().renderBuffers().bufferSource();
         buffer = bufferFunc == null ? buffer : bufferFunc.apply(this, provider);
         if (buffer != null) {
-            command.model().setAngles(command.state());
+            command.model().setupAnim(command.state());
             if (anglesFunc == null || anglesFunc.test(this)) {
-                matrices.push();
-                matrices.peek().copy(matricesEntry);
+                matrices.pushPose();
+                matrices.last().set(pose);
 
                 renderModel(buffer);
 
-                if (command.outlineColor() != 0 && (layer.getAffectedOutline().isPresent() || layer.isOutline())) {
-                    OutlineVertexConsumerProvider outlines = MinecraftClient.getInstance().getBufferBuilders().getOutlineVertexConsumers();
+                if (command.outlineColor() != 0 && (layer.outline().isPresent() || layer.isOutline())) {
+                    OutlineBufferSource outlines = Minecraft.getInstance().renderBuffers().outlineBufferSource();
                     outlines.setColor(command.outlineColor());
                     renderModel(outlines.getBuffer(layer));
                 }
 
-                if (command.crumblingOverlay() != null && layer.hasCrumbling()) {
-                    renderModel(new OverlayVertexConsumer(
-                        MinecraftClient.getInstance().getBufferBuilders().getEffectVertexConsumers().getBuffer(ModelBaker.BLOCK_DESTRUCTION_RENDER_LAYERS.get(command.crumblingOverlay().progress())),
-                        command.crumblingOverlay().cameraMatricesEntry(),
+                if (command.crumblingOverlay() != null && layer.affectsCrumbling()) {
+                    renderModel(new SheetedDecalTextureGenerator(
+                        Minecraft.getInstance().renderBuffers().crumblingBufferSource().getBuffer(ModelBakery.DESTROY_TYPES.get(command.crumblingOverlay().progress())),
+                        command.crumblingOverlay().cameraPose(),
                         1
                     ));
                 }
 
-                matrices.pop();
+                matrices.popPose();
 
                 if (bufferFunc != null) {
-                    provider.draw();
+                    provider.endBatch();
                 }
             }
         }
     }
 
     private void renderModel(VertexConsumer buffer) {
-        matrices.push();
-        command.model().render(
+        matrices.pushPose();
+        command.model().renderToBuffer(
             matrices,
-            command.sprite() == null ? buffer : command.sprite().getTextureSpecificVertexConsumer(buffer),
+            command.sprite() == null ? buffer : command.sprite().wrap(buffer),
             command.lightCoords(),
             command.overlayCoords(),
             command.tintedColor()
         );
-        matrices.pop();
+        matrices.popPose();
     }
 }

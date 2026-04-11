@@ -1,7 +1,7 @@
 package com.minelittlepony.api.config;
 
-import net.minecraft.util.Identifier;
-import net.minecraft.util.math.MathHelper;
+import net.minecraft.resources.Identifier;
+import net.minecraft.util.Mth;
 
 import com.google.gson.GsonBuilder;
 import com.minelittlepony.api.pony.meta.*;
@@ -102,7 +102,7 @@ public class PonyConfig extends Config {
 
     public PonyConfig(Path path) {
         super(new HeirarchicalJsonConfigAdapter(new GsonBuilder()
-                .registerTypeAdapter(Identifier.class, new ToStringAdapter<>(Identifier::toString, Identifier::of))), path);
+                .registerTypeAdapter(Identifier.class, new ToStringAdapter<>(Identifier::toString, Identifier::parse))), path);
         instance = this;
     }
 
@@ -124,7 +124,7 @@ public class PonyConfig extends Config {
             f = 0.9F;
         }
 
-        f = Math.round(MathHelper.clamp(f, 0.1F, 3) * 100F) / 100F;
+        f = Math.round(Mth.clamp(f, 0.1F, 3) * 100F) / 100F;
 
         scaleFactor.set(f);
         showscale.set(f != 1);

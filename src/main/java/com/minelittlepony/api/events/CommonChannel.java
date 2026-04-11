@@ -2,10 +2,10 @@ package com.minelittlepony.api.events;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.fabric.api.networking.v1.*;
-import net.minecraft.network.PacketByteBuf;
-import net.minecraft.network.codec.PacketCodec;
-import net.minecraft.network.packet.CustomPayload;
-import net.minecraft.util.Identifier;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.minecraft.resources.Identifier;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -16,14 +16,14 @@ public class CommonChannel {
     private static final Logger LOGGER = LogManager.getLogger("MineLittlePony:Networking");
 
     public static void bootstrap() {
-        ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> {
+        ServerPlayConnectionEvents.JOIN.register((handler, sender, _) -> {
             LOGGER.info("Sending consent packet to " + handler.getPlayer().getName().getString());
             sender.sendPacket(PonyDataRequest.INSTANCE);
         });
 
-        PayloadTypeRegistry.playS2C().register(PonyDataRequest.ID, PonyDataRequest.CODEC);
-        PayloadTypeRegistry.playS2C().register(PonyDataPayload.ID, PonyDataPayload.CODEC);
-        PayloadTypeRegistry.playC2S().register(PonyDataPayload.ID, PonyDataPayload.CODEC);
+        PayloadTypeRegistry.clientboundPlay().register(PonyDataRequest.ID, PonyDataRequest.CODEC);
+        PayloadTypeRegistry.clientboundPlay().register(PonyDataPayload.ID, PonyDataPayload.CODEC);
+        PayloadTypeRegistry.serverboundPlay().register(PonyDataPayload.ID, PonyDataPayload.CODEC);
 
         ServerPlayNetworking.registerGlobalReceiver(PonyDataPayload.ID, (packet, context) -> {
             context.server().execute(() -> {
@@ -32,26 +32,23 @@ public class CommonChannel {
         });
     }
 
-    record PonyDataPayload(PonyData data) implements CustomPayload {
-        public static final Id<PonyDataPayload> ID = new Id<>(Identifier.of("minelittlepony", "pony_data"));
-        public static final PacketCodec<PacketByteBuf, PonyDataPayload> CODEC = CustomPayload.codecOf(
-                (p, buffer) -> MsgPonyData.write(p.data(), buffer),
-                buffer -> new PonyDataPayload(MsgPonyData.read(buffer))
-        );
+    record PonyDataPayload(PonyData data) implements CustomPacketPayload {
+        public static final Type<PonyDataPayload> ID = new Type<>(Identifier.fromNamespaceAndPath("minelittlepony", "pony_data"));
+        public static final StreamCodec<FriendlyByteBuf, PonyDataPayload> CODEC = MsgPonyData.STREAM_CODEC.map(MsgPonyData::data, MsgPonyData::new).map(PonyDataPayload::new, PonyDataPayload::data);
 
         @Override
-        public Id<PonyDataPayload> getId() {
+        public Type<PonyDataPayload> type() {
             return ID;
         }
     }
 
-    record PonyDataRequest() implements CustomPayload {
+    record PonyDataRequest() implements CustomPacketPayload {
         public static final PonyDataRequest INSTANCE = new PonyDataRequest();
-        public static final Id<PonyDataRequest> ID = new Id<>(Identifier.of("minelittlepony", "request_pony_data"));
-        public static final PacketCodec<PacketByteBuf, PonyDataRequest> CODEC = PacketCodec.unit(INSTANCE);
+        public static final Type<PonyDataRequest> ID = new Type<>(Identifier.fromNamespaceAndPath("minelittlepony", "request_pony_data"));
+        public static final StreamCodec<FriendlyByteBuf, PonyDataRequest> CODEC = StreamCodec.unit(INSTANCE);
 
         @Override
-        public Id<? extends CustomPayload> getId() {
+        public Type<PonyDataRequest> type() {
             return ID;
         }
     }

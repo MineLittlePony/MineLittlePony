@@ -7,14 +7,14 @@ import com.minelittlepony.client.model.entity.WitchPonyModel;
 import com.minelittlepony.client.render.entity.npc.textures.TextureSupplier;
 import com.minelittlepony.client.render.entity.state.PonyRenderState;
 
-import net.minecraft.client.render.entity.EntityRendererFactory;
-import net.minecraft.entity.mob.WitchEntity;
-import net.minecraft.util.Identifier;
+import net.minecraft.client.renderer.entity.EntityRendererProvider;
+import net.minecraft.resources.Identifier;
+import net.minecraft.world.entity.monster.Witch;
 
-public class WitchRenderer extends PonyRenderer<WitchEntity, WitchRenderer.State, WitchPonyModel> {
+public class WitchRenderer extends PonyRenderer<Witch, WitchRenderer.State, WitchPonyModel> {
     private static final Identifier WITCH_TEXTURES = MineLittlePony.id("textures/entity/witch_pony.png");
 
-    public WitchRenderer(EntityRendererFactory.Context context) {
+    public WitchRenderer(EntityRendererProvider.Context context) {
         super(context, ModelType.WITCH, TextureSupplier.of(WITCH_TEXTURES), BASE_MODEL_SCALE);
     }
 
@@ -23,11 +23,12 @@ public class WitchRenderer extends PonyRenderer<WitchEntity, WitchRenderer.State
         return new State();
     }
 
-    public void updateRenderState(WitchEntity entity, State state, float tickDelta) {
-        super.updateRenderState(entity, state, tickDelta);
-        state.drinking = entity instanceof WitchEntity w && w.isDrinking();
+    @Override
+    public void extractRenderState(Witch entity, State state, float tickDelta) {
+        super.extractRenderState(entity, state, tickDelta);
+        state.drinking = entity.isDrinkingPotion();
         state.attributes.visualHeight += 0.5F;
-        state.baby |= state.displayName != null && "Filly".equals(state.displayName.getString());
+        state.isBaby |= state.nameTag != null && "Filly".equals(state.nameTag.getString());
     }
 
     public static class State extends PonyRenderState {

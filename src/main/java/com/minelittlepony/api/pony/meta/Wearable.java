@@ -1,8 +1,7 @@
 package com.minelittlepony.api.pony.meta;
 
-import net.minecraft.util.Identifier;
-import net.minecraft.util.StringIdentifiable;
-import net.minecraft.util.math.ColorHelper;
+import net.minecraft.resources.Identifier;
+import net.minecraft.util.ARGB;
 
 import com.minelittlepony.api.pony.Pony;
 import com.mojang.serialization.Codec;
@@ -15,7 +14,7 @@ public enum Wearable implements TValue<Wearable> {
     NONE              (0x00, null),
     CROWN             (0x16, Pony.id("textures/models/crown.png")),
     MUFFIN            (0x32, Pony.id("textures/models/muffin.png")),
-    HAT               (0x64, Identifier.ofVanilla("textures/entity/witch.png")),
+    HAT               (0x64, Identifier.withDefaultNamespace("textures/entity/witch.png")),
     ANTLERS           (0x96, Pony.id("textures/models/antlers.png")),
     SADDLE_BAGS_LEFT  (0xC6, Pony.id("textures/models/saddlebags.png")),
     SADDLE_BAGS_RIGHT (0xC7, Pony.id("textures/models/saddlebags.png")),
@@ -31,8 +30,8 @@ public enum Wearable implements TValue<Wearable> {
 
     public static final Flags<Wearable> EMPTY_FLAGS = Flags.of(NONE);
 
-    public static final Codec<Wearable> CODEC = StringIdentifiable.createCodec(Wearable::values);
-    public static final Codec<Flags<Wearable>> FLAGS_CODEC = Flags.codec(NONE, CODEC);
+    public static final Codecs<Wearable, EnumCodec<Wearable>> CODECS = TValue.codecs(Wearable::values);
+    public static final Codec<Flags<Wearable>> FLAGS_CODEC = Flags.codec(NONE, CODECS.codec());
 
     Wearable(int pixel, Identifier texture) {
         triggerValue = pixel;
@@ -59,6 +58,6 @@ public enum Wearable implements TValue<Wearable> {
 
     @Override
     public int getChannelAdjustedColorCode() {
-        return triggerValue == 0 ? 0 : ColorHelper.getArgb(255, triggerValue, triggerValue, triggerValue);
+        return triggerValue == 0 ? 0 : ARGB.color(255, triggerValue, triggerValue, triggerValue);
     }
 }

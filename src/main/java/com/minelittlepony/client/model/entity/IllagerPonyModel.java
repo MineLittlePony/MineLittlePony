@@ -1,9 +1,9 @@
 package com.minelittlepony.client.model.entity;
 
-import net.minecraft.client.model.ModelPart;
-import net.minecraft.entity.mob.IllagerEntity;
-import net.minecraft.util.Arm;
-import net.minecraft.util.math.MathHelper;
+import net.minecraft.client.model.geom.ModelPart;
+import net.minecraft.util.Mth;
+import net.minecraft.world.entity.HumanoidArm;
+import net.minecraft.world.entity.monster.illager.AbstractIllager;
 
 import com.minelittlepony.client.model.entity.race.AlicornModel;
 import com.minelittlepony.client.render.entity.npc.IllagerPonyRenderer;
@@ -17,38 +17,36 @@ public class IllagerPonyModel<S extends IllagerPonyRenderer.State> extends Alico
     @Override
     public void setModelAngles(S state) {
         super.setModelAngles(state);
-        IllagerEntity.State pose = state.state;
+        AbstractIllager.IllagerArmPose pose = state.state;
 
-        boolean rightHanded = state.mainArm == Arm.RIGHT;
+        boolean rightHanded = state.mainArm == HumanoidArm.RIGHT;
         float mult = rightHanded ? 1 : -1;
         ModelPart arm = getArm(state.mainArm);
 
-        if (pose == IllagerEntity.State.ATTACKING) {
+        if (pose == AbstractIllager.IllagerArmPose.ATTACKING) {
             // vindicator attacking
-            float f = MathHelper.sin(state.handSwingProgress * (float) Math.PI);
-            float f1 = MathHelper.sin((1 - (1 - state.handSwingProgress) * (1 - state.handSwingProgress)) * (float) Math.PI);
+            float f = Mth.sin(state.attackTime * (float) Math.PI);
+            float f1 = Mth.sin((1 - (1 - state.attackTime) * (1 - state.attackTime)) * (float) Math.PI);
 
-            float cos = MathHelper.cos(state.age * 0.09F) * 0.05F + 0.05F;
-            float sin = MathHelper.sin(state.age * 0.067F) * 0.05F;
+            float cos = Mth.cos(state.ageInTicks * 0.09F) * 0.05F + 0.05F;
+            float sin = Mth.sin(state.ageInTicks * 0.067F) * 0.05F;
 
-            rightArm.roll = cos;
-            leftArm.roll  = cos;
+            rightArm.zRot = cos;
+            leftArm.zRot  = cos;
 
-            rightArm.yaw = 0.15707964F;
-            leftArm.yaw = -0.15707964F;
+            rightArm.yRot = 0.15707964F;
+            leftArm.yRot = -0.15707964F;
 
-            arm.pitch = -1.8849558F + MathHelper.cos(state.age * 0.09F) * 0.15F;
-            arm.pitch += f * 2.2F - f1 * 0.4F;
+            arm.xRot = -1.8849558F + Mth.cos(state.ageInTicks * 0.09F) * 0.15F;
+            arm.xRot += f * 2.2F - f1 * 0.4F;
 
-            rightArm.pitch += sin;
-            leftArm.pitch  -= sin;
-        } else if (pose == IllagerEntity.State.SPELLCASTING) {
+            rightArm.xRot += sin;
+            leftArm.xRot  -= sin;
+        } else if (pose == AbstractIllager.IllagerArmPose.SPELLCASTING) {
             // waving arms!
             // rightArm.rotationPointZ = 0;
-            arm.pitch = (float) (-.75F * Math.PI);
-            arm.roll = mult * MathHelper.cos(state.age * 0.6662F) / 4;
-            arm.yaw = mult * 1.1F;
-        } else if (pose == IllagerEntity.State.BOW_AND_ARROW) {
+            arm.setRotation(-0.75F * Mth.PI, mult * 1.1F, mult * Mth.cos(state.ageInTicks * 0.6662F) / 4);
+        } else if (pose == AbstractIllager.IllagerArmPose.BOW_AND_ARROW) {
             aimBow(state, arm);
         }
     }

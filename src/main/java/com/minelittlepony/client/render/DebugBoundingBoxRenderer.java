@@ -1,13 +1,16 @@
 package com.minelittlepony.client.render;
 
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.network.ClientPlayerLikeEntity;
-import net.minecraft.client.render.DrawStyle;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.util.Colors;
-import net.minecraft.util.math.*;
-import net.minecraft.world.debug.gizmo.GizmoDrawing;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.entity.ClientAvatarEntity;
+import net.minecraft.core.Direction;
+import net.minecraft.gizmos.GizmoStyle;
+import net.minecraft.gizmos.Gizmos;
+import net.minecraft.util.CommonColors;
+import net.minecraft.util.Mth;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.Vec3;
 
 import com.minelittlepony.api.config.PonyConfig;
 import com.minelittlepony.client.HorseCam;
@@ -16,7 +19,7 @@ import com.minelittlepony.common.util.settings.Setting;
 
 public final class DebugBoundingBoxRenderer {
     public static void drawHitboxes(Entity entity, float tickProgress) {
-        if (!(entity instanceof LivingEntity l) || !MinecraftClient.getInstance().debugHudEntryList.isEntryVisible(MineLittlePony.PONY_HITBOXES_DEBUG_HUD_ENTRY)) {
+        if (!(entity instanceof LivingEntity l) || !Minecraft.getInstance().debugEntries.isCurrentlyEnabled(MineLittlePony.PONY_HITBOXES_DEBUG_HUD_ENTRY)) {
             return;
         }
         var renderer = MineLittlePony.getInstance().getRenderDispatcher().getPonyRenderer(l);
@@ -24,23 +27,23 @@ public final class DebugBoundingBoxRenderer {
             return;
         }
 
-        Vec3d posJitter = entity.getLerpedPos(tickProgress).subtract(entity.getEntityPos());
+        Vec3 posJitter = entity.getPosition(tickProgress).subtract(entity.position());
 
-        Box box = renderer.getEquineManager().getHitbox(l).offset(posJitter);
-        GizmoDrawing.box(box, DrawStyle.stroked(0xFFFFFF00));
+        AABB box = renderer.getEquineManager().getHitbox(l).move(posJitter);
+        Gizmos.cuboid(box, GizmoStyle.stroke(0xFFFFFF00));
 
 
-        float yaw = (l.isSleeping() && l.getSleepingDirection() != null ? l.getSleepingDirection().getPositiveHorizontalDegrees() : MathHelper.lerp(tickProgress, l.lastBodyYaw, l.bodyYaw)) * MathHelper.RADIANS_PER_DEGREE;
-        Vec3d min = new Vec3d(0, 0, 0.3).rotateY(MathHelper.PI - yaw);
+        float yaw = (l.isSleeping() && l.getBedOrientation() != null ? l.getBedOrientation().toYRot() : Mth.lerp(tickProgress, l.yBodyRotO, l.yBodyRot)) * Mth.DEG_TO_RAD;
+        Vec3 min = new Vec3(0, 0, 0.3).yRot(Mth.PI - yaw);
 
-        box = box.offset(min.x, 0, min.z);
-        GizmoDrawing.box(new Box(box.minX, box.minY, box.minZ, box.maxX, box.minY + (box.maxY - box.minY) * 0.6F, box.maxZ), DrawStyle.stroked(0xFFFF0000));
+        box = box.move(min.x, 0, min.z);
+        Gizmos.cuboid(new AABB(box.minX, box.minY, box.minZ, box.maxX, box.minY + (box.maxY - box.minY) * 0.6F, box.maxZ), GizmoStyle.stroke(0xFFFF0000));
 
         drawFillyCamRays(entity, tickProgress);
     }
 
     public static void drawFillyCamRays(Entity entity, float tickProgress) {
-        if (!(entity instanceof ClientPlayerLikeEntity) || !MinecraftClient.getInstance().debugHudEntryList.isEntryVisible(MineLittlePony.PONY_FILLYCAM_RAYS_DEBUG_HUD_ENTRY)) {
+        if (!(entity instanceof ClientAvatarEntity) || !Minecraft.getInstance().debugEntries.isCurrentlyEnabled(MineLittlePony.PONY_FILLYCAM_RAYS_DEBUG_HUD_ENTRY)) {
             return;
         }
         Setting<Boolean> fillyCam = PonyConfig.getInstance().fillycam;
@@ -50,34 +53,34 @@ public final class DebugBoundingBoxRenderer {
         fillyCam.set(true);
         final float alteredHeight = entity.getEyeHeight(entity.getPose());
 
-        final float pitch = entity.getPitch(tickProgress);
+        final float pitch = entity.getViewYRot(tickProgress);
         final float rescaledPitch = HorseCam.rescaleCameraPitch(entity, alteredHeight, vanillaHeight, pitch);
 
-        var a = entity.getEntityPos().add(0, vanillaHeight, 0);
+        var a = entity.position().add(0, vanillaHeight, 0);
         var b = HorseCam.getRaycastPos(entity, a, rescaledPitch);
         if (b != null) {
-            GizmoDrawing.line(a, b, Colors.RED, 4);
+            Gizmos.line(a, b, CommonColors.RED, 4);
         }
 
-        a = entity.getEntityPos().add(0, alteredHeight, 0);
+        a = entity.position().add(0, alteredHeight, 0);
         b = HorseCam.getRaycastPos(entity, a, pitch);
         if (b != null) {
-            GizmoDrawing.line(a, b, Colors.WHITE, 4);
+            Gizmos.line(a, b, CommonColors.WHITE, 4);
         }
 
-        var corner = new Vec3d(b.x, b.y + (entity.getY() - b.y + vanillaHeight), b.z);
+        var corner = new Vec3(b.x, b.y + (entity.getY() - b.y + vanillaHeight), b.z);
 
-        GizmoDrawing.line(b, corner, Colors.YELLOW, 4);
-        GizmoDrawing.line(a.withAxis(Direction.Axis.Y, corner.y), corner, Colors.BLUE, 4);
+        Gizmos.line(b, corner, CommonColors.YELLOW, 4);
+        Gizmos.line(a.with(Direction.Axis.Y, corner.y), corner, CommonColors.BLUE, 4);
     }
 
-    public static Box getBoundingBox(double x, double y, double z, float scale, float width, float height) {
+    public static AABB getBoundingBox(double x, double y, double z, float scale, float width, float height) {
         width *= scale;
         height *= scale;
-        return new Box(x - width, y, z - width, x + width, y + height, z + width);
+        return new AABB(x - width, y, z - width, x + width, y + height, z + width);
     }
 
-    public static Box applyScale(float scale, Box box) {
+    public static AABB applyScale(float scale, AABB box) {
         double w = (box.maxX - box.minX) * 0.5F,
                 h = (box.maxY - box.minY),
                 d = (box.maxZ - box.minZ) * 0.5F,
@@ -85,7 +88,7 @@ public final class DebugBoundingBoxRenderer {
                 z = box.minZ + d;
         w *= scale;
         d *= scale;
-        return new Box(
+        return new AABB(
                 x - w, box.minY, z - d,
                 x + w, box.minY + h * scale, z + d
         );

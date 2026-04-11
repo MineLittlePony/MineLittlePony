@@ -1,6 +1,6 @@
 package com.minelittlepony.client.model.entity;
 
-import net.minecraft.client.model.ModelPart;
+import net.minecraft.client.model.geom.ModelPart;
 
 import com.minelittlepony.client.render.entity.StriderRenderer;
 
@@ -11,54 +11,54 @@ public class StriderDragonModel extends DragonModel<StriderRenderer.State> {
     }
 
     @Override
-    public void setAngles(StriderRenderer.State state) {
-        super.setAngles(state);
+    public void setupAnim(StriderRenderer.State state) {
+        super.setupAnim(state);
 
-        body.pitch += 0.15F;
+        body.xRot += 0.15F;
 
         if (!state.saddleStack.isEmpty()) {
-            leftArm.pitch = 3.15F;
-            leftArm.yaw = 1;
-            rightArm.pitch = 3.15F;
-            rightArm.yaw = -1;
+            leftArm.xRot = 3.15F;
+            leftArm.yRot = 1;
+            rightArm.xRot = 3.15F;
+            rightArm.yRot = -1;
 
-            head.originY += 4;
-            head.originZ = -3;
-            hat.originY += 4;
-            hat.originZ = -3;
+            head.y += 4;
+            head.z = -3;
+            hat.y += 4;
+            hat.z = -3;
 
-            leftLeg.pitch += 0.4F;
-            rightLeg.pitch += 0.4F;
+            leftLeg.xRot += 0.4F;
+            rightLeg.xRot += 0.4F;
         } else {
-            leftArm.roll -= 0.2F * state.flailAmount;
-            rightArm.roll += 0.2F * state.flailAmount;
+            leftArm.yRot -= 0.2F * state.flailAmount;
+            rightArm.yRot += 0.2F * state.flailAmount;
 
-            leftArm.originZ += 2;
-            leftArm.pitch -= 0.3F;
+            leftArm.z += 2;
+            leftArm.xRot -= 0.3F;
 
-            rightArm.originZ += 2;
-            rightArm.pitch -= 0.3F;
+            rightArm.z += 2;
+            rightArm.xRot -= 0.3F;
 
             if (state.cold) {
-                float armMotion = (float)Math.sin(state.age / 10F) / 10F;
+                float armMotion = (float)Math.sin(state.ageInTicks * 0.1F) * 0.1F;
 
-                leftArm.pitch = -1 - armMotion;
-                rightArm.pitch = -1 + armMotion;
+                leftArm.xRot = -1 - armMotion;
+                rightArm.xRot = -1 + armMotion;
 
-                leftArm.yaw = 0.8F;
-                rightArm.yaw = -0.8F;
+                leftArm.yRot = 0.8F;
+                rightArm.yRot = -0.8F;
 
-                leftArm.originZ -= 3;
-                rightArm.originZ -= 3;
+                leftArm.z -= 3;
+                rightArm.z -= 3;
             }
         }
 
-        tail.pitch = (float)Math.sin(state.limbSwingAnimationProgress) / 3F - 0.5F;
-        tail2.pitch = -tail.pitch / 2;
-        tail3.pitch = tail2.pitch / 2;
+        tail.xRot = (float)Math.sin(state.walkAnimationSpeed) / 3F - 0.5F;
+        tail2.xRot = -tail.xRot * 0.5F;
+        tail3.xRot = tail2.xRot * 0.5F;
 
-        tail.yaw = (float)Math.sin(state.age / 20F) / 40 + (float)Math.sin(state.limbSwingAnimationProgress / 20F) / 4;
-        tail2.yaw = tail.yaw / 2;
-        tail3.yaw = tail2.yaw / 2;
+        tail.yRot = (float)Math.sin(state.ageInTicks / 20F) / 40 + (float)Math.sin(state.walkAnimationSpeed / 20F) * 0.25F;
+        tail2.yRot = tail.yRot * 0.5F;
+        tail3.yRot = tail2.yRot * 0.5F;
     }
 }

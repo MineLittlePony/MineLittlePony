@@ -1,16 +1,16 @@
 package com.minelittlepony.client;
 
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.entity.Entity;
-import net.minecraft.resource.ResourceManager;
-import net.minecraft.resource.SynchronousResourceReloader;
-import net.minecraft.util.Identifier;
+import net.minecraft.client.Minecraft;
+import net.minecraft.resources.Identifier;
+import net.minecraft.server.packs.resources.ResourceManager;
+import net.minecraft.server.packs.resources.ResourceManagerReloadListener;
+import net.minecraft.world.entity.Entity;
 
 import com.minelittlepony.util.MathUtil;
 
 import java.util.*;
 
-public class VariatedTextureSupplier implements SynchronousResourceReloader {
+public class VariatedTextureSupplier implements ResourceManagerReloadListener {
     public static final Identifier ID = MineLittlePony.id("variated_textures");
     public static final Identifier BACKGROUND_PONIES_POOL = MineLittlePony.id("textures/entity/pony");
     public static final Identifier BACKGROUND_ZOMPONIES_POOL = MineLittlePony.id("textures/entity/zompony");
@@ -18,7 +18,7 @@ public class VariatedTextureSupplier implements SynchronousResourceReloader {
     private final Map<Identifier, SkinList> entries = new HashMap<>();
 
     @Override
-    public void reload(ResourceManager manager) {
+    public void onResourceManagerReload(ResourceManager manager) {
         entries.clear();
     }
 
@@ -31,7 +31,7 @@ public class VariatedTextureSupplier implements SynchronousResourceReloader {
     }
 
     public Optional<Identifier> get(Identifier poolId, Entity entity) {
-        return get(poolId, entity.getUuid());
+        return get(poolId, entity.getUUID());
     }
 
     public static final class SkinList {
@@ -42,7 +42,7 @@ public class VariatedTextureSupplier implements SynchronousResourceReloader {
 
         public SkinList(Identifier id) {
             this.id = id;
-            reloadAll(MinecraftClient.getInstance().getResourceManager());
+            reloadAll(Minecraft.getInstance().getResourceManager());
         }
 
         public Optional<Identifier> getId(UUID uuid) {
@@ -69,13 +69,13 @@ public class VariatedTextureSupplier implements SynchronousResourceReloader {
 
         public void reloadAll(ResourceManager resourceManager) {
             textures.clear();
-            textures.addAll(resourceManager.findResources(id.getPath(), path -> path.getPath().endsWith(".png")).keySet());
+            textures.addAll(resourceManager.listResources(id.getPath(), path -> path.getPath().endsWith(".png")).keySet());
             MineLittlePony.LOGGER.info("Detected {} ponies installed at {}.", textures.size(), id);
         }
 
         static boolean isUser(UUID uuid) {
-            return MinecraftClient.getInstance().player != null
-                && MinecraftClient.getInstance().player.getUuid().equals(uuid);
+            return Minecraft.getInstance().player != null
+                && Minecraft.getInstance().player.getUUID().equals(uuid);
         }
     }
 

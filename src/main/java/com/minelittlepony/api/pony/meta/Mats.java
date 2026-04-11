@@ -1,6 +1,6 @@
 package com.minelittlepony.api.pony.meta;
 
-import net.minecraft.util.math.ColorHelper;
+import net.minecraft.util.ARGB;
 
 import org.jetbrains.annotations.Nullable;
 
@@ -32,7 +32,7 @@ public interface Mats {
                     return 0;
                 }
                 int[] color = raster.getPixel(x, y, new int[] {0, 0, 0, 0});
-                return ColorHelper.getArgb(color[3], color[0], color[1], color[2]);
+                return ARGB.color(color[3], color[0], color[1], color[2]);
             };
         } catch (IllegalArgumentException e) {
             throw new IOException("Could not create mat from image", e);

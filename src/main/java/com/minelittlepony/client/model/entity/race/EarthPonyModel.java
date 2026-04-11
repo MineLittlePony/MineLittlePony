@@ -1,13 +1,13 @@
 package com.minelittlepony.client.model.entity.race;
 
+import net.minecraft.client.model.geom.ModelPart;
+
 import com.minelittlepony.api.model.BodyPart;
 import com.minelittlepony.api.model.SubModel;
 import com.minelittlepony.client.model.AbstractPonyModel;
 import com.minelittlepony.client.model.part.*;
 import com.minelittlepony.client.render.entity.state.PonyRenderState;
 import com.minelittlepony.mson.api.ModelView;
-
-import net.minecraft.client.model.ModelPart;
 
 public class EarthPonyModel<T extends PonyRenderState> extends AbstractPonyModel<T> {
     protected SubModel<T> tail;
@@ -41,13 +41,5 @@ public class EarthPonyModel<T extends PonyRenderState> extends AbstractPonyModel
         mane.visible = state.attributes.isHorsey;
         nose.visible = state.attributes.isHorsey;
         tailStub.visible = !state.attributes.isHorsey;
-    }
-
-    @Override
-    public void setVisible(boolean visible) {
-        super.setVisible(visible);
-        mane.visible = visible;
-        nose.visible = visible;
-        tailStub.visible = visible;
     }
 }

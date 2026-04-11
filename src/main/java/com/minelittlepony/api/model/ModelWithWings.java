@@ -1,10 +1,10 @@
 package com.minelittlepony.api.model;
 
-import net.minecraft.client.render.entity.state.BipedEntityRenderState;
+import net.minecraft.client.renderer.entity.state.HumanoidRenderState;
 
 import com.minelittlepony.util.MathUtil;
 
-public interface ModelWithWings<T extends BipedEntityRenderState & PonyModel.AttributedHolder> extends PonyModel<T> {
+public interface ModelWithWings<T extends HumanoidRenderState & PonyModel.AttributedHolder> extends PonyModel<T> {
     public static final float WINGS_HALF_SPREAD_ANGLE = MathUtil.Angles._270_DEG;
     public static final float WINGS_FULL_SPREAD_ANGLE = MathUtil.Angles._270_DEG + 0.4F;
     public static final float WINGS_RAISED_ANGLE = 4;

@@ -1,7 +1,7 @@
 package com.minelittlepony.util;
 
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.util.Identifier;
+import net.minecraft.client.Minecraft;
+import net.minecraft.resources.Identifier;
 
 import java.util.Optional;
 
@@ -20,7 +20,7 @@ public final class ResourceUtil {
     }
 
     public static boolean textureExists(Identifier texture) {
-        return MinecraftClient.getInstance().getResourceManager().getResource(texture).isPresent();
+        return Minecraft.getInstance().getResourceManager().getResource(texture).isPresent();
     }
 
     public static Optional<Identifier> verifyTexture(Identifier texture) {

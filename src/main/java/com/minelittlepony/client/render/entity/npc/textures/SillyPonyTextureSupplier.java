@@ -1,10 +1,10 @@
 package com.minelittlepony.client.render.entity.npc.textures;
 
-import net.minecraft.client.item.ItemModelManager;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.registry.RegistryKey;
-import net.minecraft.util.Identifier;
-import net.minecraft.village.*;
+import net.minecraft.client.renderer.item.ItemModelResolver;
+import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.npc.villager.*;
 
 import com.minelittlepony.api.model.*;
 import com.minelittlepony.api.pony.Pony;
@@ -26,7 +26,7 @@ public class SillyPonyTextureSupplier {
     }
 
     public static boolean isCrownPony(LivingEntity entity) {
-        return isBestPony(entity) && entity.getUuid().getLeastSignificantBits() % 20 == 0;
+        return isBestPony(entity) && entity.getUUID().getLeastSignificantBits() % 20 == 0;
     }
 
     public static boolean isDinky(LivingEntity entity) {
@@ -34,8 +34,8 @@ public class SillyPonyTextureSupplier {
     }
 
     public static class State extends PonyRenderState {
-        public RegistryKey<VillagerType> type = VillagerType.PLAINS;
-        public RegistryKey<VillagerProfession> profession = VillagerProfession.NONE;
+        public ResourceKey<VillagerType> type = VillagerType.PLAINS;
+        public ResourceKey<VillagerProfession> profession = VillagerProfession.NONE;
         public int level;
 
         public boolean isDerpy;
@@ -44,16 +44,16 @@ public class SillyPonyTextureSupplier {
         public boolean hasSaddlebags;
 
         @Override
-        public void updateState(ItemModelManager resolver, LivingEntity entity, Models<?> models, Pony pony, ModelAttributes.Mode mode) {
+        public void updateState(ItemModelResolver resolver, LivingEntity entity, Models<?> models, Pony pony, ModelAttributes.Mode mode) {
             super.updateState(resolver, entity, models, pony, mode);
             attributes.visualHeight += hasMuffinHat ? 0.3F : -0.1F;
             isDerpy = isBestPony(entity);
             isDinky = isDinky(entity);
             hasMuffinHat = isCrownPony(entity);
 
-            var villagerData = ((VillagerDataContainer)entity).getVillagerData();
-            type = villagerData.type().getKey().orElse(VillagerType.PLAINS);
-            profession = villagerData.profession().getKey().orElse(VillagerProfession.NONE);
+            var villagerData = ((VillagerDataHolder)entity).getVillagerData();
+            type = villagerData.type().unwrapKey().orElse(VillagerType.PLAINS);
+            profession = villagerData.profession().unwrapKey().orElse(VillagerProfession.NONE);
             level = villagerData.level();
 
             hasSaddlebags = !isDerpy && profession != VillagerProfession.NONE && (

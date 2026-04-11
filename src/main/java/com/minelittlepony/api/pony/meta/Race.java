@@ -1,7 +1,5 @@
 package com.minelittlepony.api.pony.meta;
 
-import net.minecraft.util.StringIdentifiable;
-
 public enum Race implements TValue<Race> {
     HUMAN       (0x000000, false, false),
     EARTH       (0xf9b131, false, false),
@@ -17,7 +15,7 @@ public enum Race implements TValue<Race> {
     BATPONY     (0xeeeeee, true,  false),
     SEAPONY     (0x3655dd, false, true);
 
-    public static final EnumCodec<Race> CODEC = StringIdentifiable.createCodec(Race::values);
+    public static final Codecs<Race, EnumCodec<Race>> CODECS = TValue.codecs(Race::values);
 
     private final boolean wings;
     private final boolean horn;

@@ -1,14 +1,14 @@
 package com.minelittlepony.client.model.part;
 
-import net.minecraft.client.model.ModelPart;
-import net.minecraft.client.render.VertexConsumer;
-import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.util.math.MathHelper;
+import net.minecraft.client.model.geom.ModelPart;
+import net.minecraft.util.Mth;
 
 import com.minelittlepony.api.model.PonyModel;
 import com.minelittlepony.api.model.SubModel;
 import com.minelittlepony.client.render.entity.state.PonyRenderState;
 import com.minelittlepony.common.util.animation.Interpolator;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
 
 public class LionTail implements SubModel<PonyRenderState> {
 
@@ -20,17 +20,17 @@ public class LionTail implements SubModel<PonyRenderState> {
 
     @Override
     public void setAngles(PonyModel<PonyRenderState> model, PonyRenderState state) {
-        tail.resetTransform();
+        tail.resetPose();
 
         float bodySwing = state.wobbleAmount * 5;
 
         float baseSail = 1F;
 
-        float speed = state.limbSwingAmplitude > 0.01F ? 6 : 90;
+        float speed = state.walkAnimationPos > 0.01F ? 6 : 90;
         Interpolator interpolator = state.attributes.getMainInterpolator();
 
-        float straightness = 1.6F * (1 + (float)Math.sin(state.age / speed) / 8F);
-        float twist = (float)Math.sin(Math.PI/2F + 2 * state.age / speed) / 16F;
+        float straightness = 1.6F * (1 + (float)Math.sin(state.ageInTicks / speed) / 8F);
+        float twist = (float)Math.sin(Math.PI/2F + 2 * state.ageInTicks / speed) / 16F;
         float bend = state.attributes.motionRoll / 80F;
 
         if (state.attributes.isCrouching) {
@@ -46,48 +46,38 @@ public class LionTail implements SubModel<PonyRenderState> {
         twist = interpolator.interpolate("kirin_tail_twist", twist, 10);
         bend = interpolator.interpolate("kirin_tail_bendiness", bend, 10);
 
-        tail.pitch = baseSail;
-        tail.pitch += state.limbSwingAmplitude / 2;
-        tail.yaw = twist;
-        tail.roll = bodySwing * 2;
+        tail.xRot = baseSail;
+        tail.xRot += state.walkAnimationPos / 2;
+        tail.yRot = twist;
+        tail.zRot = bodySwing * 2;
 
-        float sinTickFactor = MathHelper.sin(state.age * 0.067f) * 0.05f;
-        tail.pitch += sinTickFactor;
-        tail.yaw += sinTickFactor;
+        float sinTickFactor = Mth.sin(state.ageInTicks * 0.067f) * 0.05f;
+        tail.xRot += sinTickFactor;
+        tail.yRot += sinTickFactor;
 
         var tail2 = tail.getChild("tail2");
-        tail2.pitch = -(baseSail + sinTickFactor) / straightness;
-        tail2.yaw = twist;
-        tail2.roll = bodySwing;
+        tail2.setRotation(-(baseSail + sinTickFactor) / straightness, twist, bodySwing);
 
         var tail3 = tail2.getChild("tail3");
-        tail3.pitch = tail2.pitch / straightness;
-        tail3.yaw = tail2.yaw;
-        tail3.roll = -bodySwing;
+        tail3.setRotation(tail2.xRot / straightness, tail2.yRot, -bodySwing);
 
         var tail4 = tail3.getChild("tail4");
-        tail4.pitch = tail3.pitch / straightness;
-        tail4.yaw = -tail3.yaw * 7F;
-        tail4.roll = -bodySwing;
+        tail4.setRotation(tail3.xRot / straightness, -tail3.yRot * 7, -bodySwing);
 
         var tail5 = tail4.getChild("tail5");
-        tail5.pitch = -tail4.pitch * straightness;
-        tail5.yaw = -tail4.yaw * 2F;
-        tail5.roll = -bodySwing * 2;
+        tail5.setRotation(-tail4.xRot * straightness, -tail4.yRot * 2, -bodySwing * 2);
 
         var tail6 = tail5.getChild("tail6");
-        tail6.pitch = tail5.pitch * straightness;
-        tail6.yaw = tail5.yaw;
-        tail6.roll = -bodySwing * 2F;
+        tail6.setRotation(tail5.xRot * straightness, tail5.yRot, -bodySwing * 2);
 
-        tail3.roll += bend;
-        tail4.roll += bend;
-        tail5.roll += bend;
-        tail6.roll += bend;
+        tail3.zRot += bend;
+        tail4.zRot += bend;
+        tail5.zRot += bend;
+        tail6.zRot += bend;
 
         if (state.attributes.isHorsey) {
-            tail.originZ = 14;
-            tail.originY = 7;
+            tail.z = 14;
+            tail.y = 7;
         }
     }
 
@@ -97,7 +87,7 @@ public class LionTail implements SubModel<PonyRenderState> {
     }
 
     @Override
-    public void accept(MatrixStack stack, VertexConsumer vertices, int overlay, int light, int color) {
+    public void accept(PoseStack stack, VertexConsumer vertices, int overlay, int light, int color) {
         tail.render(stack, vertices, overlay, light, color);
     }
 }

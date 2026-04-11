@@ -1,6 +1,6 @@
 package com.minelittlepony.client.model.entity.race;
 
-import net.minecraft.client.model.ModelPart;
+import net.minecraft.client.model.geom.ModelPart;
 
 import com.minelittlepony.api.model.Pivot;
 import com.minelittlepony.client.render.entity.state.PonyRenderState;
@@ -17,7 +17,7 @@ public class KirinModel<T extends PonyRenderState> extends UnicornModel<T> {
     @Override
     protected void adjustBody(T state, float pitch, Pivot pivot) {
         super.adjustBody(state, pitch, pivot);
-        beard.resetTransform();
-        beard.pitch -= neck.pitch;
+        beard.resetPose();
+        beard.xRot -= neck.xRot;
     }
 }

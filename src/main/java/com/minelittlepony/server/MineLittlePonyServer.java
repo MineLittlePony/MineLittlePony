@@ -2,8 +2,8 @@ package com.minelittlepony.server;
 
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.Identifier;
 
 import org.jetbrains.annotations.Nullable;
 
@@ -16,7 +16,7 @@ public class MineLittlePonyServer implements ModInitializer {
     private static WeakReference<MinecraftServer> server = new WeakReference<>(null);
 
     public static Identifier id(String name) {
-        return Identifier.of("minelittlepony", name);
+        return Identifier.fromNamespaceAndPath("minelittlepony", name);
     }
 
     @Nullable

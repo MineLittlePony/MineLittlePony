@@ -6,49 +6,50 @@ import com.minelittlepony.client.model.armour.ArmourRendererPlugin;
 import com.minelittlepony.client.render.PonyRenderContext;
 import com.minelittlepony.client.render.entity.state.PonyRenderState;
 import com.minelittlepony.client.render.entity.state.PonyRenderState.EquippedHeadRenderState;
+import com.mojang.blaze3d.vertex.PoseStack;
 
 import java.util.function.Function;
 
-import net.minecraft.block.SkullBlock;
-import net.minecraft.client.render.*;
-import net.minecraft.client.render.block.entity.SkullBlockEntityModel;
-import net.minecraft.client.render.block.entity.SkullBlockEntityRenderer;
-import net.minecraft.client.render.command.OrderedRenderCommandQueue;
-import net.minecraft.client.render.entity.equipment.EquipmentModel;
-import net.minecraft.client.render.entity.feature.HeadFeatureRenderer;
-import net.minecraft.client.render.entity.model.LoadedEntityModels;
-import net.minecraft.client.texture.PlayerSkinCache;
-import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.component.type.ProfileComponent;
-import net.minecraft.entity.EquipmentSlot;
+import net.minecraft.client.model.geom.EntityModelSet;
+import net.minecraft.client.model.object.skull.SkullModelBase;
+import net.minecraft.client.renderer.PlayerSkinRenderCache;
+import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.client.renderer.blockentity.SkullBlockRenderer;
+import net.minecraft.client.renderer.entity.layers.CustomHeadLayer;
+import net.minecraft.client.renderer.rendertype.RenderType;
+import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.client.resources.model.EquipmentClientInfo;
 import net.minecraft.util.Util;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.item.component.ResolvableProfile;
+import net.minecraft.world.level.block.SkullBlock;
 
 public class SkullFeature<
         S extends PonyRenderState,
         M extends ClientPonyModel<S>
     > extends AbstractPonyFeature<S, M> {
 
-    private final HeadFeatureRenderer.HeadTransformation headTransformation;
-    private final Function<SkullBlock.SkullType, SkullBlockEntityModel> headModels;
+    private final CustomHeadLayer.Transforms headTransformation;
+    private final Function<SkullBlock.Type, SkullModelBase> headModels;
 
-    private final PlayerSkinCache skinCache;
+    private final PlayerSkinRenderCache skinCache;
 
-    public SkullFeature(PonyRenderContext<?, S, M> context, PlayerSkinCache skinCache, LoadedEntityModels models, HeadFeatureRenderer.HeadTransformation headTransformation, boolean scaleForChild) {
+    public SkullFeature(PonyRenderContext<?, S, M> context, PlayerSkinRenderCache skinCache, EntityModelSet models, CustomHeadLayer.Transforms headTransformation, boolean scaleForChild) {
         super(context);
         this.skinCache = skinCache;
         this.headTransformation = headTransformation;
-        this.headModels = Util.memoize(type -> SkullBlockEntityRenderer.getModels(models, type));
+        this.headModels = Util.memoize(type -> SkullBlockRenderer.createModel(models, type));
     }
 
     @Override
-    public void render(MatrixStack matrices, OrderedRenderCommandQueue queue, int light, S state, float limbAngle, float limbDistance) {
+    public void submit(PoseStack matrices, SubmitNodeCollector frame, int light, S state, float limbAngle, float limbDistance) {
         for (EquippedHeadRenderState headState : state.equippedHeads) {
-            matrices.push();
+            matrices.pushPose();
 
             M model = lookupModel(state).body();
 
             model.transform(state, BodyPart.HEAD, matrices);
-            model.getHead().applyTransform(matrices);
+            model.getHead().translateAndRotate(matrices);
 
             float f = 1.1F;
             matrices.scale(f, f, f);
@@ -58,7 +59,7 @@ public class SkullFeature<
                 matrices.scale(n, -n, -n);
                 matrices.translate(0, -0.1F, 0.1F);
                 matrices.translate(-0.5, 0, -0.5);
-                SkullBlockEntityRenderer.render(null, 180, state.headItemAnimationProgress, matrices, queue, light,
+                SkullBlockRenderer.submitSkull(state.wornHeadAnimationPos, matrices, frame, light,
                         headModels.apply(headState.skullType()),
                         getRenderLayer(headState),
                         state.outlineColor,
@@ -66,24 +67,24 @@ public class SkullFeature<
                 );
             } else {
                 matrices.translate(0, 0.1F, -0.1F);
-                HeadFeatureRenderer.translate(matrices, headTransformation);
-                headState.item().render(matrices, queue, light, OverlayTexture.DEFAULT_UV, state.outlineColor);
+                CustomHeadLayer.translateToHead(matrices, headTransformation);
+                headState.item().submit(matrices, frame, light, OverlayTexture.NO_OVERLAY, state.outlineColor);
             }
 
-            matrices.pop();
+            matrices.popPose();
         }
 
-        ArmourRendererPlugin.INSTANCE.get().onArmourRendered(state, matrices, queue, EquipmentSlot.BODY, EquipmentModel.LayerType.HUMANOID, ArmourRendererPlugin.ArmourType.SKULL);
+        ArmourRendererPlugin.INSTANCE.get().onArmourRendered(state, matrices, frame, EquipmentSlot.BODY, EquipmentClientInfo.LayerType.HUMANOID, ArmourRendererPlugin.ArmourType.SKULL);
     }
 
-    private RenderLayer getRenderLayer(EquippedHeadRenderState state) {
-        if (state.skullType() == SkullBlock.Type.PLAYER) {
-            ProfileComponent profileComponent = state.wearingSkullProfile();
+    private RenderType getRenderLayer(EquippedHeadRenderState state) {
+        if (state.skullType() == SkullBlock.Types.PLAYER) {
+            ResolvableProfile profileComponent = state.wearingSkullProfile();
             if (profileComponent != null) {
-                return skinCache.get(profileComponent).getRenderLayer();
+                return skinCache.getOrDefault(profileComponent).renderType();
             }
         }
 
-        return SkullBlockEntityRenderer.getCutoutRenderLayer(state.skullType(), null);
+        return SkullBlockRenderer.getSkullRenderType(state.skullType(), null);
     }
 }

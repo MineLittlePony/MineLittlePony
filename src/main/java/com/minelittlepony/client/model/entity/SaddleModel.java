@@ -1,8 +1,8 @@
 package com.minelittlepony.client.model.entity;
 
-import net.minecraft.client.model.ModelPart;
-import net.minecraft.client.render.entity.model.EntityModel;
-import net.minecraft.util.math.MathHelper;
+import net.minecraft.client.model.EntityModel;
+import net.minecraft.client.model.geom.ModelPart;
+import net.minecraft.util.Mth;
 
 import com.minelittlepony.client.render.entity.StriderRenderer;
 
@@ -12,7 +12,7 @@ public class SaddleModel extends EntityModel<StriderRenderer.State> {
     }
 
     @Override
-    public void setAngles(StriderRenderer.State entity) {
-        root.originY = 2 - MathHelper.cos(entity.limbSwingAnimationProgress * 1.5F) * 3 * entity.limbSwingAmplitude;
+    public void setupAnim(StriderRenderer.State entity) {
+        root.y = 2 - Mth.cos(entity.walkAnimationSpeed * 1.5F) * 3 * entity.walkAnimationPos;
     }
 }

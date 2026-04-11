@@ -3,7 +3,7 @@ package com.minelittlepony.api.events;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
-import net.minecraft.entity.PlayerLikeEntity;
+import net.minecraft.world.entity.Avatar;
 
 import com.minelittlepony.api.pony.PonyData;
 
@@ -24,5 +24,5 @@ public interface PonyDataCallback {
      * @param data   The skin/pony data
      * @param env    The environment. Whether this call is coming from the client or server. Clients may get two calls, one for both.
      */
-    void onPonyDataAvailable(PlayerLikeEntity sender, PonyData data, EnvType env);
+    void onPonyDataAvailable(Avatar sender, PonyData data, EnvType env);
 }

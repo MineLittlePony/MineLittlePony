@@ -1,7 +1,7 @@
 package com.minelittlepony.client.model;
 
 import net.minecraft.client.model.Model;
-import net.minecraft.client.model.ModelPart;
+import net.minecraft.client.model.geom.ModelPart;
 
 import com.minelittlepony.api.model.Models;
 import com.minelittlepony.api.model.PonyModel;

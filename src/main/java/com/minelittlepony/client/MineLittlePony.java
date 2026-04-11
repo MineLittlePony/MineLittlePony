@@ -11,25 +11,25 @@ import com.minelittlepony.common.client.gui.sprite.TextureSprite;
 import com.minelittlepony.common.event.ScreenInitCallback;
 import com.minelittlepony.common.event.SkinFilterCallback;
 import com.minelittlepony.common.util.GamePaths;
+import com.mojang.blaze3d.platform.InputConstants;
 
 import java.nio.file.Path;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
-import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
+import net.fabricmc.fabric.api.client.keymapping.v1.KeyMappingHelper;
 import net.fabricmc.fabric.api.resource.v1.ResourceLoader;
 import net.fabricmc.loader.api.FabricLoader;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.hud.debug.DebugHudEntries;
-import net.minecraft.client.gui.hud.debug.RendererDebugHudEntry;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.gui.screen.TitleScreen;
-import net.minecraft.client.option.KeyBinding;
-import net.minecraft.client.util.InputUtil;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.resource.ResourceType;
-import net.minecraft.util.Identifier;
+import net.minecraft.client.KeyMapping;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.components.debug.*;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.gui.screens.TitleScreen;
+import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.resources.Identifier;
+import net.minecraft.server.packs.PackType;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.lwjgl.glfw.GLFW;
@@ -49,7 +49,7 @@ public class MineLittlePony implements ClientModInitializer {
     private PonyManagerImpl ponyManager;
     private VariatedTextureSupplier variatedTextures;
 
-    private final KeyBinding keyBinding = new KeyBinding("key.minelittlepony.settings", InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_F9, KeyBinding.Category.MISC);
+    private final KeyMapping keyBinding = new KeyMapping("key.minelittlepony.settings", InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_F9, KeyMapping.Category.MISC);
 
     private final PonyRenderDispatcher renderDispatcher = new PonyRenderDispatcher();
     private final AtomicBoolean initialized = new AtomicBoolean();
@@ -70,7 +70,7 @@ public class MineLittlePony implements ClientModInitializer {
     }
 
     public static Identifier id(String name) {
-        return Identifier.of("minelittlepony", name);
+        return Identifier.fromNamespaceAndPath("minelittlepony", name);
     }
 
     @Override
@@ -82,14 +82,14 @@ public class MineLittlePony implements ClientModInitializer {
         ponyManager = new PonyManagerImpl(config);
         variatedTextures = new VariatedTextureSupplier();
 
-        KeyBindingHelper.registerKeyBinding(keyBinding);
-        DebugHudEntries.register(PONY_HITBOXES_DEBUG_HUD_ENTRY, new RendererDebugHudEntry());
-        DebugHudEntries.register(PONY_FILLYCAM_RAYS_DEBUG_HUD_ENTRY, new RendererDebugHudEntry());
-        DebugHudEntries.register(PonyEntityRenderersDebugEntry.ID, new PonyEntityRenderersDebugEntry());
+        KeyMappingHelper.registerKeyMapping(keyBinding);
+        DebugScreenEntries.register(PONY_HITBOXES_DEBUG_HUD_ENTRY, new DebugEntryNoop());
+        DebugScreenEntries.register(PONY_FILLYCAM_RAYS_DEBUG_HUD_ENTRY, new DebugEntryNoop());
+        DebugScreenEntries.register(PonyEntityRenderersDebugEntry.ID, new PonyEntityRenderersDebugEntry());
 
-        ResourceLoader.get(ResourceType.CLIENT_RESOURCES).registerReloader(PonyManagerImpl.ID, ponyManager);
-        ResourceLoader.get(ResourceType.CLIENT_RESOURCES).registerReloader(VariatedTextureSupplier.ID, variatedTextures);
-        ResourceLoader.get(ResourceType.CLIENT_RESOURCES).registerReloader(ArmourTextureResolver.ID, ArmourTextureResolver.INSTANCE);
+        ResourceLoader.get(PackType.CLIENT_RESOURCES).registerReloadListener(PonyManagerImpl.ID, ponyManager);
+        ResourceLoader.get(PackType.CLIENT_RESOURCES).registerReloadListener(VariatedTextureSupplier.ID, variatedTextures);
+        ResourceLoader.get(PackType.CLIENT_RESOURCES).registerReloadListener(ArmourTextureResolver.ID, ArmourTextureResolver.INSTANCE);
 
         // convert legacy pony skins
         SkinFilterCallback.EVENT.register(new LegacySkinConverter());
@@ -101,7 +101,7 @@ public class MineLittlePony implements ClientModInitializer {
         new ClientSkinsProxy();
 
         config.load();
-        config.onChangedExternally(c -> configChanged.set(true));
+        config.onChangedExternally(_ -> configChanged.set(true));
 
         ClientChannel.bootstrap();
         ModelType.bootstrap();
@@ -110,24 +110,24 @@ public class MineLittlePony implements ClientModInitializer {
         FabricLoader.getInstance().getEntrypoints("minelittlepony", ClientModInitializer.class).forEach(ClientModInitializer::onInitializeClient);
     }
 
-    private void onTick(MinecraftClient client) {
+    private void onTick(Minecraft client) {
         if (!initialized.getAndSet(true)) {
             renderDispatcher.initialise(client.getEntityRenderDispatcher(), false);
         }
 
-        if (configChanged.getAndSet(false) && client.currentScreen instanceof PonySettingsScreen screen) {
+        if (configChanged.getAndSet(false) && client.screen instanceof PonySettingsScreen screen) {
             screen.init(screen.width, screen.height);
         }
 
-        boolean inGame = client.world != null && client.player != null && client.currentScreen == null;
-        boolean mainMenu = client.currentScreen instanceof TitleScreen;
+        boolean inGame = client.level != null && client.player != null && client.screen == null;
+        boolean mainMenu = client.screen instanceof TitleScreen;
 
         if (!inGame && mainMenu) {
-            KeyBinding.updatePressedStates();
+            KeyMapping.setAll();
         }
 
-        if ((mainMenu || inGame) && keyBinding.isPressed()) {
-            client.setScreen(new PonySettingsScreen(client.currentScreen));
+        if ((mainMenu || inGame) && keyBinding.isDown()) {
+            client.setScreen(new PonySettingsScreen(client.screen));
         }
     }
 
@@ -141,7 +141,7 @@ public class MineLittlePony implements ClientModInitializer {
             if (show) {
                 int y = hasHdSkins ? 75 : 50;
                 Button button = buttons.addButton(new Button(screen.width - 50, screen.height - y, 20, 20))
-                    .onClick(sender -> MinecraftClient.getInstance().setScreen(new PonySettingsScreen(screen)));
+                    .onClick(_ -> Minecraft.getInstance().setScreen(new PonySettingsScreen(screen)));
                 button.getStyle()
                         .setIcon(new TextureSprite()
                                 .setPosition(2, 2)
@@ -173,15 +173,15 @@ public class MineLittlePony implements ClientModInitializer {
         public ClientPonyConfig(Path path) {
             super(path);
             MobRenderers.REGISTRY.values().forEach(r -> value("entities", r.name(), true));
-            disablePonifiedArmour.onChanged(t -> ArmourTextureResolver.INSTANCE.invalidate());
+            disablePonifiedArmour.onChanged(_ -> ArmourTextureResolver.INSTANCE.invalidate());
         }
 
         @Override
         public void save() {
             super.save();
-            PlayerEntity player = MinecraftClient.getInstance().player;
+            LocalPlayer player = Minecraft.getInstance().player;
             if (player != null) {
-                player.calculateDimensions();
+                player.refreshDimensions();
             }
         }
     }

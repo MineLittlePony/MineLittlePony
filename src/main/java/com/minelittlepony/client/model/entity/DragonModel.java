@@ -1,10 +1,10 @@
 package com.minelittlepony.client.model.entity;
 
-import net.minecraft.client.model.ModelPart;
-import net.minecraft.client.render.entity.model.BipedEntityModel;
-import net.minecraft.client.render.entity.state.BipedEntityRenderState;
+import net.minecraft.client.model.HumanoidModel;
+import net.minecraft.client.model.geom.ModelPart;
+import net.minecraft.client.renderer.entity.state.HumanoidRenderState;
 
-public class DragonModel<T extends BipedEntityRenderState> extends BipedEntityModel<T> {
+public class DragonModel<T extends HumanoidRenderState> extends HumanoidModel<T> {
 
     protected final ModelPart tail;
     protected final ModelPart tail2;

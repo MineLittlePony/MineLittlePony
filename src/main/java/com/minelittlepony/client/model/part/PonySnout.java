@@ -1,8 +1,6 @@
 package com.minelittlepony.client.model.part;
 
-import net.minecraft.client.model.ModelPart;
-import net.minecraft.client.render.VertexConsumer;
-import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.client.model.geom.ModelPart;
 
 import com.minelittlepony.api.config.PonyConfig;
 import com.minelittlepony.api.model.SubModel;
@@ -10,6 +8,8 @@ import com.minelittlepony.api.pony.meta.Gender;
 import com.minelittlepony.client.render.entity.state.PonyRenderState;
 import com.minelittlepony.mson.api.*;
 import com.minelittlepony.mson.api.model.PartBuilder;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
 
 public class PonySnout implements SubModel<PonyRenderState>, MsonModel {
 
@@ -29,12 +29,12 @@ public class PonySnout implements SubModel<PonyRenderState>, MsonModel {
     }
 
     public void rotate(float x, float y, float z) {
-        mare.setAngles(x, y, z);
-        stallion.setAngles(x, y, z);
+        mare.setRotation(x, y, z);
+        stallion.setRotation(x, y, z);
     }
 
     @Override
-    public void accept(MatrixStack stack, VertexConsumer vertices, int overlay, int light, int color) {
+    public void accept(PoseStack stack, VertexConsumer vertices, int overlay, int light, int color) {
     }
 
     @Override

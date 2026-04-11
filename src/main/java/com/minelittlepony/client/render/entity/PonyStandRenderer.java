@@ -1,19 +1,20 @@
 package com.minelittlepony.client.render.entity;
 
-import net.minecraft.client.item.ItemModelManager;
-import net.minecraft.client.render.RenderLayer;
-import net.minecraft.client.render.RenderLayers;
-import net.minecraft.client.render.command.OrderedRenderCommandQueue;
-import net.minecraft.client.render.entity.*;
-import net.minecraft.client.render.entity.feature.*;
-import net.minecraft.client.render.entity.model.ArmorStandEntityModel;
-import net.minecraft.client.render.entity.state.ArmorStandEntityRenderState;
-import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.decoration.ArmorStandEntity;
-import net.minecraft.util.Atlases;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.math.*;
+import net.minecraft.client.model.object.armorstand.ArmorStandModel;
+import net.minecraft.client.renderer.Sheets;
+import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.client.renderer.entity.*;
+import net.minecraft.client.renderer.entity.layers.CustomHeadLayer;
+import net.minecraft.client.renderer.entity.layers.RenderLayer;
+import net.minecraft.client.renderer.entity.state.ArmorStandRenderState;
+import net.minecraft.client.renderer.item.ItemModelResolver;
+import net.minecraft.client.renderer.rendertype.RenderType;
+import net.minecraft.client.renderer.rendertype.RenderTypes;
+import net.minecraft.core.Rotations;
+import net.minecraft.resources.Identifier;
+import net.minecraft.util.Mth;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.decoration.ArmorStand;
 
 import org.jetbrains.annotations.Nullable;
 
@@ -31,26 +32,29 @@ import com.minelittlepony.client.render.PonyRenderContext;
 import com.minelittlepony.client.render.entity.feature.*;
 import com.minelittlepony.client.render.entity.state.PonifiedRenderState;
 import com.minelittlepony.client.render.entity.state.PonyRenderState;
+import com.minelittlepony.common.util.Untyped;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.math.Axis;
 
 import java.util.Optional;
 
-public class PonyStandRenderer extends LivingEntityRenderer<ArmorStandEntity, PonyStandRenderer.State, ArmorStandEntityModel> {
-    static final Pony PONY = new Pony(Identifier.ofVanilla("null"), () -> Optional.of(PonyData.NULL));
+public class PonyStandRenderer extends LivingEntityRenderer<ArmorStand, PonyStandRenderer.State, ArmorStandModel> {
+    static final Pony PONY = new Pony(Identifier.withDefaultNamespace("null"), () -> Optional.of(PonyData.NULL));
 
     private final PonifiedContext context = new PonifiedContext();
-    private final ItemModelManager itemModelManager;
+    private final ItemModelResolver itemModelManager;
 
     public static boolean isPonyStand(Entity entity) {
         return PonyDisplayTags.of(entity).shouldPonify(entity.hasCustomName() && "Ponita".equals(entity.getCustomName().getString()));
     }
 
-    public PonyStandRenderer(EntityRendererFactory.Context context) {
+    public PonyStandRenderer(EntityRendererProvider.Context context) {
         super(context, ModelType.ARMOUR_STAND.createModel(), 0);
-        itemModelManager = context.getItemModelManager();
-        addFeature(new PonifiedFeature(this, new ArmourFeature<>(this.context, context.getEquipmentModelLoader(), context.getSpriteAtlasTexture(Atlases.ARMOR_TRIMS))));
-        addFeature(new PonifiedFeature(this, new HeldItemFeature<>(this.context)));
-        addFeature(new PonifiedFeature(this, new ElytraFeature<>(this.context, context.getEquipmentRenderer())));
-        addFeature(new PonifiedFeature(this, new SkullFeature<>(this.context, context.getPlayerSkinCache(), context.getEntityModels(), HeadFeatureRenderer.HeadTransformation.DEFAULT, false)));
+        itemModelManager = context.getItemModelResolver();
+        addLayer(new PonifiedFeature<>(this, new ArmourFeature<>(this.context, context.getEquipmentAssets(), context.getAtlas(Sheets.ARMOR_TRIMS_SHEET))));
+        addLayer(new PonifiedFeature<>(this, new HeldItemFeature<>(this.context)));
+        addLayer(new PonifiedFeature<>(this, new ElytraFeature<>(this.context, context.getEquipmentRenderer())));
+        addLayer(new PonifiedFeature<>(this, new SkullFeature<>(this.context, context.getPlayerSkinRenderCache(), context.getModelSet(), CustomHeadLayer.Transforms.DEFAULT, false)));
     }
 
     @Override
@@ -59,87 +63,88 @@ public class PonyStandRenderer extends LivingEntityRenderer<ArmorStandEntity, Po
     }
 
     @Override
-    public Identifier getTexture(State state) {
-        return ArmorStandEntityRenderer.TEXTURE;
+    public Identifier getTextureLocation(State state) {
+        return ArmorStandRenderer.DEFAULT_SKIN_LOCATION;
     }
 
-    public void updateRenderState(ArmorStandEntity entity, State state, float tickDelta) {
-        super.updateRenderState(entity, state, tickDelta);
-        BipedEntityRenderer.updateBipedRenderState(entity, state.ponyState, tickDelta, itemModelManager);
-        state.yaw = MathHelper.lerpAngleDegrees(tickDelta, entity.lastYaw, entity.getYaw());
-        state.marker = entity.isMarker();
-        state.small = entity.isSmall();
+    @Override
+    public void extractRenderState(ArmorStand entity, State state, float tickDelta) {
+        super.extractRenderState(entity, state, tickDelta);
+        HumanoidMobRenderer.extractHumanoidRenderState(entity, state.ponyState, tickDelta, itemModelManager);
+        state.yRot = entity.getYRot(tickDelta);
+        state.isMarker = entity.isMarker();
+        state.isSmall = entity.isSmall();
         state.showArms = true;
-        state.showBasePlate = entity.shouldShowBasePlate();
-        state.bodyRotation = entity.getBodyRotation();
-        state.headRotation = entity.getHeadRotation();
-        state.leftArmRotation = entity.getLeftArmRotation();
-        state.rightArmRotation = entity.getRightArmRotation();
-        state.leftLegRotation = entity.getLeftLegRotation();
-        state.rightLegRotation = entity.getRightLegRotation();
-        state.timeSinceLastHit = (float)(entity.getEntityWorld().getTime() - entity.lastHitTime) + tickDelta;
+        state.showBasePlate = entity.showBasePlate();
+        state.bodyPose = entity.getBodyPose();
+        state.headPose = entity.getHeadPose();
+        state.leftArmPose = entity.getLeftArmPose();
+        state.rightArmPose = entity.getRightArmPose();
+        state.leftLegPose = entity.getLeftLegPose();
+        state.rightLegPose = entity.getRightLegPose();
+        state.wiggle = (float)(entity.level().getGameTime() - entity.lastHit) + tickDelta;
 
-        if (state.leftLegRotation.equals(ArmorStandEntity.DEFAULT_LEFT_LEG_ROTATION)) {
-            state.leftLegRotation = new EulerAngle(-state.leftArmRotation.pitch(), state.leftArmRotation.yaw(), state.leftArmRotation.roll());
+        if (state.leftLegPose.equals(ArmorStand.DEFAULT_LEFT_LEG_POSE)) {
+            state.leftLegPose = new Rotations(-state.leftArmPose.x(), state.leftArmPose.y(), state.leftArmPose.z());
         }
 
-        if (state.rightLegRotation.equals(ArmorStandEntity.DEFAULT_RIGHT_LEG_ROTATION)) {
-            state.rightLegRotation = new EulerAngle(-state.rightArmRotation.pitch(), state.rightArmRotation.yaw(), state.rightArmRotation.roll());
+        if (state.rightLegPose.equals(ArmorStand.DEFAULT_RIGHT_LEG_POSE)) {
+            state.rightLegPose = new Rotations(-state.rightArmPose.x(), state.rightArmPose.y(), state.rightArmPose.z());
         }
 
         context.manager.updateState(entity, state.ponyState, Mode.OTHER, itemModelManager);
-        state.ponyState.baby = state.small;
-        state.ponyState.attributes.size = state.small ? SizePreset.FOAL : SizePreset.NORMAL;
-        state.pitch = MathHelper.RADIANS_PER_DEGREE * entity.getHeadRotation().pitch();
-        state.relativeHeadYaw = MathHelper.RADIANS_PER_DEGREE * entity.getHeadRotation().yaw();
+        state.ponyState.isBaby = state.isSmall;
+        state.ponyState.attributes.size = state.isSmall ? SizePreset.FOAL : SizePreset.NORMAL;
+        state.xRot = entity.getHeadPose().x() * Mth.DEG_TO_RAD;
+        state.yRot = entity.getHeadPose().y() * Mth.DEG_TO_RAD;
     }
 
     @Override
-    protected void setupTransforms(State state, MatrixStack matrices, float animationProgress, float bodyYaw) {
+    protected void setupRotations(State state, PoseStack matrices, float bodyRot, float entityScale) {
 
-        context.manager.setupTransforms(state.ponyState, matrices, animationProgress, bodyYaw);
+        context.manager.setupTransforms(state.ponyState, matrices, bodyRot, entityScale);
 
-        matrices.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(180 - animationProgress));
-        if (state.timeSinceLastHit < 5) {
-            matrices.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(MathHelper.sin(state.timeSinceLastHit / 1.5F * (float) Math.PI) * 3.0F));
+        matrices.mulPose(Axis.YP.rotationDegrees(180 - bodyRot));
+        if (state.wiggle < 5) {
+            matrices.mulPose(Axis.YP.rotationDegrees(Mth.sin(state.wiggle / 1.5F * (float) Math.PI) * 3.0F));
         }
-        matrices.translate(0, 0, state.baseScale * -4/16F);
+        matrices.translate(0, 0, state.scale * -4/16F);
     }
 
     @Override
-    protected boolean hasLabel(ArmorStandEntity entity, double squaredDistanceToCamera) {
+    protected boolean shouldShowName(ArmorStand entity, double squaredDistanceToCamera) {
         return entity.isCustomNameVisible();
     }
 
     @Override
     @Nullable
-    protected RenderLayer getRenderLayer(State state, boolean showBody, boolean translucent, boolean showOutline) {
-        if (!state.marker) {
-            return super.getRenderLayer(state, showBody, translucent, showOutline);
+    protected RenderType getRenderType(State state, boolean showBody, boolean translucent, boolean appearGlowing) {
+        if (!state.appearsGlowing()) {
+            return super.getRenderType(state, showBody, translucent, appearGlowing);
         }
 
-        Identifier identifier = getTexture(state);
+        Identifier texture = getTextureLocation(state);
         if (translucent) {
-            return RenderLayers.entityTranslucent(identifier, false);
+            return RenderTypes.entityTranslucent(texture, false);
         }
 
-        return showBody ? RenderLayers.entityCutoutNoCull(identifier, false) : null;
+        return showBody ? RenderTypes.entityCutout(texture, false) : null;
     }
 
     private class PonifiedContext implements
-                FeatureRendererContext<PonyState, EarthPonyModel<PonyState>>,
-                PonyRenderContext<ArmorStandEntity, PonyState, EarthPonyModel<PonyState>> {
-        private final EquineRenderManager<ArmorStandEntity, PonyState, EarthPonyModel<PonyState>> manager
-            = new EquineRenderManager<>(this, (state, stack, progress, yaw) -> {},
+                RenderLayerParent<PonyState, EarthPonyModel<PonyState>>,
+                PonyRenderContext<ArmorStand, PonyState, EarthPonyModel<PonyState>> {
+        private final EquineRenderManager<ArmorStand, PonyState, EarthPonyModel<PonyState>> manager
+            = new EquineRenderManager<>(this, (_, _, _, _) -> {},
                     ModelType.EARTH_PONY.<EarthPonyModel<PonyState>>create(false).withArmorFactory(PonyArmorStandEntityArmorModel::new));
 
         @Override
-        public Pony getEntityPony(ArmorStandEntity entity) {
+        public Pony getEntityPony(ArmorStand entity) {
             return PONY;
         }
 
         @Override
-        public EquineRenderManager<ArmorStandEntity, PonyState, EarthPonyModel<PonyState>> getEquineManager() {
+        public EquineRenderManager<ArmorStand, PonyState, EarthPonyModel<PonyState>> getEquineManager() {
             return manager;
         }
 
@@ -149,29 +154,27 @@ public class PonyStandRenderer extends LivingEntityRenderer<ArmorStandEntity, Po
         }
     }
 
-    private class PonifiedFeature extends FeatureRenderer<PonyStandRenderer.State, ArmorStandEntityModel> {
-        private final FeatureRenderer<?, ?> feature;
+    private class PonifiedFeature<S extends PonyRenderState, T extends RenderLayer<?, ?>> extends RenderLayer<PonyStandRenderer.State, ArmorStandModel> {
+        private final T feature;
 
-        public PonifiedFeature(FeatureRendererContext<PonyStandRenderer.State, ArmorStandEntityModel> context,
-                FeatureRenderer<?, ?> feature) {
+        public PonifiedFeature(RenderLayerParent<PonyStandRenderer.State, ArmorStandModel> context, T feature) {
             super(context);
             this.feature = feature;
         }
 
-        @SuppressWarnings({"rawtypes", "unchecked"})
         @Override
-        public void render(MatrixStack matrices, OrderedRenderCommandQueue queue, int light, PonyStandRenderer.State state, float headYaw, float headPitch) {
-            ((FeatureRenderer)feature).render(matrices, queue, light, state.ponyState, headYaw, headPitch);
+        public void submit(PoseStack matrices, SubmitNodeCollector frame, int light, PonyStandRenderer.State state, float headYaw, float headPitch) {
+            Untyped.<T, RenderLayer<PonyState, ?>>cast(feature).submit(matrices, frame, light, state.ponyState, headYaw, headPitch);
         }
     }
 
-    public static final class State extends ArmorStandEntityRenderState implements PonifiedRenderState {
+    public static final class State extends ArmorStandRenderState implements PonifiedRenderState {
         public PonyState ponyState = new PonyState(this);
     }
 
     public static class PonyState extends PonyRenderState {
-        public final ArmorStandEntityRenderState angles;
-        public PonyState(ArmorStandEntityRenderState state) {
+        public final ArmorStandRenderState angles;
+        public PonyState(ArmorStandRenderState state) {
             this.angles = state;
         }
     }

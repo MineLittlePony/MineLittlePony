@@ -2,12 +2,11 @@ package com.minelittlepony.client.render.entity.feature;
 
 import it.unimi.dsi.fastutil.objects.Object2FloatLinkedOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2FloatMap;
-import net.minecraft.client.render.*;
-import net.minecraft.client.render.command.OrderedRenderCommandQueue;
-import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.util.Colors;
-import net.minecraft.util.math.random.Random;
+import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.util.CommonColors;
+import net.minecraft.util.RandomSource;
+import net.minecraft.world.entity.LivingEntity;
 
 import com.google.common.cache.*;
 import com.google.common.collect.Streams;
@@ -18,6 +17,8 @@ import com.minelittlepony.client.model.ClientPonyModel;
 import com.minelittlepony.client.model.ModelType;
 import com.minelittlepony.client.render.PonyRenderContext;
 import com.minelittlepony.client.render.entity.state.PonyRenderState;
+import com.minelittlepony.common.util.Untyped;
+import com.mojang.blaze3d.vertex.PoseStack;
 
 import java.util.*;
 import java.util.concurrent.TimeUnit;
@@ -40,7 +41,7 @@ public class GearFeature<
                 List<Entry> randomizedOrder = new ArrayList<>();
                 List<Entry> pool = new ArrayList<>(gears);
 
-                Random rng = Random.create(id);
+                RandomSource rng = RandomSource.create(id);
 
                 while (!pool.isEmpty()) {
                     randomizedOrder.add(pool.remove(rng.nextInt(pool.size() + 1) % pool.size()));
@@ -53,8 +54,8 @@ public class GearFeature<
     }
 
     @Override
-    public void render(MatrixStack stack, OrderedRenderCommandQueue queue, int light, S state, float headYaw, float headPitch) {
-        if (state.invisible) {
+    public void submit(PoseStack stack, SubmitNodeCollector frame, int light, S state, float headYaw, float headPitch) {
+        if (state.isInvisible) {
             return;
         }
 
@@ -62,10 +63,9 @@ public class GearFeature<
         final Object2FloatMap<BodyPart> renderStackingOffsets = new Object2FloatLinkedOpenHashMap<>();
 
         for (var entry : randomisedGearCache.getUnchecked(state.attributes.getEntityId().getLeastSignificantBits())) {
-            @SuppressWarnings("unchecked")
-            Gear<S> gear = (Gear<S>)entry.gear();
+            Gear<S> gear = Untyped.cast(entry.gear());
             if (getContext().shouldRender(model, state, entry.wearable(), gear)) {
-                stack.push();
+                stack.pushPose();
                 gear.transform(state, model, stack);
                 BodyPart part = gear.getGearLocation();
                 if (part != BodyPart.HEAD || state.headVisible) {
@@ -85,12 +85,12 @@ public class GearFeature<
                     gearState.entityState = state;
                     gearState.model = model;
                     gearState.bodySwing = state.wobbleAmount;
-                    gearState.limbDistance = state.limbSwingAnimationProgress;
-                    gearState.limbAngle = state.limbSwingAmplitude;
+                    gearState.limbDistance = state.walkAnimationSpeed;
+                    gearState.limbAngle = state.walkAnimationPos;
 
-                    gear.render(stack, gearState, queue, gear.getLayer(state, getContext()), OverlayTexture.DEFAULT_UV, light, Colors.WHITE);
+                    gear.render(stack, gearState, frame, gear.getLayer(state, getContext()), OverlayTexture.NO_OVERLAY, light, CommonColors.WHITE);
                 }
-                stack.pop();
+                stack.popPose();
             }
         }
     }

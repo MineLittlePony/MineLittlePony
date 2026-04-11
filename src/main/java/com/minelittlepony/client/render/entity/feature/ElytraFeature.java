@@ -5,86 +5,86 @@ import com.minelittlepony.client.model.*;
 import com.minelittlepony.client.model.armour.ArmourRendererPlugin;
 import com.minelittlepony.client.render.PonyRenderContext;
 import com.minelittlepony.client.render.entity.state.PonyRenderState;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.math.Axis;
 
-import net.minecraft.client.render.command.OrderedRenderCommandQueue;
-import net.minecraft.client.render.entity.equipment.EquipmentModel;
-import net.minecraft.client.render.entity.equipment.EquipmentRenderer;
-import net.minecraft.client.render.entity.feature.FeatureRenderer;
-import net.minecraft.client.render.entity.feature.FeatureRendererContext;
-import net.minecraft.client.render.entity.state.PlayerEntityRenderState;
-import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.component.DataComponentTypes;
-import net.minecraft.component.type.EquippableComponent;
-import net.minecraft.entity.EquipmentSlot;
-import net.minecraft.entity.player.SkinTextures;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.equipment.EquipmentAsset;
-import net.minecraft.registry.RegistryKey;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.math.RotationAxis;
+import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.client.renderer.entity.RenderLayerParent;
+import net.minecraft.client.renderer.entity.layers.EquipmentLayerRenderer;
+import net.minecraft.client.renderer.entity.layers.RenderLayer;
+import net.minecraft.client.renderer.entity.state.AvatarRenderState;
+import net.minecraft.client.resources.model.EquipmentClientInfo;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.player.PlayerSkin;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.equipment.EquipmentAsset;
+import net.minecraft.world.item.equipment.Equippable;
 
 import org.jetbrains.annotations.Nullable;
 
 public class ElytraFeature<
         S extends PonyRenderState,
         M extends ClientPonyModel<S>
-    > extends FeatureRenderer<S, M> {
-    private final PonyElytra<S> model = ModelType.ELYTRA.createModel();
+    > extends RenderLayer<S, M> {
+    private final PonyElytra model = ModelType.ELYTRA.createModel();
 
-    private final FeatureRendererContext<S, M> context;
-    private final EquipmentRenderer equipmentRenderer;
+    private final RenderLayerParent<S, M> context;
+    private final EquipmentLayerRenderer equipmentRenderer;
 
-    public ElytraFeature(FeatureRendererContext<S, M> context, EquipmentRenderer equipmentRenderer) {
+    public ElytraFeature(RenderLayerParent<S, M> context, EquipmentLayerRenderer equipmentRenderer) {
         super(context);
         this.context = context;
         this.equipmentRenderer = equipmentRenderer;
     }
 
     @Override
-    public void render(MatrixStack matrices, OrderedRenderCommandQueue queue, int light, S state, float limbAngle, float limbDistance) {
+    public void submit(PoseStack matrices, SubmitNodeCollector queue, int light, S state, float limbAngle, float limbDistance) {
         ArmourRendererPlugin plugin = ArmourRendererPlugin.INSTANCE.get();
 
-        for (ItemStack stack : plugin.getArmorStacks(state, EquipmentSlot.CHEST, EquipmentModel.LayerType.WINGS, ArmourRendererPlugin.ArmourType.ELYTRA)) {
-            EquippableComponent equippable = stack.get(DataComponentTypes.EQUIPPABLE);
+        for (ItemStack stack : plugin.getArmorStacks(state, EquipmentSlot.CHEST, EquipmentClientInfo.LayerType.WINGS, ArmourRendererPlugin.ArmourType.ELYTRA)) {
+            Equippable equippable = stack.get(DataComponents.EQUIPPABLE);
 
             if (equippable != null && !equippable.assetId().isEmpty()) {
-                RegistryKey<EquipmentAsset> equipmentModel = equippable.assetId().get();
+                ResourceKey<EquipmentAsset> equipmentModel = equippable.assetId().get();
 
                 float alpha = plugin.getElytraAlpha(stack, model, state);
                 if (alpha <= 0) {
                     return;
                 }
 
-                matrices.push();
-                model.setAngles(state);
+                matrices.pushPose();
+                model.setupAnim(state);
                 preRenderCallback(state, matrices);
-                equipmentRenderer.render(EquipmentModel.LayerType.WINGS, equipmentModel, model, state, stack, matrices, queue, light, getElytraTexture(state), state.outlineColor, 0);
-                matrices.pop();
+                equipmentRenderer.renderLayers(EquipmentClientInfo.LayerType.WINGS, equipmentModel, model, state, stack, matrices, queue, light, getElytraTexture(state), state.outlineColor, 0);
+                matrices.popPose();
             }
         }
 
-        plugin.onArmourRendered(state, matrices, queue, EquipmentSlot.CHEST, EquipmentModel.LayerType.WINGS, ArmourRendererPlugin.ArmourType.ELYTRA);
+        plugin.onArmourRendered(state, matrices, queue, EquipmentSlot.CHEST, EquipmentClientInfo.LayerType.WINGS, ArmourRendererPlugin.ArmourType.ELYTRA);
     }
 
     @SuppressWarnings("unchecked")
-    protected void preRenderCallback(S state, MatrixStack stack) {
+    protected void preRenderCallback(S state, PoseStack stack) {
         if (state instanceof PonyRenderState ponyState && context instanceof PonyRenderContext context) {
             stack.translate(0, 0.45F, 0);
-            ((ClientPonyModel<PonyRenderState>)context.getEquineManager().lookupModel(state).body()).transform(ponyState, BodyPart.BODY, stack);
-            stack.multiply(RotationAxis.POSITIVE_X.rotationDegrees(80));
+            context.getEquineManager().lookupModel(state).body().transform(ponyState, BodyPart.BODY, stack);
+            stack.mulPose(Axis.XP.rotationDegrees(80));
         }
     }
 
     @Nullable
     protected Identifier getElytraTexture(S state) {
-        if (state instanceof PlayerEntityRenderState playerState) {
-            SkinTextures textures = playerState.skinTextures;
+        if (state instanceof AvatarRenderState playerState) {
+            PlayerSkin textures = playerState.skin;
 
             if (textures.elytra() != null) {
                 return textures.elytra().texturePath();
             }
 
-            if (textures.cape() != null && playerState.capeVisible) {
+            if (textures.cape() != null && playerState.showCape) {
                 return textures.cape().texturePath();
             }
         }

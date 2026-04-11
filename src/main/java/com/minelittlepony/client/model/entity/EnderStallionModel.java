@@ -1,11 +1,11 @@
 package com.minelittlepony.client.model.entity;
 
-import net.minecraft.client.model.ModelPart;
-import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.client.model.geom.ModelPart;
 
 import com.minelittlepony.api.model.BodyPart;
 import com.minelittlepony.client.model.entity.race.AlicornModel;
 import com.minelittlepony.client.render.entity.EnderStallionRenderer;
+import com.mojang.blaze3d.vertex.PoseStack;
 
 public class EnderStallionModel extends AlicornModel<EnderStallionRenderer.State> {
     private final ModelPart leftHorn;
@@ -20,6 +20,11 @@ public class EnderStallionModel extends AlicornModel<EnderStallionRenderer.State
     @Override
     protected void setModelVisibilities(EnderStallionRenderer.State state) {
         super.setModelVisibilities(state);
+        leftSleeve.visible = false;
+        rightSleeve.visible = false;
+
+        leftPants.visible = false;
+        rightPants.visible = false;
         tail.setVisible(false, state);
         snout.setVisible(false, state);
         horn.setVisible(!state.isBoss, state);
@@ -36,27 +41,16 @@ public class EnderStallionModel extends AlicornModel<EnderStallionRenderer.State
         super.setModelAngles(state);
 
         if (state.isAttacking) {
-            head.originY -= 5;
+            head.y -= 5;
         }
         hat.visible = state.isAttacking;
     }
 
     @Override
-    public void transform(EnderStallionRenderer.State state, BodyPart part, MatrixStack stack) {
+    public void transform(EnderStallionRenderer.State state, BodyPart part, PoseStack stack) {
         if (part != BodyPart.WINGS) {
             stack.translate(0, -1.15F, 0);
         }
         super.transform(state, part, stack);
-    }
-
-    @Override
-    public void setVisible(boolean visible) {
-        super.setVisible(visible);
-
-        leftSleeve.visible = false;
-        rightSleeve.visible = false;
-
-        leftPants.visible = false;
-        rightPants.visible = false;
     }
 }

@@ -1,8 +1,9 @@
 package com.minelittlepony.client.model.armour;
 
-import net.minecraft.item.Item;
-import net.minecraft.client.render.entity.equipment.EquipmentModel;
-import net.minecraft.util.Identifier;
+
+import net.minecraft.client.resources.model.EquipmentClientInfo;
+import net.minecraft.resources.Identifier;
+import net.minecraft.world.item.Item;
 
 import com.minelittlepony.client.model.ClientPonyModel;
 import com.minelittlepony.mson.api.ModelKey;
@@ -15,8 +16,8 @@ public interface ArmorModelRegistry {
     static final Map<Identifier, Optional<ModelKey<ClientPonyModel<?>>>> REGISTRY = new HashMap<>();
 
     @SuppressWarnings("deprecation")
-    public static ModelKey<ClientPonyModel<?>> getModelKey(Item item, EquipmentModel.LayerType layerType, ArmourVariant variant) {
-        return item.getRegistryEntry().getKey().map(key -> key.getValue()).flatMap(id -> {
+    public static ModelKey<ClientPonyModel<?>> getModelKey(Item item, EquipmentClientInfo.LayerType layerType, ArmourVariant variant) {
+        return item.builtInRegistryHolder().unwrapKey().map(key -> key.identifier()).flatMap(id -> {
             if (id.getNamespace().equals("minecraft")) {
                 return Optional.empty();
             }
@@ -26,7 +27,7 @@ public interface ArmorModelRegistry {
         }).orElse(variant.getDefaultModel(layerType));
     }
 
-    private static String layerName(EquipmentModel.LayerType layerType) {
+    private static String layerName(EquipmentClientInfo.LayerType layerType) {
         return switch (layerType) {
             case HUMANOID -> "outer";
             case HUMANOID_LEGGINGS -> "inner";

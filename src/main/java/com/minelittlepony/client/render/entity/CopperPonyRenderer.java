@@ -1,16 +1,16 @@
 package com.minelittlepony.client.render.entity;
 
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Oxidizable.OxidationLevel;
-import net.minecraft.client.render.entity.EntityRendererFactory;
-import net.minecraft.client.render.entity.EntityRendererFactory.Context;
-import net.minecraft.component.DataComponentTypes;
-import net.minecraft.component.type.BlockStateComponent;
-import net.minecraft.entity.AnimationState;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.passive.*;
-import net.minecraft.item.BlockItem;
-import net.minecraft.util.Identifier;
+import net.minecraft.client.renderer.entity.EntityRendererProvider;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.resources.Identifier;
+import net.minecraft.world.entity.AnimationState;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.animal.golem.CopperGolem;
+import net.minecraft.world.entity.animal.golem.CopperGolemState;
+import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.component.BlockItemStateProperties;
+import net.minecraft.world.level.block.WeatheringCopper;
+import net.minecraft.world.level.block.state.BlockState;
 
 import org.jetbrains.annotations.Nullable;
 
@@ -25,28 +25,28 @@ import com.minelittlepony.client.render.entity.state.PonyRenderState;
 
 import java.util.Optional;
 
-public class CopperPonyRenderer extends PonyRenderer<CopperGolemEntity, CopperPonyRenderer.State, ClientPonyModel<CopperPonyRenderer.State>> {
+public class CopperPonyRenderer extends PonyRenderer<CopperGolem, CopperPonyRenderer.State, ClientPonyModel<CopperPonyRenderer.State>> {
     public static final Identifier BASE_TEXTURE = MineLittlePony.id("textures/entity/copper_golem/copper_golem_dragon.png");
 
-    private static final TextureSupplier<CopperGolemEntity> TEXTURES = entity -> {
-        return MineLittlePony.id("textures/entity/copper_golem/" + getKey(entity.getOxidationLevel()) + "copper_golem_dragon.png");
+    private static final TextureSupplier<CopperGolem> TEXTURES = entity -> {
+        return MineLittlePony.id("textures/entity/copper_golem/" + getKey(entity.getWeatherState()) + "copper_golem_dragon.png");
     };
     private static final TextureSupplier<State> EYES_TEXTURES = state -> {
         return MineLittlePony.id("textures/entity/copper_golem/" + getKey(state.oxidationLevel) + "copper_golem_eyes_dragon.png");
     };
 
-    private static String getKey(OxidationLevel level) {
-        return level == OxidationLevel.UNAFFECTED ? "" : level.asString() + "_";
+    private static String getKey(WeatheringCopper.WeatherState level) {
+        return level == WeatheringCopper.WeatherState.UNAFFECTED ? "" : level.getSerializedName() + "_";
     }
 
-    public CopperPonyRenderer(Context context) {
+    public CopperPonyRenderer(EntityRendererProvider.Context context) {
         super(context, ModelType.SPIKE, TEXTURES);
     }
 
     @Override
-    protected void addFeatures(EntityRendererFactory.Context context) {
+    protected void addFeatures(EntityRendererProvider.Context context) {
         super.addFeatures(context);
-        addFeature(new GlowingEyesFeature<>(this, EYES_TEXTURES));
+        addLayer(new GlowingEyesFeature<>(this, EYES_TEXTURES));
     }
 
     @Override
@@ -55,26 +55,26 @@ public class CopperPonyRenderer extends PonyRenderer<CopperGolemEntity, CopperPo
     }
 
     @Override
-    public void updateRenderState(CopperGolemEntity entity, State state, float tickDelta) {
-        super.updateRenderState(entity, state, tickDelta);
-        state.oxidationLevel = entity.getOxidationLevel();
-        state.baseScale += 0.13F;
+    public void extractRenderState(CopperGolem entity, State state, float tickDelta) {
+        super.extractRenderState(entity, state, tickDelta);
+        state.oxidationLevel = entity.getWeatherState();
+        state.scale += 0.13F;
         state.copperGolemState = entity.getState();
-        state.spinHeadAnimationState.copyFrom(entity.getSpinHeadAnimationState());
-        state.gettingItemAnimationState.copyFrom(entity.getGettingItemAnimationState());
-        state.gettingNoItemAnimationState.copyFrom(entity.getGettingNoItemAnimationState());
-        state.droppingItemAnimationState.copyFrom(entity.getDroppingItemAnimationState());
-        state.droppingNoItemAnimationState.copyFrom(entity.getDroppingNoItemAnimationState());
-        state.headBlockItemStack = Optional.of(entity.getEquippedStack(CopperGolemEntity.POPPY_SLOT)).flatMap(stack -> {
+        state.spinHeadAnimationState.copyFrom(entity.getIdleAnimationState());
+        state.gettingItemAnimationState.copyFrom(entity.getInteractionGetItemAnimationState());
+        state.gettingNoItemAnimationState.copyFrom(entity.getInteractionGetNoItemAnimationState());
+        state.droppingItemAnimationState.copyFrom(entity.getInteractionDropItemAnimationState());
+        state.droppingNoItemAnimationState.copyFrom(entity.getInteractionDropNoItemAnimationState());
+        state.headBlockItemStack = Optional.of(entity.getItemBySlot(CopperGolem.EQUIPMENT_SLOT_ANTENNA)).flatMap(stack -> {
             if (stack.getItem() instanceof BlockItem block) {
-                return Optional.of(stack.getOrDefault(DataComponentTypes.BLOCK_STATE, BlockStateComponent.DEFAULT).applyToState(block.getBlock().getDefaultState()));
+                return Optional.of(stack.getOrDefault(DataComponents.BLOCK_STATE, BlockItemStateProperties.EMPTY).apply(block.getBlock().defaultBlockState()));
             }
             return Optional.empty();
         });
     }
 
     public static class State extends PonyRenderState {
-        public OxidationLevel oxidationLevel = OxidationLevel.UNAFFECTED;
+        public WeatheringCopper.WeatherState oxidationLevel = WeatheringCopper.WeatherState.UNAFFECTED;
         public CopperGolemState copperGolemState = CopperGolemState.IDLE;
         public final AnimationState spinHeadAnimationState = new AnimationState();
         public final AnimationState gettingItemAnimationState = new AnimationState();

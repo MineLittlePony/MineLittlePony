@@ -2,9 +2,9 @@ package com.minelittlepony.api.pony;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.client.render.entity.EntityRendererFactory;
-import net.minecraft.entity.PlayerLikeEntity;
-import net.minecraft.util.Identifier;
+import net.minecraft.client.renderer.entity.EntityRendererProvider;
+import net.minecraft.resources.Identifier;
+import net.minecraft.world.entity.Avatar;
 
 import org.jetbrains.annotations.Nullable;
 
@@ -21,7 +21,7 @@ import java.util.function.Predicate;
  * And Niriks (the burning form of kirins)
  */
 @Environment(EnvType.CLIENT)
-public record PonyForm(Identifier id, Predicate<PlayerLikeEntity> shouldApply, RendererFactory<?> factory) {
+public record PonyForm(Identifier id, Predicate<Avatar> shouldApply, RendererFactory<?> factory) {
     public static final Identifier DEFAULT = Pony.id("land");
     public static final Identifier SEAPONY = Pony.id("seapony");
     public static final Identifier NIRIK = Pony.id("nirik");
@@ -29,13 +29,13 @@ public record PonyForm(Identifier id, Predicate<PlayerLikeEntity> shouldApply, R
     public static final List<Identifier> VALUES = new ArrayList<>();
     public static final Map<Identifier, PonyForm> REGISTRY = new HashMap<>();
 
-    public static void register(Identifier id, Predicate<PlayerLikeEntity> shouldApply, RendererFactory<?> factory) {
+    public static void register(Identifier id, Predicate<Avatar> shouldApply, RendererFactory<?> factory) {
         VALUES.add(0, id);
         REGISTRY.put(id, new PonyForm(id, shouldApply, factory));
     }
 
     @Nullable
-    public static PonyForm of(PlayerLikeEntity player) {
+    public static PonyForm of(Avatar player) {
         for (Identifier id : VALUES) {
             PonyForm form = REGISTRY.get(id);
             if (form != null && form.shouldApply().test(player)) {
@@ -47,6 +47,6 @@ public record PonyForm(Identifier id, Predicate<PlayerLikeEntity> shouldApply, R
     }
 
     public interface RendererFactory<T extends PlayerPonyRenderer<?>> {
-        T create(EntityRendererFactory.Context context, boolean slimArms);
+        T create(EntityRendererProvider.Context context, boolean slimArms);
     }
 }

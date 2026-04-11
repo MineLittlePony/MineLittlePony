@@ -17,14 +17,15 @@ import java.util.*;
 import org.jetbrains.annotations.Nullable;
 
 import net.fabricmc.api.ClientModInitializer;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.network.AbstractClientPlayerEntity;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.PlayerLikeEntity;
-import net.minecraft.item.Items;
-import net.minecraft.util.AssetInfo.TextureAsset;
-import net.minecraft.util.Identifier;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.player.AbstractClientPlayer;
+import net.minecraft.core.ClientAsset;
+import net.minecraft.resources.Identifier;
+import net.minecraft.world.entity.Avatar;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.item.ItemStackTemplate;
+import net.minecraft.world.item.Items;
 
 import com.minelittlepony.client.*;
 
@@ -42,11 +43,11 @@ public class MineLPHDSkins extends ClientSkinsProxy implements ClientModInitiali
     public void onInitializeClient() {
         PonySettingsScreen.buttonFactory = this::renderOption;
 
-        seaponySkinType = SkinType.register(DefaultPonySkinHelper.SEAPONY_SKIN_TYPE_ID, Items.COD_BUCKET.getDefaultStack());
-        nirikSkinType = SkinType.register(DefaultPonySkinHelper.NIRIK_SKIN_TYPE_ID, Items.LAVA_BUCKET.getDefaultStack());
+        seaponySkinType = SkinType.register(DefaultPonySkinHelper.SEAPONY_SKIN_TYPE_ID, new ItemStackTemplate(Items.COD_BUCKET));
+        nirikSkinType = SkinType.register(DefaultPonySkinHelper.NIRIK_SKIN_TYPE_ID, new ItemStackTemplate(Items.LAVA_BUCKET));
         Wearable.REGISTRY.values().forEach(wearable -> {
             if (wearable != Wearable.NONE) {
-                WEARABLE_TYPES.put(SkinType.register(wearable.getId(), Items.BUNDLE.getDefaultStack()), wearable);
+                WEARABLE_TYPES.put(SkinType.register(wearable.getId(), new ItemStackTemplate(Items.BUNDLE)), wearable);
             }
         });
 
@@ -84,13 +85,13 @@ public class MineLPHDSkins extends ClientSkinsProxy implements ClientModInitiali
     static Optional<Pony> getPony(PlayerSkinLayers.Layer layer) {
         return layer
             .getSkin(SkinType.SKIN)
-            .map(TextureAsset::texturePath)
+            .map(ClientAsset.Texture::texturePath)
             .map(Pony.getManager()::getPony);
     }
 
     private void renderOption(Screen screen, @Nullable Screen parent, int row, int RIGHT, ScrollContainer content) {
         content.addButton(new Button(RIGHT, row += 20, 150, 20))
-            .onClick(button -> MinecraftClient.getInstance().setScreen(
+            .onClick(_ -> Minecraft.getInstance().setScreen(
                     parent instanceof GuiSkins ? parent : GuiSkins.create(screen, HDSkinsServer.getInstance().getServers())
             ))
             .getStyle()
@@ -98,12 +99,12 @@ public class MineLPHDSkins extends ClientSkinsProxy implements ClientModInitiali
     }
 
     @Override
-    public Optional<Identifier> getSkin(Identifier skinTypeId, PlayerLikeEntity player) {
-        return SkinType.REGISTRY.getOptionalValue(skinTypeId).flatMap(type -> getSkin(type, player));
+    public Optional<Identifier> getSkin(Identifier skinTypeId, Avatar player) {
+        return SkinType.REGISTRY.getOptional(skinTypeId).flatMap(type -> getSkin(type, player));
     }
 
     public Set<Identifier> getAvailableSkins(Entity entity) {
-        if (entity instanceof AbstractClientPlayerEntity player) {
+        if (entity instanceof AbstractClientPlayer player) {
             return PlayerSkins.of(player)
                     .map(PlayerSkins::layers)
                     .map(PlayerSkinLayers::combined)
@@ -114,7 +115,7 @@ public class MineLPHDSkins extends ClientSkinsProxy implements ClientModInitiali
         return Set.of();
     }
 
-    private Optional<Identifier> getSkin(SkinType type, PlayerLikeEntity player) {
+    private Optional<Identifier> getSkin(SkinType type, Avatar player) {
         return ClientPlayerInfo.of(player)
                 .flatMap(skins -> skins.getSkins().layers().combined().getSkin(type))
                 .map(skin -> skin.texturePath());

@@ -1,17 +1,17 @@
 package com.minelittlepony.client.model.entity.race;
 
+import net.minecraft.client.model.geom.ModelPart;
+import net.minecraft.util.Mth;
+
 import com.minelittlepony.mson.api.ModelView;
+import com.mojang.blaze3d.vertex.PoseStack;
 import com.minelittlepony.api.model.*;
 import com.minelittlepony.client.model.armour.PonyArmourModel;
 import com.minelittlepony.client.render.entity.state.PonyRenderState;
 
-import net.minecraft.client.model.ModelPart;
-import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.util.math.MathHelper;
-
 public class SeaponyModel<T extends PonyRenderState> extends UnicornModel<T> {
 
-    private static final float FIN_Y_ANGLE = MathHelper.PI / 6;
+    private static final float FIN_Y_ANGLE = Mth.PI / 6;
 
     private final ModelPart leftFin;
     private final ModelPart centerFin;
@@ -23,12 +23,12 @@ public class SeaponyModel<T extends PonyRenderState> extends UnicornModel<T> {
         rightFin = tree.getChild("right_fin");
         centerFin = tree.getChild("center_fin");
 
-        jacket.hidden = true;
+        jacket.skipDraw = true;
 
-        leftPants.hidden = true;
-        rightPants.hidden = true;
-        leftLeg.hidden = true;
-        rightLeg.hidden = true;
+        leftPants.skipDraw = true;
+        rightPants.skipDraw = true;
+        leftLeg.skipDraw = true;
+        rightLeg.skipDraw = true;
     }
 
     public SeaponyModel(ModelPart tree) {
@@ -38,16 +38,15 @@ public class SeaponyModel<T extends PonyRenderState> extends UnicornModel<T> {
     @Override
     public void init(ModelView context) {
         super.init(context);
-        setVisible(true);
         bodyRenderList.clear();
-        bodyRenderList.add(body).add(body::applyTransform).add(tail).add(leftFin, centerFin, rightFin);
+        bodyRenderList.add(body).add(body::translateAndRotate).add(tail).add(leftFin, centerFin, rightFin);
     }
 
     @Override
     protected void setModelAngles(T entity) {
         super.setModelAngles(entity);
 
-        float flapMotion = MathHelper.cos(entity.age / 10) / 5;
+        float flapMotion = Mth.cos(entity.ageInTicks / 10) / 5;
 
         if (entity.attributes.isLyingDown) {
             flapMotion /= 2;
@@ -55,28 +54,28 @@ public class SeaponyModel<T extends PonyRenderState> extends UnicornModel<T> {
 
         float finAngle = FIN_Y_ANGLE + flapMotion;
 
-        leftFin.yaw = finAngle;
-        rightFin.yaw = -finAngle;
-        centerFin.roll = flapMotion;
+        leftFin.yRot = finAngle;
+        rightFin.yRot = -finAngle;
+        centerFin.zRot = flapMotion;
 
         if (!entity.submergedInWater) {
-            leftArm.pitch -= 0.5F;
-            rightArm.pitch -= 0.5F;
+            leftArm.xRot -= 0.5F;
+            rightArm.xRot -= 0.5F;
         }
 
         if (!entity.submergedInWater || entity.onGround) {
-            leftArm.yaw -= 0.5F;
-            rightArm.yaw += 0.5F;
+            leftArm.yRot -= 0.5F;
+            rightArm.yRot += 0.5F;
         }
     }
 
     @Override
     protected void rotateLegs(T state) {
         super.rotateLegs(state);
-        leftArm.pitch -= 1.4F;
-        leftArm.yaw -= 0.3F;
-        rightArm.pitch -= 1.4F;
-        rightArm.yaw += 0.3F;
+        leftArm.xRot -= 1.4F;
+        leftArm.yRot -= 0.3F;
+        rightArm.xRot -= 1.4F;
+        rightArm.yRot += 0.3F;
     }
 
     @Override
@@ -85,24 +84,16 @@ public class SeaponyModel<T extends PonyRenderState> extends UnicornModel<T> {
     }
 
     @Override
-    public void transform(T state, BodyPart part, MatrixStack stack) {
+    public void transform(T state, BodyPart part, PoseStack stack) {
         stack.translate(0, 0.6F, 0);
         super.transform(state, part, stack);
-    }
-
-    @Override
-    public void setVisible(boolean visible) {
-        super.setVisible(visible);
-        leftFin.visible = visible;
-        centerFin.visible = visible;
-        rightFin.visible = visible;
     }
 
     public static class Armour<T extends PonyRenderState> extends PonyArmourModel<T> {
         public Armour(ModelPart tree) {
             super(tree);
-            rightLeg.hidden = true;
-            leftLeg.hidden = true;
+            rightLeg.skipDraw = true;
+            leftLeg.skipDraw = true;
         }
 
         @Override
@@ -111,7 +102,7 @@ public class SeaponyModel<T extends PonyRenderState> extends UnicornModel<T> {
         }
 
         @Override
-        public void transform(T state, BodyPart part, MatrixStack stack) {
+        public void transform(T state, BodyPart part, PoseStack stack) {
             stack.translate(0, 0.6F, 0);
             super.transform(state, part, stack);
         }

@@ -1,6 +1,6 @@
 package com.minelittlepony.client.model.armour;
 
-import net.minecraft.client.model.ModelPart;
+import net.minecraft.client.model.geom.ModelPart;
 
 import com.minelittlepony.client.model.AbstractPonyModel;
 import com.minelittlepony.client.render.entity.state.PonyRenderState;

@@ -1,7 +1,8 @@
 package com.minelittlepony.server;
 
-import net.minecraft.entity.Entity;
-import net.minecraft.text.*;
+
+import net.minecraft.network.chat.*;
+import net.minecraft.world.entity.Entity;
 
 import org.jetbrains.annotations.Nullable;
 
@@ -20,23 +21,23 @@ public class PonyCommandTagsStore {
     private static final BiPredicate<String, String> EQUALS_COMPARISON = String::contentEquals;
     public static final PonyCommandTagsStore INSTANCE = new PonyCommandTagsStore();
 
-    private final LoadingCache<Text, PonyDisplayTags> cache = CacheBuilder.newBuilder()
+    private final LoadingCache<Component, PonyDisplayTags> cache = CacheBuilder.newBuilder()
             .expireAfterAccess(30, TimeUnit.SECONDS)
             .build(CacheLoader.from(text -> {
                 return new PonyDisplayTags(
                         hasHiddenValue(text, PonyDisplayTags.ALWAYS_PONIFY),
                         hasHiddenValue(text, PonyDisplayTags.NEVER_PONIFY),
                         readHiddenValue(text, PonyDisplayTags.RACE_OVERRIDE, name -> {
-                            Race race = Race.CODEC.byId(name.toUpperCase(Locale.ROOT), Race.HUMAN);
+                            Race race = Race.CODECS.codec().byName(name.toUpperCase(Locale.ROOT), Race.HUMAN);
                             return race == Race.HUMAN ? Optional.empty() : Optional.of(race);
                         }, Optional.empty()),
                         readHiddenValue(text, PonyDisplayTags.SIZE_OVERRIDE, name -> {
-                            Size size = SizePreset.CODEC.byId(name.toUpperCase(Locale.ROOT), SizePreset.UNSET);
+                            Size size = SizePreset.CODEC.byName(name.toUpperCase(Locale.ROOT), SizePreset.UNSET);
                             return size == SizePreset.UNSET ? Optional.empty() : Optional.of(size);
                         }, Optional.empty()),
                         findHiddenValue(text, PonyDisplayTags.MAGIC_COLOR_OVERRIDE, style -> {
                             @Nullable TextColor textColor = style == null ? null : style.getColor();
-                            return textColor == null ? OptionalInt.empty() : OptionalInt.of(textColor.getRgb());
+                            return textColor == null ? OptionalInt.empty() : OptionalInt.of(textColor.getValue());
                         }, OptionalInt.empty(), EQUALS_COMPARISON)
                 );
             }));
@@ -48,27 +49,27 @@ public class PonyCommandTagsStore {
         return MoreObjects.firstNonNull(cache.getUnchecked(entity.getCustomName()), PonyDisplayTags.EMPTY);
     }
 
-    public static boolean hasHiddenValue(@Nullable Text text, String flag) {
+    public static boolean hasHiddenValue(@Nullable Component text, String flag) {
         return findHiddenValue(text, flag, Function.identity(), null, EQUALS_COMPARISON) != null;
     }
 
-    public static <T> T readHiddenValue(Text text, String flag, Function<String, @Nullable T> valueResolver, T fallback) {
+    public static <T> T readHiddenValue(Component text, String flag, Function<String, @Nullable T> valueResolver, T fallback) {
         return findHiddenValue(text, flag + "/", style -> {
-            return valueResolver.apply(((StyleSpriteSource.Font)style.getFont()).id().toString().split(flag + "/")[1]);
+            return valueResolver.apply(((FontDescription.Resource)style.getFont()).id().toString().split(flag + "/")[1]);
         }, fallback, STARTS_WITH_COMPARISON);
     }
 
-    private static <T> T findHiddenValue(@Nullable Text text, String flag, Function<Style, T> valueGetter, T fallback, BiPredicate<String, String> comparison) {
+    private static <T> T findHiddenValue(@Nullable Component text, String flag, Function<Style, T> valueGetter, T fallback, BiPredicate<String, String> comparison) {
         if (text == null) {
             return fallback;
         }
         Style s = text.getStyle();
-        if (s.getFont() instanceof StyleSpriteSource.Font font
+        if (s.getFont() instanceof FontDescription.Resource font
                 && comparison.test(font.id().toString().toLowerCase(Locale.ROOT), flag)) {
             return valueGetter.apply(s);
         }
         @Nullable T value;
-        for (Text sibling : text.getSiblings()) {
+        for (Component sibling : text.getSiblings()) {
             value = findHiddenValue(sibling, flag, valueGetter, fallback, comparison);
             if (value != null) {
                 return value;

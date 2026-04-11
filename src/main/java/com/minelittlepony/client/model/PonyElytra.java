@@ -1,32 +1,22 @@
 package com.minelittlepony.client.model;
 
-import net.minecraft.client.model.ModelPart;
-import net.minecraft.client.render.entity.model.EntityModel;
-import net.minecraft.client.render.entity.state.BipedEntityRenderState;
+import net.minecraft.client.model.geom.ModelPart;
+import net.minecraft.client.model.object.equipment.ElytraModel;
+import net.minecraft.client.renderer.entity.state.HumanoidRenderState;
 
 /**
  * Modified from ModelElytra.
  */
-public class PonyElytra<T extends BipedEntityRenderState> extends EntityModel<T> {
-
-    public boolean isSneaking;
-
-    private final ModelPart rightWing;
-    private final ModelPart leftWing;
-
+public class PonyElytra extends ElytraModel {
     public PonyElytra(ModelPart root) {
         super(root);
-        rightWing = root.getChild("right_wing");
-        leftWing = root.getChild("left_wing");
     }
 
     @Override
-    public void setAngles(T state) {
-        leftWing.pitch = state.leftWingPitch;
-        leftWing.yaw = state.leftWingYaw;
-        leftWing.roll = state.leftWingRoll;
-        rightWing.pitch = leftWing.pitch;
-        rightWing.yaw = -leftWing.yaw;
-        rightWing.roll = -leftWing.roll;
+    public void setupAnim(HumanoidRenderState state) {
+        boolean crouching = state.isCrouching;
+        state.isCrouching = false;
+        super.setupAnim(state);
+        state.isCrouching = crouching;
     }
 }

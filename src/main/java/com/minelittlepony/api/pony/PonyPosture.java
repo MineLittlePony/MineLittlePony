@@ -1,17 +1,17 @@
 package com.minelittlepony.api.pony;
 
+import net.minecraft.core.BlockPos;
+import net.minecraft.resources.Identifier;
+import net.minecraft.tags.FluidTags;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.block.StairBlock;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.Vec3;
+
 import com.minelittlepony.api.pony.meta.Race;
 
 import java.util.Optional;
-
-import net.minecraft.block.BlockState;
-import net.minecraft.block.StairsBlock;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.registry.tag.FluidTags;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
 
 public final class PonyPosture {
     public static Optional<Pony> getMountPony(LivingEntity entity) {
@@ -21,7 +21,7 @@ public final class PonyPosture {
     }
 
     public static boolean isCrouching(Pony pony, LivingEntity entity) {
-        boolean isSneak = entity.isInSneakingPose();
+        boolean isSneak = entity.isCrouching();
         boolean isFlying = isFlying(entity);
         boolean isSwimming = isSwimming(entity);
 
@@ -29,17 +29,17 @@ public final class PonyPosture {
     }
 
     private static boolean isPerformingRainboom(Pony pony, LivingEntity entity) {
-        Vec3d motion = entity.getVelocity();
+        Vec3 motion = entity.getDeltaMovement();
         double zMotion = Math.sqrt(motion.x * motion.x + motion.z * motion.z);
 
-        return (isFlying(entity) && pony.race().hasWings()) || entity.isGliding() & zMotion > 0.4F;
+        return (isFlying(entity) && pony.race().hasWings()) || entity.isFallFlying() & zMotion > 0.4F;
     }
 
     public static boolean isFlying(LivingEntity entity) {
         return !(isOnGround(entity)
-                || entity.hasVehicle()
-                || (entity.isClimbing() && !(entity instanceof PlayerEntity && ((PlayerEntity)entity).getAbilities().allowFlying))
-                || entity.isSubmergedInWater()
+                || entity.isPassenger()
+                || (entity.onClimbable() && !(entity instanceof Player player && player.getAbilities().mayfly))
+                || entity.isUnderWater()
                 || entity.isSleeping());
     }
 
@@ -48,36 +48,36 @@ public final class PonyPosture {
      * this is to keep Pegasus wings from flapping in odd situations (Hypixel).
      */
     private static boolean isOnGround(LivingEntity entity) {
-        if (entity.isOnGround()) {
+        if (entity.onGround()) {
             return true;
         }
 
-        BlockState below = entity.getEntityWorld().getBlockState(entity.getBlockPos().down(1));
+        BlockState below = entity.level().getBlockState(entity.blockPosition().below(1));
 
         // Check for stairs so we can keep Pegasi from flailing their wings as they descend
-        double offsetAmount = below.getBlock() instanceof StairsBlock ? 1 : 0.05;
+        double offsetAmount = below.getBlock() instanceof StairBlock ? 1 : 0.05;
 
-        Vec3d pos = entity.getEntityPos();
-        BlockPos blockpos = BlockPos.ofFloored(
+        Vec3 pos = entity.position();
+        BlockPos blockpos = BlockPos.containing(
                 pos.x,
                 pos.y - offsetAmount,
                 pos.z
         );
 
-        return !entity.getEntityWorld().isAir(blockpos);
+        return !entity.level().isEmptyBlock(blockpos);
     }
 
     public static boolean isSwimming(LivingEntity entity) {
-        return entity.isSwimming() || entity.isInSwimmingPose();
+        return entity.isSwimming() || entity.isVisuallySwimming();
     }
 
     public static boolean isPartiallySubmerged(LivingEntity entity) {
-        return entity.isSubmergedInWater()
-                || entity.getEntityWorld().getBlockState(entity.getBlockPos()).getFluidState().isIn(FluidTags.WATER);
+        return entity.isUnderWater()
+                || entity.level().getBlockState(entity.blockPosition()).getFluidState().is(FluidTags.WATER);
     }
 
     public static boolean isSitting(LivingEntity entity) {
-        return entity.hasVehicle();
+        return entity.isPassenger();
     }
 
     public static boolean isRidingAPony(LivingEntity entity) {
@@ -103,7 +103,7 @@ public final class PonyPosture {
     public static boolean hasForm(LivingEntity entity, Race race, Identifier skinId, Identifier ponyform) {
         return Pony.getManager().getPony(entity).filter(pony -> {
             return (pony.race() == race
-                    && (entity instanceof PlayerEntity player && SkinsProxy.getInstance().getSkin(skinId, player).isPresent())
+                    && (entity instanceof Player player && SkinsProxy.getInstance().getSkin(skinId, player).isPresent())
             );
         }).isPresent();
     }

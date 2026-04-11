@@ -1,14 +1,14 @@
 package com.minelittlepony.client.render.entity.npc.textures;
 
-import net.minecraft.registry.RegistryKey;
-import net.minecraft.util.Identifier;
-import net.minecraft.village.*;
+import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.world.entity.npc.villager.*;
 
 import com.minelittlepony.util.ResourceUtil;
 
-public class ProfessionTextureSupplier<T extends VillagerDataContainer> implements TextureSupplier<T> {
+public class ProfessionTextureSupplier<T extends VillagerDataHolder> implements TextureSupplier<T> {
 
-    public static <T extends VillagerDataContainer> TextureSupplier<T> create(TextureSupplier<String> formatter) {
+    public static <T extends VillagerDataHolder> TextureSupplier<T> create(TextureSupplier<String> formatter) {
         return TextureSupplier.memoize(new ProfessionTextureSupplier<>(formatter), ProfessionTextureSupplier::getKey);
     }
 
@@ -27,10 +27,10 @@ public class ProfessionTextureSupplier<T extends VillagerDataContainer> implemen
     }
 
     public Identifier apply(VillagerData t) {
-        return getTexture(t.type().getKey().orElse(VillagerType.PLAINS), t.profession().getKey().orElse(VillagerProfession.NONE));
+        return getTexture(t.type().unwrapKey().orElse(VillagerType.PLAINS), t.profession().unwrapKey().orElse(VillagerProfession.NONE));
     }
 
-    private Identifier getTexture(final RegistryKey<VillagerType> type, final RegistryKey<VillagerProfession> profession) {
+    private Identifier getTexture(final ResourceKey<VillagerType> type, final ResourceKey<VillagerProfession> profession) {
         return ResourceUtil.verifyTexture(formatter.apply(getKey(type, profession))).orElseGet(() -> {
             if (type.equals(VillagerType.PLAINS)) {
                 // if texture loading fails, use the fallback.
@@ -41,18 +41,18 @@ public class ProfessionTextureSupplier<T extends VillagerDataContainer> implemen
         });
     }
 
-    public static String getKey(VillagerDataContainer container) {
+    public static String getKey(VillagerDataHolder container) {
         VillagerData t = container.getVillagerData();
         return getKey(
-                t.type().getKey().orElse(VillagerType.PLAINS),
-                t.profession().getKey().orElse(VillagerProfession.NONE)
+                t.type().unwrapKey().orElse(VillagerType.PLAINS),
+                t.profession().unwrapKey().orElse(VillagerProfession.NONE)
         );
     }
 
-    public static String getKey(final RegistryKey<VillagerType> type, final RegistryKey<VillagerProfession> profession) {
+    public static String getKey(final ResourceKey<VillagerType> type, final ResourceKey<VillagerProfession> profession) {
         return ResourceUtil.format("pony/%s/%s",
-                type.getValue().getPath(),
-                profession.getValue().getPath());
+                type.identifier().getPath(),
+                profession.identifier().getPath());
     }
 
 }
