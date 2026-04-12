@@ -115,10 +115,12 @@ public class PonyRenderState extends AvatarRenderState implements PonyModel.Attr
             attributes.updateLivingState(entity, pony, mode);
             attributes.checkRainboom(entity, models.body(), ageInTicks);
         }
-        attributes.size = PonyDisplayTags.of(entity).size().orElseGet(() -> computeSize(entity, attributes.size));
+        var displayTags = PonyDisplayTags.of(entity);
+
+        attributes.size = displayTags.size().orElseGet(() -> computeSize(entity, attributes.size));
         isBaby = attributes.size == SizePreset.FOAL;
-        race = PonyDisplayTags.of(entity).race().orElseGet(() -> computeRace(entity, pony));
-        glowColor = PonyDisplayTags.of(entity).magicColor().orElse(attributes.metadata.glowColor());
+        race = displayTags.race().orElseGet(() -> computeRace(entity, pony));
+        glowColor = displayTags.magicColor().orElse(attributes.metadata.glowColor());
         vehicleOffset = isPassenger && entity != null ? entity.getVehicle().getEyeHeight(pose) : 0;
         riderOffset = getRiderYOffset();
         nameplateYOffset = getNamePlateYOffset();

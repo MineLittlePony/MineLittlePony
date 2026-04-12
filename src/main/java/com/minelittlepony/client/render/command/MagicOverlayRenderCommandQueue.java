@@ -85,7 +85,7 @@ public class MagicOverlayRenderCommandQueue implements OrderedSubmitNodeCollecto
     private List<BakedQuad> scaleQuads(List<BakedQuad> quads) {
         List<BakedQuad>[] remappedQuads = Untyped.cast(new List[passes.size()]);
 
-        final float baseScale = 2.3F;
+        final float baseScale = 2.3F / 15F;
 
         quads.forEach(quad -> {
             RenderType renderType = getFinalRenderType(quad.materialInfo().itemRenderType());
@@ -137,7 +137,7 @@ public class MagicOverlayRenderCommandQueue implements OrderedSubmitNodeCollecto
         parts = scaleBlockParts(parts);
 
         if (!parts.isEmpty()) {
-            parent.submitBlockModel(matrices, renderLayer, parts, tintLayers, LightCoordsUtil.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, 0);
+            parent.submitBlockModel(matrices, renderLayer, parts, new int[] { color }, LightCoordsUtil.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, 0);
         }
     }
 
@@ -163,7 +163,7 @@ public class MagicOverlayRenderCommandQueue implements OrderedSubmitNodeCollecto
     public void submitItem(PoseStack matrices, ItemDisplayContext displayContext, int light, int overlay, int outline, int[] tintLayers, List<BakedQuad> quads, FoilType glintType) {
         quads = scaleQuads(quads);
         if (!quads.isEmpty()) {
-            parent.submitItem(matrices, displayContext, LightCoordsUtil.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, 0, new int[0], quads, FoilType.NONE);
+            parent.submitItem(matrices, displayContext, LightCoordsUtil.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, 0, new int[] { color }, quads, FoilType.NONE);
         }
     }
 

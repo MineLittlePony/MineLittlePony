@@ -85,7 +85,7 @@ final class ScaledVertexConsumer implements VertexConsumer {
         var normal = localTransform.last().normal().invert().transform(new Vector3f(normalX, normalY, normalZ));
         var inflation = VertexTransforms.getInflationNormal(vertexIndex++, normal);
         inflation = localTransform.last().normal().invert().transform(inflation);
-        float sc = scale / 8F;
+        float sc = scale / 32F;
         buffer.addVertex(
                 x + inflation.x() * sc,
                 y + inflation.y() * sc,
@@ -94,7 +94,7 @@ final class ScaledVertexConsumer implements VertexConsumer {
 
     @Override
     public void putBlockBakedQuad(float x, float y, float z, BakedQuad quad, QuadInstance instance) {
-        float sc = scale / 8F;
+        float sc = scale / 32F;
         instance.setColor(color);
         instance.setOverlayCoords(OverlayTexture.NO_OVERLAY);
         instance.setLightCoords(LightCoordsUtil.FULL_BRIGHT);
@@ -103,7 +103,7 @@ final class ScaledVertexConsumer implements VertexConsumer {
 
     @Override
     public void putBakedQuad(PoseStack.Pose matrixEntry, BakedQuad quad, QuadInstance instance) {
-        float sc = scale / 8F;
+        float sc = scale / 32F;
         instance.setColor(color);
         instance.setOverlayCoords(OverlayTexture.NO_OVERLAY);
         instance.setLightCoords(LightCoordsUtil.FULL_BRIGHT);
