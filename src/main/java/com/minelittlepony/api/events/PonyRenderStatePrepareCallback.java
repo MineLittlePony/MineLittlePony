@@ -10,13 +10,11 @@ import com.minelittlepony.api.model.ModelAttributes;
 /**
  * Event triggered when a pony model's state is being evaluated.
  * <p>
- * Subscribers have the option to read the pony model's attributes or modify them if neccessary to
+ * Subscribers have the option to read the pony model's attributes or modify them if necessary to
  * allow for custom animations.
  */
 public interface PonyRenderStatePrepareCallback {
-    @SuppressWarnings("removal")
     Event<PonyRenderStatePrepareCallback> EVENT = EventFactory.createArrayBacked(PonyRenderStatePrepareCallback.class, listeners -> (state, model, mode) -> {
-        PonyModelPrepareCallback.EVENT.invoker().onPonyModelPrepared(state.getAttributes(), model, mode);
         for (PonyRenderStatePrepareCallback event : listeners) {
             event.onPonyRenderStatePrepared(state, model, mode);
         }

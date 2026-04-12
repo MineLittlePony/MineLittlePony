@@ -173,35 +173,4 @@ public abstract class AbstractPonyRenderer<
         renderer.addLayer(featureFactory.apply(renderer));
         return renderer;
     }
-
-    @Deprecated(forRemoval = true)
-    @SuppressWarnings({"unchecked", "rawtypes"})
-    public static <
-            T extends Mob,
-            S extends PonyRenderState,
-            M extends ClientPonyModel<S>> AbstractPonyRenderer<T, S, M> proxy(
-                    EntityRendererProvider.Context context, ModelKey<? super M> key,
-                    TextureSupplier<T> texture,
-                    float scale,
-                    List exportedLayers,
-                    Consumer<M> modelConsumer,
-                    Supplier<S> renderStateSupplier) {
-        return new AbstractPonyRenderer<T, S, M>(context, key, texture, scale) {
-            {
-                exportedLayers.clear();
-                exportedLayers.addAll(layers);
-                modelConsumer.accept(getModel());
-            }
-            @Override
-            protected void addFeatures(EntityRendererProvider.Context context) {
-                layers.clear();
-                super.addFeatures(context);
-            }
-
-            @Override
-            public S createRenderState() {
-                return renderStateSupplier.get();
-            }
-        };
-    }
 }

@@ -10,12 +10,13 @@ import java.util.*;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.HumanoidModel.ArmPose;
+import net.minecraft.core.component.DataComponentMap;
+import net.minecraft.core.component.PatchedDataComponentMap;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec3;
 
 import org.jetbrains.annotations.Nullable;
@@ -25,7 +26,6 @@ public class ModelAttributes {
      * True if the model is sleeping in a bed.
      */
     public boolean isSleeping;
-
     /**
      * True if the model is lying down comfortably
      */
@@ -47,12 +47,6 @@ public class ModelAttributes {
      * True if the model is swimming under water.
      */
     public boolean isSwimming;
-    /**
-     * True if the model is swimming, and rotated 90degs (players)
-     */
-    @Deprecated
-    public boolean isSwimmingRotated;
-
     /**
      * True if the pony is crouching.
      */
@@ -78,66 +72,74 @@ public class ModelAttributes {
      * Flag indicating that this model should mimic the vanilla horse models.
      */
     public boolean isHorsey;
-
     /**
      * Flag indicating whether the pony is a player
      */
     public boolean isPlayer;
-
     /**
      * Vertical pitch whilst flying.
      */
     public float motionPitch;
-
     /**
      * Horizontal roll whilst flying.
      */
     public float motionRoll;
-
     /**
      * Lerp amount controlling leg swing whilst performing a rainboom.
      */
     public double motionLerp;
-
     /**
      * Unique id of the interpolator used for this model.
      * Usually the UUID of the entity being rendered.
      */
     private UUID interpolatorId = UUID.randomUUID();
-
     /**
      * The actual, visible height of this model when rendered.
      * Used when drawing name plates.
      */
     public float visualHeight = 2F;
-
     /**
      * The angle used to animate wing flaps whilst flying/swimming.
      */
     public float wingAngle;
-
     /**
      * Flag to indicate whether the wings are open or shut
      */
     public boolean wingsSpread;
-
     /**
      * Contains a list of additional skins available for rendering.
      */
     public Set<Identifier> featureSkins = new HashSet<>();
-
     /**
      * Contains the skin metadata associated with this model.
      */
     public PonyData metadata = PonyData.NULL;
-
+    /**
+     * The pony's model size.
+     *
+     * @See com.minelittlepony.api.pony.metadata.SizePreset
+     */
     public Size size = SizePreset.NORMAL;
-
+    /**
+     * The entity's preferred arm for holding items.
+     */
     public HumanoidArm mainArm = HumanoidArm.RIGHT;
+    /**
+     * The hand currently being swung.
+     */
     public InteractionHand activeHand = InteractionHand.MAIN_HAND;
-    @Deprecated
-    public ItemStack heldStack = ItemStack.EMPTY;
+
     public int itemUseTime;
+
+    /**
+     * A mapping containing any extra data mods want to store for this model.
+     */
+    public final PatchedDataComponentMap extraData = new PatchedDataComponentMap(DataComponentMap.EMPTY);
+
+    /**
+     * The mode the model is being displayed in. i.e First-person, Second-person, or Other-Person
+     */
+    public Mode displayMode = Mode.OTHER;
 
     /**
      * Checks flying and speed conditions and sets rainboom to true if we're a species with wings and is going faaast.
@@ -172,6 +174,7 @@ public class ModelAttributes {
         if (entity != null) {
             interpolatorId = entity.getUUID();
         }
+        displayMode = mode;
         metadata = pony.metadata();
         size = entity != null && entity.isBaby() ? SizePreset.FOAL : pony.size();
         isPlayer = entity instanceof Player;
@@ -184,11 +187,10 @@ public class ModelAttributes {
             isLyingDown |= getMainInterpolator().interpolate("lyingDown", moving ? 10 : 0, 200) >= 9;
         }
 
-        isCrouching = !isLyingDown && !isSitting && mode == Mode.THIRD_PERSON && entity != null && PonyPosture.isCrouching(pony, entity);
-        isFlying = !isLyingDown && mode == Mode.THIRD_PERSON && entity != null && PonyPosture.isFlying(entity);
+        isCrouching = !isLyingDown && !isSitting && displayMode == Mode.THIRD_PERSON && entity != null && PonyPosture.isCrouching(pony, entity);
+        isFlying = !isLyingDown && displayMode == Mode.THIRD_PERSON && entity != null && PonyPosture.isFlying(entity);
         isGliding = entity != null && entity.isFallFlying();
-        isSwimming = mode == Mode.THIRD_PERSON && entity != null && PonyPosture.isSwimming(entity);
-        isSwimmingRotated = isSwimming;
+        isSwimming = displayMode == Mode.THIRD_PERSON && entity != null && PonyPosture.isSwimming(entity);
         isRiptide = entity != null && entity.isAutoSpinAttack();
         isRidingInteractive = entity != null && PonyPosture.isRidingAPony(entity);
         isLeftHanded = entity != null && entity.getMainArm() == HumanoidArm.LEFT;
