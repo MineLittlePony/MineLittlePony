@@ -38,8 +38,8 @@ public class MobSkull<S extends PonyRenderState> implements ISkull {
     }
 
     @Override
-    public boolean canRender(PonyConfig config) {
-        return config.ponyskulls.get() && type.option().get();
+    public boolean canRender(Pony pony, @Nullable ResolvableProfile profile, PonyConfig config) {
+        return config.ponyskulls.get() && type.option().get() && !pony.race().isHuman();
     }
 
     @Override
@@ -48,13 +48,12 @@ public class MobSkull<S extends PonyRenderState> implements ISkull {
     }
 
     @Override
-    public void render(PoseStack stack, State state, SubmitNodeCollector queue, Pony pony, RenderType layer) {
-
+    public void render(PoseStack stack, State state, SubmitNodeCollector queue, RenderType layer) {
         S ponyState = this.state.get();
-        ponyState.pony = pony;
-        ponyState.race = pony.race();
-        ponyState.attributes.size = pony.size();
-        ponyState.attributes.metadata = pony.metadata();
+        ponyState.pony = state.pony;
+        ponyState.race = state.pony.race();
+        ponyState.attributes.size = state.pony.size();
+        ponyState.attributes.metadata = state.pony.metadata();
         ponyState.headVisible = true;
 
         PoseStack copyStack = new PoseStack();

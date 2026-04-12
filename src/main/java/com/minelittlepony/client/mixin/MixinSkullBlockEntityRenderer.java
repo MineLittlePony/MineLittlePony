@@ -1,25 +1,26 @@
 package com.minelittlepony.client.mixin;
 
+import net.minecraft.client.model.EntityModel;
+import net.minecraft.client.model.HeadedModel;
 import net.minecraft.client.model.object.skull.SkullModelBase;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.SkullBlockRenderer;
 import net.minecraft.client.renderer.blockentity.state.SkullBlockRenderState;
+import net.minecraft.client.renderer.entity.layers.RenderLayer;
+import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
 import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
 import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.state.level.CameraRenderState;
-import net.minecraft.resources.Identifier;
-import net.minecraft.world.level.block.SkullBlock;
 import net.minecraft.world.level.block.entity.SkullBlockEntity;
 import net.minecraft.world.phys.Vec3;
 
 import org.spongepowered.asm.mixin.*;
 import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.At.Shift;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import com.llamalad7.mixinextras.injector.ModifyReturnValue;
-import com.minelittlepony.api.config.PonyConfig;
 import com.minelittlepony.client.render.blockentity.skull.PonySkullRenderer;
 import com.mojang.blaze3d.vertex.PoseStack;
 
@@ -27,9 +28,21 @@ import org.jetbrains.annotations.Nullable;
 
 @Mixin(value = SkullBlockRenderer.class, priority = 2000)
 abstract class MixinSkullBlockEntityRenderer implements BlockEntityRenderer<SkullBlockEntity, SkullBlockRenderState> {
-    @Inject(method = "submit", at = @At("HEAD"))
+    @Inject(method = "submit", at = @At(
+            value = "INVOKE",
+            target = "net/minecraft/client/renderer/blockentity/SkullBlockRenderer.submitSkull(FLcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/SubmitNodeCollector;ILnet/minecraft/client/model/object/skull/SkullModelBase;Lnet/minecraft/client/renderer/rendertype/RenderType;ILnet/minecraft/client/renderer/feature/ModelFeatureRenderer$CrumblingOverlay;)V"
+    ))
     private void onSubmit(SkullBlockRenderState state, PoseStack matrices, SubmitNodeCollector frame, CameraRenderState camera, CallbackInfo info) {
         PonySkullRenderer.INSTANCE.pushState(state.getData(PonySkullRenderer.DATA_KEY));
+    }
+
+    @Inject(method = "submit", at = @At(
+            value = "INVOKE",
+            target = "net/minecraft/client/renderer/blockentity/SkullBlockRenderer.submitSkull(FLcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/SubmitNodeCollector;ILnet/minecraft/client/model/object/skull/SkullModelBase;Lnet/minecraft/client/renderer/rendertype/RenderType;ILnet/minecraft/client/renderer/feature/ModelFeatureRenderer$CrumblingOverlay;)V",
+            shift = Shift.AFTER
+    ))
+    private void afterSubmit(SkullBlockRenderState state, PoseStack matrices, SubmitNodeCollector frame, CameraRenderState camera, CallbackInfo info) {
+        PonySkullRenderer.INSTANCE.popState();
     }
 
     @Inject(method = "submitSkull", at = @At("HEAD"), cancellable = true)
@@ -60,17 +73,33 @@ abstract class MixinSkullBlockEntityRenderer implements BlockEntityRenderer<Skul
         ) {
         state.setData(PonySkullRenderer.DATA_KEY, PonySkullRenderer.INSTANCE.getSkullState(state.skullType, entity.getOwnerProfile(), null, state.animationProgress));
     }
+}
 
-    @ModifyReturnValue(method = "getSkullRenderType", at = @At("RETURN"))
-    private static RenderType replaceRenderLayer(RenderType layer, SkullBlock.Type skullType, @Nullable Identifier overrideTexture) {
-        if (overrideTexture == null) {
-            var state = PonySkullRenderer.INSTANCE.getSkullState(skullType, null, null, 0);
-            if (state != null && state.model().canRender(PonyConfig.getInstance())) {
-                PonySkullRenderer.INSTANCE.pushState(state);
-                return state.layer();
-            }
+@Mixin(value = SkullBlockRenderer.class, priority = 2000)
+abstract class MixinCustomHeadRenderer<S extends LivingEntityRenderState, M extends EntityModel<S> & HeadedModel> extends RenderLayer<S, M> {
+    MixinCustomHeadRenderer() {super(null); }
+
+    @Inject(method = "submit", at = @At(
+            value = "INVOKE",
+            target = "net/minecraft/client/renderer/blockentity/SkullBlockRenderer.submitSkull(FLcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/SubmitNodeCollector;ILnet/minecraft/client/model/object/skull/SkullModelBase;Lnet/minecraft/client/renderer/rendertype/RenderType;ILnet/minecraft/client/renderer/feature/ModelFeatureRenderer$CrumblingOverlay;)V"
+    ))
+    private void onSubmit(final PoseStack poseStack, final SubmitNodeCollector submitNodeCollector, final int lightCoords, final S state, final float yRot, final float xRot, CallbackInfo info) {
+        if (state.wornHeadType != null) {
+            PonySkullRenderer.INSTANCE.pushState(PonySkullRenderer.INSTANCE.getSkullState(state.wornHeadType, state.wornHeadProfile, null, state.wornHeadAnimationPos));
         }
-        return layer;
+    }
+
+    @Inject(method = "submit", at = @At(
+            value = "INVOKE",
+            target = "net/minecraft/client/renderer/blockentity/SkullBlockRenderer.submitSkull(FLcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/SubmitNodeCollector;ILnet/minecraft/client/model/object/skull/SkullModelBase;Lnet/minecraft/client/renderer/rendertype/RenderType;ILnet/minecraft/client/renderer/feature/ModelFeatureRenderer$CrumblingOverlay;)V",
+            shift = Shift.AFTER
+    ))
+    private void afterSubmit(final PoseStack poseStack, final SubmitNodeCollector submitNodeCollector, final int lightCoords, final S state, final float yRot, final float xRot, CallbackInfo info) {
+        PonySkullRenderer.INSTANCE.popState();
     }
 }
+
+
+
+
 

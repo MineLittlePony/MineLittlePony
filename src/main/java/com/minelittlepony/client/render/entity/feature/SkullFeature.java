@@ -4,6 +4,7 @@ import com.minelittlepony.api.model.BodyPart;
 import com.minelittlepony.client.model.ClientPonyModel;
 import com.minelittlepony.client.model.armour.ArmourRendererPlugin;
 import com.minelittlepony.client.render.PonyRenderContext;
+import com.minelittlepony.client.render.blockentity.skull.PonySkullRenderer;
 import com.minelittlepony.client.render.entity.state.PonyRenderState;
 import com.minelittlepony.client.render.entity.state.PonyRenderState.EquippedHeadRenderState;
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -45,6 +46,7 @@ public class SkullFeature<
     public void submit(PoseStack matrices, SubmitNodeCollector frame, int light, S state, float limbAngle, float limbDistance) {
         for (EquippedHeadRenderState headState : state.equippedHeads) {
             matrices.pushPose();
+            matrices.scale(headTransformation.horizontalScale(), 1, headTransformation.horizontalScale());
 
             M model = lookupModel(state).body();
 
@@ -56,15 +58,17 @@ public class SkullFeature<
 
             if (headState.skullType() != null) {
                 float n = 1.1875F;
-                matrices.scale(n, -n, -n);
-                matrices.translate(0, -0.1F, 0.1F);
-                matrices.translate(-0.5, 0, -0.5);
+                matrices.translate(0, headTransformation.skullYOffset(), 0);
+                matrices.scale(n, n, n);
+                matrices.translate(0, 0.1F, -0.1F);
+                PonySkullRenderer.INSTANCE.pushState(PonySkullRenderer.INSTANCE.getSkullState(state.wornHeadType, state.wornHeadProfile, null, state.wornHeadAnimationPos));
                 SkullBlockRenderer.submitSkull(state.wornHeadAnimationPos, matrices, frame, light,
                         headModels.apply(headState.skullType()),
                         getRenderLayer(headState),
                         state.outlineColor,
                         null
                 );
+                PonySkullRenderer.INSTANCE.popState();
             } else {
                 matrices.translate(0, 0.1F, -0.1F);
                 CustomHeadLayer.translateToHead(matrices, headTransformation);

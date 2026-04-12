@@ -66,13 +66,7 @@ public class PonySkullRenderer {
     public Data getSkullState(SkullBlock.Type skullType, @Nullable ResolvableProfile profile, @Nullable Identifier overrideTexture, float animation) {
         @Nullable
         ISkull skull = skulls.apply(skullType);
-
-        if (skull == null) {
-            return null;
-        }
-
-        Identifier texture = overrideTexture == null ? skull.getSkinResource(profile) : overrideTexture;
-        return new Data(skull, RenderTypes.entityTranslucent(texture), Pony.getManager().getPony(texture), profile, animation);
+        return skull == null ? null :new Data(skull, overrideTexture, profile, animation);
     }
 
     /**
@@ -81,9 +75,9 @@ public class PonySkullRenderer {
      * Implement this interface if you want to extend our behaviour, modders.
      */
     public interface ISkull {
-        void render(PoseStack stack, State state, SubmitNodeCollector frame, Pony pony, RenderType layer);
+        void render(PoseStack stack, State state, SubmitNodeCollector frame, RenderType layer);
 
-        boolean canRender(PonyConfig config);
+        boolean canRender(Pony pony, @Nullable ResolvableProfile profile, PonyConfig config);
 
         Identifier getSkinResource(@Nullable ResolvableProfile profile);
 
@@ -93,16 +87,28 @@ public class PonySkullRenderer {
             public int light;
             public @Nullable ModelFeatureRenderer.CrumblingOverlay crumblingOverlay;
             public @Nullable ResolvableProfile profile;
+            public Pony pony;
         }
     }
 
-    public interface Proxy {
-        void setPonySkullData(Data data);
-    }
+    public record Data(ISkull model, @Nullable Identifier overrideTexture, @Nullable ResolvableProfile profile, float animation) {
 
-    public record Data(ISkull model, RenderType layer, Pony pony, @Nullable ResolvableProfile profile, float animation) {
+        public boolean canRender() {
+            return model.canRender(pony(), profile, PonyConfig.getInstance());
+        }
+
+        public RenderType layer() {
+            return RenderTypes.entityTranslucent(pony().texture());
+        }
+
+        public Pony pony() {
+            return Pony.getManager().getPony(overrideTexture == null ? model.getSkinResource(profile) : overrideTexture);
+        }
+
         public boolean render(PoseStack matrices, SubmitNodeCollector frame, int light, int outlineColor, @Nullable ModelFeatureRenderer.CrumblingOverlay crumblingOverlay) {
-            if (!model.canRender(PonyConfig.getInstance())) {
+            final Pony pony = pony();
+
+            if (!model.canRender(pony, profile, PonyConfig.getInstance())) {
                 return false;
             }
 
@@ -113,8 +119,8 @@ public class PonySkullRenderer {
             skullModelState.light = light;
             skullModelState.crumblingOverlay = crumblingOverlay;
             skullModelState.profile = profile;
-
-            model.render(matrices, skullModelState, frame, pony, layer);
+            skullModelState.pony = pony;
+            model.render(matrices, skullModelState, frame, RenderTypes.entityTranslucent(pony.texture()));
 
             return true;
         }

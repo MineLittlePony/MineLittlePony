@@ -4,6 +4,7 @@ import net.minecraft.client.renderer.PlayerSkinRenderCache;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.special.*;
 import net.minecraft.resources.Identifier;
+import net.minecraft.util.Tuple;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.component.ResolvableProfile;
 import net.minecraft.world.level.block.SkullBlock;
@@ -11,49 +12,52 @@ import net.minecraft.world.level.block.SkullBlock;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Vector3fc;
 
-import com.minelittlepony.api.config.PonyConfig;
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.datafixers.util.Either;
 
 import java.util.Optional;
 import java.util.function.Consumer;
 
-public class PonyHeadModelRenderer implements SpecialModelRenderer<Either<PonySkullRenderer.Data, Object>> {
+public class PonyHeadModelRenderer<T> implements SpecialModelRenderer<Tuple<PonySkullRenderer.Data, T>> {
 
-    private final SpecialModelRenderer<?> renderer;
+    private final SpecialModelRenderer<T> renderer;
 
     private final SkullBlock.Type kind;
     private final Optional<Identifier> textureOverride;
     private final float animationTicks;
 
-    public PonyHeadModelRenderer(SpecialModelRenderer<?> renderer, SkullBlock.Type kind, Optional<Identifier> textureOverride, float animationTicks) {
+    protected PonyHeadModelRenderer(SpecialModelRenderer<T> renderer, SkullBlock.Type kind, Optional<Identifier> textureOverride, float animationTicks) {
         this.renderer = renderer;
         this.kind = kind;
         this.textureOverride = textureOverride;
         this.animationTicks = animationTicks;
     }
 
-    @Override
-    public Either<PonySkullRenderer.Data, Object> extractArgument(ItemStack stack) {
-        @Nullable
-        Object humanData = renderer.extractArgument(stack);
-        @Nullable
-        PonySkullRenderer.Data data = PonySkullRenderer.INSTANCE.getSkullState(kind, unwrapProfile(humanData), textureOverride.orElse(null), animationTicks);
-        if (data != null && data.model().canRender(PonyConfig.getInstance())) {
-            return Either.left(data);
+    public static SpecialModelRenderer<?> create(SpecialModelRenderer.Unbaked<?> unbaked, SpecialModelRenderer<?> renderer) {
+        if (unbaked instanceof SkullSpecialRenderer.Unbaked a) {
+            return renderer instanceof SkullSpecialRenderer r ? new PonyHeadModelRenderer<>(r, a.kind(), a.textureOverride(), a.animation()) : renderer;
         }
-        return Either.right(humanData);
+        return renderer instanceof PlayerHeadSpecialRenderer r ? new PonyHeadModelRenderer<>(r, SkullBlock.Types.PLAYER, Optional.empty(), 0F) : renderer;
     }
 
-    private ResolvableProfile unwrapProfile(Object humanData) {
+    @Override
+    public Tuple<PonySkullRenderer.Data, T> extractArgument(ItemStack stack) {
+        @Nullable
+        T humanData = renderer.extractArgument(stack);
+        return new Tuple<>(
+                PonySkullRenderer.INSTANCE.getSkullState(kind, unwrapProfile(humanData), textureOverride.orElse(null), animationTicks),
+                humanData
+        );
+    }
+
+    private ResolvableProfile unwrapProfile(T humanData) {
         return humanData instanceof PlayerSkinRenderCache.RenderInfo info ? ResolvableProfile.createResolved(info.gameProfile()) : null;
     }
 
     @Override
-    public void submit(Either<PonySkullRenderer.Data, Object> data, PoseStack matrices, SubmitNodeCollector frame, int light, int overlay, boolean glint, int outline) {
-        data
-            .ifLeft(ponyModel -> ponyModel.render(matrices, frame, light, outline, null))
-            .ifRight(_ -> renderer.submit(null, matrices, frame, light, overlay, glint, outline));
+    public void submit(Tuple<PonySkullRenderer.Data, T> data, PoseStack matrices, SubmitNodeCollector frame, int light, int overlay, boolean glint, int outline) {
+        if (data.getA() == null || !data.getA().render(matrices, frame, light, outline, null)) {
+            renderer.submit(data.getB(), matrices, frame, light, overlay, glint, outline);
+        }
     }
 
     @Override

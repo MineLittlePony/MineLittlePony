@@ -10,6 +10,7 @@
         "MixinEntityHitboxDebugRenderer",
         "MixinFishingBobberEntityRenderer",
         "MixinSkullBlockEntityRenderer",
+        "MixinCustomHeadRenderer",
         "MixinHeadModelRenderer_Unbaked",
         "MixinHeldItemRenderer",
         "MixinLivingEntity",
