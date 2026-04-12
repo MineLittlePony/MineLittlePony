@@ -22,7 +22,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 abstract class MixinHeldItemRenderer {
     @WrapOperation(method = "renderItem(Lnet/minecraft/world/entity/LivingEntity;Lnet/minecraft/world/item/ItemStack;Lnet/minecraft/world/item/ItemDisplayContext;Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/SubmitNodeCollector;I)V",
              at = @At(value = "INVOKE",
-                      target = "net/minecraft/client/render/item/ItemRenderState.render(Lnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/command/OrderedRenderCommandQueue;III)V"))
+                      target = "net/minecraft/client/renderer/item/ItemStackRenderState.submit(Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/SubmitNodeCollector;III)V"))
     private void wrapRenderItem(
             ItemStackRenderState target, /*.render(*/ PoseStack matrices, SubmitNodeCollector frame, int light, int overlay, int outline, /*)*/ Operation<Void> operation,
             LivingEntity entity, ItemStack stack, ItemDisplayContext renderMode) {
