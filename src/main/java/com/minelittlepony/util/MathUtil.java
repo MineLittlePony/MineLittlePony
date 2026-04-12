@@ -3,6 +3,8 @@ package com.minelittlepony.util;
 import net.minecraft.util.math.MathHelper;
 
 public interface MathUtil {
+    float QUARTER_PIE = MathHelper.PI * 0.25F;
+
     interface Angles {
         float
             _270_DEG = 270 * MathHelper.RADIANS_PER_DEGREE,

@@ -20,6 +20,7 @@ public interface Size extends TValue<Size> {
      *
      * Made to be compatible with the enum variant.
      */
+    @Override
     String name();
 
     /**
