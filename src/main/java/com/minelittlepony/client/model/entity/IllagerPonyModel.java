@@ -5,6 +5,7 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.entity.monster.illager.AbstractIllager;
 
+import com.minelittlepony.api.model.QuadrupedalArmPosing;
 import com.minelittlepony.client.model.entity.race.AlicornModel;
 import com.minelittlepony.client.render.entity.npc.IllagerPonyRenderer;
 
@@ -47,7 +48,7 @@ public class IllagerPonyModel<S extends IllagerPonyRenderer.State> extends Alico
             // rightArm.rotationPointZ = 0;
             arm.setRotation(-0.75F * Mth.PI, mult * 1.1F, mult * Mth.cos(state.ageInTicks * 0.6662F) / 4);
         } else if (pose == AbstractIllager.IllagerArmPose.BOW_AND_ARROW) {
-            aimBow(state, arm);
+            QuadrupedalArmPosing.aimBow(state, head, arm);
         }
     }
 }

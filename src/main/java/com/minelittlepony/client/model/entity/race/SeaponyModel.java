@@ -46,10 +46,10 @@ public class SeaponyModel<T extends PonyRenderState> extends UnicornModel<T> {
     protected void setModelAngles(T entity) {
         super.setModelAngles(entity);
 
-        float flapMotion = Mth.cos(entity.ageInTicks / 10) / 5;
+        float flapMotion = Mth.cos(entity.ageInTicks / 10) * 0.2F;
 
         if (entity.attributes.isLyingDown) {
-            flapMotion /= 2;
+            flapMotion *= 0.5F;
         }
 
         float finAngle = FIN_Y_ANGLE + flapMotion;
@@ -57,36 +57,38 @@ public class SeaponyModel<T extends PonyRenderState> extends UnicornModel<T> {
         leftFin.yRot = finAngle;
         rightFin.yRot = -finAngle;
         centerFin.zRot = flapMotion;
-
-        if (!entity.submergedInWater) {
-            leftArm.xRot -= 0.5F;
-            rightArm.xRot -= 0.5F;
-        }
-
-        if (!entity.submergedInWater || entity.onGround) {
-            leftArm.yRot -= 0.5F;
-            rightArm.yRot += 0.5F;
-        }
     }
 
     @Override
     protected void rotateLegs(T state) {
-        super.rotateLegs(state);
-        leftArm.xRot -= 1.4F;
-        leftArm.yRot -= 0.3F;
-        rightArm.xRot -= 1.4F;
-        rightArm.yRot += 0.3F;
-    }
-
-    @Override
-    protected void rotateLegsSwimming(T state) {
-        rotateLegsOnGround(state);
+        walkSeapony(state, leftArm, rightArm, leftLeg, rightLeg);
     }
 
     @Override
     public void transform(T state, BodyPart part, PoseStack stack) {
         stack.translate(0, 0.6F, 0);
         super.transform(state, part, stack);
+    }
+
+    static <T extends PonyRenderState> void walkSeapony(T state,
+            ModelPart frontLeftLeg, ModelPart frontRightLeg,
+            ModelPart backLeftLeg, ModelPart backRightLeg
+    ) {
+        QuadrupedLegPosing.walk(state, frontLeftLeg, frontRightLeg, backLeftLeg, backRightLeg);
+        frontLeftLeg.xRot -= 1.4F;
+        frontLeftLeg.yRot -= 0.3F;
+        frontRightLeg.xRot -= 1.4F;
+        frontRightLeg.yRot += 0.3F;
+
+        if (!state.submergedInWater) {
+            frontLeftLeg.xRot -= 0.5F;
+            frontRightLeg.xRot -= 0.5F;
+        }
+
+        if (!state.submergedInWater || state.onGround) {
+            frontLeftLeg.yRot -= 0.5F;
+            frontRightLeg.yRot += 0.5F;
+        }
     }
 
     public static class Armour<T extends PonyRenderState> extends PonyArmourModel<T> {
@@ -97,8 +99,8 @@ public class SeaponyModel<T extends PonyRenderState> extends UnicornModel<T> {
         }
 
         @Override
-        protected void rotateLegsSwimming(T state) {
-            rotateLegsOnGround(state);
+        protected void rotateLegs(T state) {
+            walkSeapony(state, leftArm, rightArm, leftLeg, rightLeg);
         }
 
         @Override

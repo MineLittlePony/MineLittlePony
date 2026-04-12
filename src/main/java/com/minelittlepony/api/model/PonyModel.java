@@ -5,8 +5,7 @@ import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.renderer.entity.state.EntityRenderState;
 import net.minecraft.world.entity.HumanoidArm;
 
-import com.minelittlepony.api.pony.meta.Race;
-import com.minelittlepony.api.pony.meta.Wearable;
+import com.minelittlepony.api.pony.meta.*;
 import com.minelittlepony.mson.api.MsonModel;
 import com.mojang.blaze3d.vertex.PoseStack;
 

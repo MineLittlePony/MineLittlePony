@@ -1,8 +1,6 @@
 package com.minelittlepony.client.model;
 
-import com.minelittlepony.api.config.PonyConfig;
 import com.minelittlepony.api.model.*;
-import com.minelittlepony.api.pony.meta.SizePreset;
 import com.minelittlepony.client.render.entity.state.PlayerPonyRenderState;
 import com.minelittlepony.client.render.entity.state.PonyRenderState;
 import com.minelittlepony.client.transform.PonyTransformation;
@@ -10,6 +8,7 @@ import com.minelittlepony.common.util.Untyped;
 import com.minelittlepony.mson.util.RenderList;
 import com.minelittlepony.util.MathUtil;
 import com.minelittlepony.util.MathUtil.Angles;
+import com.minelittlepony.util.Sigma;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
@@ -34,7 +33,6 @@ public abstract class AbstractPonyModel<T extends PonyRenderState> extends Clien
     public static final float BODY_SNEAKING_PITCH = 0.4F;
     public static final float FRONT_LEGS_Y = 8;
 
-    public static final Pivot ORIGIN = new Pivot(0, 0, 0);
     public static final Pivot HEAD_SNEAKING = new Pivot(0, 6, -2);
     public static final Pivot BODY_SNEAKING = new Pivot(0, 7, -4);
     public static final Pivot BODY_RIDING = new Pivot(0, 1, 4);
@@ -74,6 +72,7 @@ public abstract class AbstractPonyModel<T extends PonyRenderState> extends Clien
         mainRenderList.accept(matrices, vertices, light, overlay, color);
     }
 
+    @Override
     public final void renderHead(PoseStack matrices, VertexConsumer vertices, int light, int overlay, int color) {
         headRenderList.accept(matrices, vertices, light, overlay, color);
     }
@@ -100,29 +99,20 @@ public abstract class AbstractPonyModel<T extends PonyRenderState> extends Clien
         neck.yRot = entity.wobbleAmount;
 
         rotateLegs(entity);
-
-        if (!entity.attributes.isSwimming && !entity.attributes.isGoingFast) {
-            alignArmForAction(entity, getArm(HumanoidArm.LEFT), entity.leftArmPose, entity.rightArmPose, 1);
-            alignArmForAction(entity, getArm(HumanoidArm.RIGHT), entity.rightArmPose, entity.leftArmPose, -1);
-        }
-        if (entity.attackTime > 0 && !entity.attributes.isLyingDown) {
-            swingArm(entity, getArm(entity.mainArm));
+        repositionLegs(entity);
+        if (canAnimateArms(entity)) {
+            rotateArms(entity);
         }
 
-        if (entity.attributes.isCrouching) {
+        if (entity.hasPose(Pose.CROUCHING)) {
             ponyCrouch(entity);
         } else if (entity.hasPose(Pose.SITTING)) {
             ponySit();
         } else {
-            adjustBody(entity, 0, ORIGIN);
-
-            if (!entity.attributes.isLyingDown) {
-                animateBreathing(entity);
+            adjustBody(entity, 0, Pivot.ZERO);
+            if (entity.attributes.isLyingDown) {
+                ponySleep();
             }
-        }
-
-        if (entity.attributes.isLyingDown) {
-            ponySleep();
         }
 
         if (entity.attributes.isHorsey) {
@@ -135,7 +125,7 @@ public abstract class AbstractPonyModel<T extends PonyRenderState> extends Clien
             head.xScale += 0.5;
             head.zScale += 0.5;
             head.yScale += 0.5;
-            float bobScale = entity.attributes.getMainInterpolator().interpolate("head_bob", entity.walkAnimationPos, 120) * 0.4F;
+            float bobScale = entity.getAttributes().getMainInterpolator().interpolate("head_bob", entity.walkAnimationPos, 120) * 0.4F;
             head.zRot += Mth.sin(entity.ageInTicks / 2F) * bobScale;
             head.yRot += Mth.sin(entity.ageInTicks / 3F) * bobScale;
             head.xRot += Mth.cos(entity.ageInTicks / 2F) * bobScale * 1.2F;
@@ -176,14 +166,14 @@ public abstract class AbstractPonyModel<T extends PonyRenderState> extends Clien
 
         leftLeg.z = 14;
         leftLeg.y = 17;
-        leftLeg.xRot = -Mth.PI / 4;
+        leftLeg.xRot = -MathUtil.QUARTER_PIE;
         leftLeg.yRot = -Mth.PI / 7;
 
         leftLeg.xRot += body.xRot;
 
         rightLeg.z = 15;
         rightLeg.y = 17;
-        rightLeg.xRot = -Mth.PI / 4;
+        rightLeg.xRot = -MathUtil.QUARTER_PIE;
         rightLeg.zRot =  Mth.PI / 7;
 
         rightLeg.xRot += body.xRot;
@@ -199,11 +189,13 @@ public abstract class AbstractPonyModel<T extends PonyRenderState> extends Clien
     */
     protected void rotateLegs(T state) {
         if (state.attributes.isSwimming) {
-            rotateLegsSwimming(state);
+            QuadrupedLegPosing.swim(state, leftArm, rightArm, leftLeg, rightLeg, state.submergedInWater ? (float)state.getAttributes().motionLerp : 1);
         } else {
-            rotateLegsOnGround(state);
+            QuadrupedLegPosing.walk(state, leftArm, rightArm, leftLeg, rightLeg);
         }
+    }
 
+    protected void repositionLegs(T state) {
         float cos = Mth.cos(body.yRot) * 5;
 
         float legRPX = state.attributes.getMainInterpolator().interpolate("legOffset", cos - state.legOutset - 0.001F, 2);
@@ -228,52 +220,20 @@ public abstract class AbstractPonyModel<T extends PonyRenderState> extends Clien
         }
     }
 
-    /**
-     * Rotates legs in a quopy fashion whilst swimming.
-     */
-    protected void rotateLegsSwimming(T state) {
-        float lerp = state.submergedInWater ? (float)state.attributes.motionLerp : 1;
+    protected void rotateArms(T state) {
+        ModelPart leftArm = getArm(HumanoidArm.LEFT);
+        ModelPart rightArm = getArm(HumanoidArm.RIGHT);
 
-        float legLeft = (MathUtil.Angles._90_DEG + Mth.sin((state.walkAnimationSpeed / 3) + 2 * Mth.PI / 3) / 2) * lerp;
-
-        float left = (MathUtil.Angles._90_DEG + Mth.sin((state.walkAnimationSpeed / 3) + 2 * Mth.PI) / 2) * lerp;
-        float right = (MathUtil.Angles._90_DEG + Mth.sin(state.walkAnimationSpeed / 3) / 2) * lerp;
-
-        leftArm.setRotation(-left, -left / 2, left / 2);
-        rightArm.setRotation(-right, right / 2, -right / 2);
-        leftLeg.setRotation(legLeft, 0, leftLeg.zRot);
-        rightLeg.setRotation(right, 0, rightLeg.zRot);
-    }
-
-    /**
-     * Rotates legs in quopy fashion for walking.
-     *
-     */
-    protected void rotateLegsOnGround(T state) {
-        float angle = Mth.PI * (float) Math.pow(state.walkAnimationSpeed, 16);
-
-        float baseRotation = state.walkAnimationPos * 0.6662F; // magic number ahoy
-        float scale = state.walkAnimationSpeed / 4;
-
-        float rainboomLegLotation = state.attributes.getMainInterpolator().interpolate(
-                "rainboom_leg_rotation",
-                state.attributes.isGoingFast ? 1 : 0,
-                5
-        );
-        float yAngle = 0.2F * rainboomLegLotation;
-
-        leftArm.setRotation(Mth.lerp(rainboomLegLotation, Mth.cos(baseRotation + angle) * scale, -MathUtil.Angles._90_DEG * rainboomLegLotation), -yAngle, 0);
-        rightArm.setRotation(Mth.lerp(rainboomLegLotation, Mth.cos(baseRotation + Mth.PI + angle / 2) * scale, -MathUtil.Angles._90_DEG * rainboomLegLotation), yAngle, 0);
-        leftLeg.setRotation(Mth.lerp(rainboomLegLotation, Mth.cos(baseRotation + Mth.PI - (angle * 0.4f)) * scale, MathUtil.Angles._90_DEG * rainboomLegLotation), yAngle, leftLeg.zRot);
-        rightLeg.setRotation(Mth.lerp(rainboomLegLotation, Mth.cos(baseRotation + angle / 5) * scale, MathUtil.Angles._90_DEG * rainboomLegLotation), -yAngle, rightLeg.zRot);
-    }
-
-    @Override
-    public ModelPart getBodyPart(BodyPart part) {
-        if (part == BodyPart.NECK) {
-            return neck;
+        if (!state.attributes.isSwimming && !state.attributes.isGoingFast) {
+            alignArmForAction(state, leftArm, state.leftArmPose, state.rightArmPose, Sigma.RIGHT);
+            alignArmForAction(state, rightArm, state.rightArmPose, state.leftArmPose, Sigma.LEFT);
         }
-        return super.getBodyPart(part);
+        if (!state.attributes.isLyingDown) {
+            if (state.attackTime > 0) {
+                QuadrupedalArmPosing.punch(state, state.mainArm == HumanoidArm.LEFT ? leftArm : rightArm, body, getHead());
+            }
+            QuadrupedalArmPosing.idle(state, leftArm, rightArm);
+        }
     }
 
     /**
@@ -281,156 +241,28 @@ public abstract class AbstractPonyModel<T extends PonyRenderState> extends Clien
      *
      * @param arm   The arm model to align
      * @param pose  The post to align to
-     * @param limbSpeed     Degree to which each 'limb' swings.
+     * @param complement Pose of the other arm
+     * @param sigma The side.1 for right, -1 of left.
      */
-    protected void alignArmForAction(T state, ModelPart arm, ArmPose pose, ArmPose complement, float sigma) {
+    protected void alignArmForAction(T state, ModelPart arm, ArmPose pose, ArmPose complement, @Sigma float sigma) {
         switch (pose) {
-            case ITEM:
-                arm.yRot = 0;
-
-                boolean both = pose == complement;
-
-                if (state.attributes.shouldLiftArm(pose, complement, sigma)) {
-                    float swag = 1;
-                    if (!state.attributes.isFlying && both) {
-                        swag -= (float)Math.pow(state.walkAnimationSpeed, 2);
-                    }
-
-                    float mult = 1 - swag/2;
-                    arm.xRot = arm.xRot * mult - (Mth.PI / 10) * swag;
-                    arm.zRot = -sigma * (Mth.PI / 15);
-                    arm.zRot += 0.3F * -state.walkAnimationSpeed * sigma;
-
-                    if (state.attributes.isCrouching) {
-                        arm.x -= sigma * 2;
-                    }
-                }
-
-                break;
-            case EMPTY:
-                arm.yRot = 0;
-                break;
-            case BLOCK:
-                arm.xRot = (arm.xRot / 2 - 0.9424779F) - 0.3F;
-                arm.yRot = sigma * Mth.PI / 9;
-                arm.zRot += 0.3F * -state.walkAnimationSpeed * sigma;
-                if (complement == pose) {
-                    arm.yRot -= sigma * Mth.PI / 18;
-                }
-                arm.x += sigma;
-                arm.z += 3;
-                if (state.attributes.isCrouching) {
-                    arm.y += 4;
-                }
-                break;
-            case BOW_AND_ARROW:
-                aimBow(state, arm);
-                break;
-            case CROSSBOW_HOLD:
-                aimBow(state, arm);
-
-                arm.zRot = head.zRot - MathUtil.Angles._90_DEG;
-                arm.yRot = head.yRot + 0.06F;
-                break;
-            case CROSSBOW_CHARGE:
-                aimBow(state, arm);
-
-                arm.xRot = -0.8F;
-                arm.yRot = head.yRot + 0.06F;
-                arm.zRot += 0.3F * -state.walkAnimationPos * sigma;
-                break;
-            case THROW_TRIDENT:
-                arm.xRot = MathUtil.Angles._90_DEG * 2;
-                arm.zRot += (0.3F * -state.walkAnimationPos + 0.6F) * sigma;
-                arm.y ++;
-                break;
-            case SPYGLASS:
-                float addedPitch = state.isCrouching ? -0.2617994F : 0;
-                float minPitch = state.isCrouching ? -1.8F : -2.4F;
-                arm.xRot = Mth.clamp(head.xRot - 1.9198622F - addedPitch, minPitch, 3.3F);
-                arm.yRot = head.yRot;
-
-                if (state.isCrouching) {
-                    arm.y += 9;
-                    arm.x -= 6 * sigma;
-                    arm.z -= 2;
-                }
-                if (state.attributes.size == SizePreset.TALL) {
-                    arm.y += 1;
-                }
-                if (state.attributes.size == SizePreset.FOAL) {
-                    arm.y -= 2;
-                }
-
-                break;
-            case TOOT_HORN:
-                arm.xRot = Mth.clamp(head.xRot, -0.55f, 1.2f) - 1.7835298f;
-                arm.yRot = head.yRot - 0.1235988f * sigma;
-                arm.y += 3;
-                arm.zRot += 0.3F * -state.walkAnimationPos * sigma;
-                break;
-            case BRUSH:
-                arm.xRot = arm.xRot * 0.5f - 0.62831855f;
-                arm.yRot = 0;
-                arm.zRot += 0.3F * -state.walkAnimationPos * sigma;
-                break;
-            case SPEAR:
-                SpearAnimations.thirdPersonHandUse(arm, head, sigma > 0, state.getUseItemStackForArm(sigma > 0 ? HumanoidArm.RIGHT : HumanoidArm.LEFT), state);
-                break;
-            default:
-                break;
+            case EMPTY -> arm.yRot = 0;
+            case ITEM -> QuadrupedalArmPosing.holdItem(state, arm, pose, complement, sigma);
+            case BLOCK -> QuadrupedalArmPosing.holdShield(state, arm, pose, complement, sigma);
+            case BOW_AND_ARROW -> QuadrupedalArmPosing.aimBow(state, head, arm);
+            case CROSSBOW_HOLD -> QuadrupedalArmPosing.aimCrossbow(state, head, arm, false, sigma);
+            case CROSSBOW_CHARGE -> QuadrupedalArmPosing.aimCrossbow(state, head, arm, true, sigma);
+            case THROW_TRIDENT -> QuadrupedalArmPosing.throwTrident(state, arm, sigma);
+            case SPYGLASS -> QuadrupedalArmPosing.spyglass(state, head, arm, sigma);
+            case TOOT_HORN -> QuadrupedalArmPosing.blowHorn(state, head, arm, sigma);
+            case BRUSH -> QuadrupedalArmPosing.brushBlock(state, arm, sigma);
+            case SPEAR -> SpearAnimations.thirdPersonHandUse(arm, head, sigma > 0, state.getUseItemStackForArm(sigma > 0 ? HumanoidArm.RIGHT : HumanoidArm.LEFT), state);
+            default -> {}
         }
     }
 
-    protected final void aimBow(T state, ModelPart arm) {
-        arm.xRot = MathUtil.Angles._270_DEG + head.xRot + (Mth.sin(state.walkAnimationPos * 0.067F) * 0.05F);
-        arm.yRot = head.yRot - 0.06F;
-        arm.zRot = Mth.cos(state.walkAnimationPos * 0.09F) * 0.05F + 0.05F;
-
-        if (state.isCrouching) {
-            arm.y += 4;
-        }
-    }
-
-    /**
-     * Animates arm swinging.
-     *
-     * @param arm       The arm to swing
-     */
-    protected void swingArm(T state, ModelPart arm) {
-        float swing = 1 - (float)Math.pow(1 - state.attackTime, 3);
-
-        float deltaX = Mth.sin(swing * Mth.PI);
-        float deltaZ = Mth.sin(state.attackTime * Mth.PI);
-
-        float deltaAim = deltaZ * (0.7F - head.xRot) * 0.75F;
-
-        arm.xRot -= deltaAim + deltaX * 1.2F;
-        arm.yRot += body.yRot * 2;
-        arm.zRot = -deltaZ * 0.4F;
-    }
-
-    /**
-     * Animates the arm's breathing animation when holding items.
-     *
-     * @param animationProgress       Total whole and partial ticks since the entity's existence.
-     *                    Used in animations together with {@code swing} and {@code move}.
-     */
-    protected void animateBreathing(T state) {
-        float cos = Mth.cos(state.ageInTicks * 0.09F) * 0.05F + 0.05F;
-        float sin = Mth.sin(state.ageInTicks * 0.067F) * 0.05F;
-
-        if (state.attributes.shouldLiftArm(state.rightArmPose, state.leftArmPose, -1)) {
-            ModelPart arm = getArm(HumanoidArm.RIGHT);
-            arm.zRot += cos;
-            arm.xRot += sin;
-        }
-
-        if (state.attributes.shouldLiftArm(state.leftArmPose, state.rightArmPose, 1)) {
-            ModelPart arm = getArm(HumanoidArm.LEFT);
-            arm.zRot += cos;
-            arm.xRot += sin;
-        }
+    protected boolean canAnimateArms(T state) {
+        return true;
     }
 
     protected void adjustBody(T state, float pitch, Pivot origin) {
@@ -445,12 +277,21 @@ public abstract class AbstractPonyModel<T extends PonyRenderState> extends Clien
         }
     }
 
-    protected void adjustBodyComponents(float pitch, Pivot origin) {
+    protected final void adjustBodyComponents(float pitch, Pivot origin) {
         body.xRot = pitch;
         body.y = origin.y();
         body.z = origin.z();
     }
 
+    @Override
+    public ModelPart getBodyPart(BodyPart part) {
+        if (part == BodyPart.NECK) {
+            return neck;
+        }
+        return super.getBodyPart(part);
+    }
+
+    @Override
     public final void transformHeldItem(T state, HumanoidArm arm, PoseStack matrices) {
         transform(state, BodyPart.LEGS, matrices);
         ModelPart a = getArm(arm);
@@ -461,7 +302,7 @@ public abstract class AbstractPonyModel<T extends PonyRenderState> extends Clien
     }
 
     protected void positionheldItem(T state, HumanoidArm arm, PoseStack matrices) {
-        float left = arm == HumanoidArm.LEFT ? -1 : 1;
+        @Sigma float left = arm == HumanoidArm.LEFT ? Sigma.LEFT : Sigma.RIGHT;
         ArmPose pose = arm == HumanoidArm.LEFT ? state.leftArmPose : state.rightArmPose;
 
         if (pose == ArmPose.SPYGLASS) {

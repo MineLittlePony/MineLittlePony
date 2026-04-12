@@ -3,6 +3,8 @@ package com.minelittlepony.util;
 import net.minecraft.util.Mth;
 
 public interface MathUtil {
+    float QUARTER_PIE = Mth.PI * 0.25F;
+
     interface Angles {
         float
             _270_DEG = 270 * Mth.DEG_TO_RAD,
