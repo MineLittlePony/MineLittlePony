@@ -32,7 +32,7 @@ abstract class MixinHeldItemRenderer {
     @Inject(method = "renderMap(Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/SubmitNodeCollector;ILnet/minecraft/world/item/ItemStack;)V",
             at = @At(value = "INVOKE",
                     target = "net/minecraft/client/renderer/SubmitNodeCollector.submitCustomGeometry(Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/rendertype/RenderType;Lnet/minecraft/client/renderer/SubmitNodeCollector$CustomGeometryRenderer;)V"))
-    private void onRenderMap(PoseStack matrices, SubmitNodeCollector frame, ItemStack stack, CallbackInfo info) {
+    private void onRenderMap(PoseStack matrices, SubmitNodeCollector frame, int light, ItemStack stack, CallbackInfo info) {
         LevitatingItemRenderer.renderMap(matrices, frame, stack);
     }
 }

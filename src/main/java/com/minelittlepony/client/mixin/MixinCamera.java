@@ -14,19 +14,19 @@ import com.minelittlepony.api.pony.Pony;
 @Mixin(Camera.class)
 abstract class MixinCamera {
     @Shadow
-    private Entity focusedEntity;
+    private Entity entity;
 
-    @ModifyArg(method = "update(Lnet/minecraft/world/BlockView;Lnet/minecraft/entity/Entity;ZZF)V", at = @At(value = "INVOKE", target = "java/lang/Math.max(FF)F"), index = 0)
+    @ModifyArg(method = "alignWithEntity(F)V", at = @At(value = "INVOKE", target = "java/lang/Math.max(FF)F"), index = 0)
     private float adjustCameraDistance(float value) {
-        return value * minelp_getDistanceScale(focusedEntity);
+        return value * minelp_getDistanceScale(entity);
     }
 
-    @ModifyArg(method = "update(Lnet/minecraft/world/BlockView;Lnet/minecraft/entity/Entity;ZZF)V", at = @At(value = "INVOKE", target = "java/lang/Math.max(FF)F"), index = 1)
-    private float adjustVehicleCameraDistance(float value) {
-        if (focusedEntity.isPassenger() && focusedEntity.getVehicle() instanceof LivingEntity l) {
+    @ModifyArg(method = "alignWithEntity(F)V", at = @At(value = "INVOKE", target = "java/lang/Math.max(FF)F"), index = 1)
+    private float adjustMountCameraDistance(float value) {
+        if (entity.isPassenger() && entity.getVehicle() instanceof LivingEntity l) {
             return value * minelp_getDistanceScale(l);
         }
-        return value * minelp_getDistanceScale(focusedEntity);
+        return value * minelp_getDistanceScale(entity);
     }
 
     @Unique

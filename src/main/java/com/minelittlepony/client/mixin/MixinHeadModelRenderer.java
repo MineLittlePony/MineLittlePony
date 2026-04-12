@@ -14,7 +14,7 @@ import java.util.Optional;
 
 @Mixin(value = { SkullSpecialRenderer.Unbaked.class, PlayerHeadSpecialRenderer.Unbaked.class })
 abstract class MixinHeadModelRenderer_Unbaked {
-    @ModifyReturnValue(method = "bake", at = @At("RETURN"))
+    @ModifyReturnValue(method = "bake(Lnet/minecraft/client/renderer/special/SpecialModelRenderer$BakingContext;)Lnet/minecraft/client/renderer/special/SpecialModelRenderer;", at = @At("RETURN"))
     private /*synthetic bridge*/ SpecialModelRenderer<?> onBake(@Nullable SpecialModelRenderer<?> renderer) {
         Object self = this;
         if (self instanceof SkullSpecialRenderer.Unbaked a) {

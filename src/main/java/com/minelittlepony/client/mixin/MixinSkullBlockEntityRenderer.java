@@ -33,7 +33,7 @@ abstract class MixinSkullBlockEntityRenderer implements BlockEntityRenderer<Skul
     }
 
     @Inject(method = "submitSkull", at = @At("HEAD"), cancellable = true)
-    private void onSubmitSkull(
+    private static void onSubmitSkull(
             final float animationValue,
             final PoseStack matrices,
             final SubmitNodeCollector frame,
@@ -64,7 +64,7 @@ abstract class MixinSkullBlockEntityRenderer implements BlockEntityRenderer<Skul
     @ModifyReturnValue(method = "getSkullRenderType", at = @At("RETURN"))
     private static RenderType replaceRenderLayer(RenderType layer, SkullBlock.Type skullType, @Nullable Identifier overrideTexture) {
         if (overrideTexture == null) {
-            var state = PonySkullRenderer.INSTANCE.getSkullState(skullType, null, overrideTexture, 0);
+            var state = PonySkullRenderer.INSTANCE.getSkullState(skullType, null, null, 0);
             if (state != null && state.model().canRender(PonyConfig.getInstance())) {
                 PonySkullRenderer.INSTANCE.pushState(state);
                 return state.layer();
