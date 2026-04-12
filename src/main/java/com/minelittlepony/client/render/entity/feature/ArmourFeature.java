@@ -2,6 +2,7 @@ package com.minelittlepony.client.render.entity.feature;
 
 import com.minelittlepony.api.config.PonyConfig;
 import com.minelittlepony.api.model.*;
+import com.minelittlepony.api.model.armour.ArmourRendererPlugin;
 import com.minelittlepony.client.model.ClientPonyModel;
 import com.minelittlepony.client.model.armour.*;
 import com.minelittlepony.client.render.PonyRenderContext;

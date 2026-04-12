@@ -4,8 +4,9 @@ import net.minecraft.client.resources.model.EquipmentClientInfo;
 import net.minecraft.util.Util;
 import net.minecraft.world.item.ItemStack;
 
+import com.minelittlepony.api.model.armour.ArmorModelRegistry;
+import com.minelittlepony.api.model.armour.ArmourVariant;
 import com.minelittlepony.client.model.ClientPonyModel;
-import com.minelittlepony.client.model.armour.*;
 import com.minelittlepony.mson.api.ModelKey;
 import com.minelittlepony.mson.api.MsonModel;
 

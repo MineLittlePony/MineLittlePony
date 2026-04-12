@@ -20,6 +20,7 @@ import net.minecraft.world.item.equipment.trim.ArmorTrim;
 import org.jetbrains.annotations.Nullable;
 
 import com.minelittlepony.api.model.Models;
+import com.minelittlepony.api.model.armour.*;
 import com.minelittlepony.client.model.AbstractPonyModel;
 import com.minelittlepony.client.model.ClientPonyModel;
 import com.minelittlepony.client.render.entity.state.PonyRenderState;

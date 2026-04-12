@@ -1,8 +1,8 @@
 package com.minelittlepony.client.render.entity.feature;
 
 import com.minelittlepony.api.model.BodyPart;
+import com.minelittlepony.api.model.armour.ArmourRendererPlugin;
 import com.minelittlepony.client.model.ClientPonyModel;
-import com.minelittlepony.client.model.armour.ArmourRendererPlugin;
 import com.minelittlepony.client.render.PonyRenderContext;
 import com.minelittlepony.client.render.blockentity.skull.PonySkullRenderer;
 import com.minelittlepony.client.render.entity.state.PonyRenderState;

@@ -1,4 +1,4 @@
-package com.minelittlepony.client.model.armour;
+package com.minelittlepony.api.model.armour;
 
 import net.minecraft.client.resources.model.EquipmentClientInfo;
 

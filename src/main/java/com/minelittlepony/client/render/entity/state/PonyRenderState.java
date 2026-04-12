@@ -25,9 +25,9 @@ import com.minelittlepony.api.config.PonyDisplayTags;
 import com.minelittlepony.api.config.PonyConfig;
 import com.minelittlepony.api.events.PonyRenderStatePrepareCallback;
 import com.minelittlepony.api.model.*;
+import com.minelittlepony.api.model.armour.ArmourRendererPlugin;
 import com.minelittlepony.api.pony.*;
 import com.minelittlepony.api.pony.meta.*;
-import com.minelittlepony.client.model.armour.ArmourRendererPlugin;
 import com.minelittlepony.client.compat.iris.IrisApiCompat;
 import com.minelittlepony.client.transform.PonyPosture;
 

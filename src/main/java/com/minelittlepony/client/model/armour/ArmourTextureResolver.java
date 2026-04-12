@@ -6,6 +6,8 @@ import net.minecraft.server.packs.resources.PreparableReloadListener;
 import net.minecraft.world.item.ItemStack;
 
 import com.google.common.cache.*;
+import com.minelittlepony.api.model.armour.ArmourTexture;
+import com.minelittlepony.api.model.armour.ArmourTextureLookup;
 import com.minelittlepony.client.MineLittlePony;
 
 import java.util.*;

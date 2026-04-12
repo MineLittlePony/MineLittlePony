@@ -1,4 +1,4 @@
-package com.minelittlepony.client.model.armour;
+package com.minelittlepony.api.model.armour;
 
 
 import net.minecraft.client.resources.model.EquipmentClientInfo;
@@ -6,6 +6,7 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.Item;
 
 import com.minelittlepony.client.model.ClientPonyModel;
+import com.minelittlepony.client.model.armour.PonyArmourModel;
 import com.minelittlepony.mson.api.ModelKey;
 import com.minelittlepony.mson.api.Mson;
 import com.minelittlepony.util.ResourceUtil;

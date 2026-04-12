@@ -1,4 +1,4 @@
-package com.minelittlepony.client.model.armour;
+package com.minelittlepony.api.model.armour;
 
 import net.minecraft.client.model.Model;
 import net.minecraft.client.renderer.*;
@@ -17,6 +17,7 @@ import net.minecraft.world.item.equipment.trim.ArmorTrim;
 
 import org.jetbrains.annotations.Nullable;
 
+import com.minelittlepony.client.model.armour.ArmourTextureResolver;
 import com.mojang.blaze3d.vertex.PoseStack;
 
 import java.util.concurrent.atomic.AtomicReference;
