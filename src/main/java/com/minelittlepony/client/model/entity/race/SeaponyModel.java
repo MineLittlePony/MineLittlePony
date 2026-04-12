@@ -79,8 +79,8 @@ public class SeaponyModel<T extends PonyRenderState> extends UnicornModel<T> {
     }
 
     @Override
-    protected void rotateLegsSwimming(T state, float move, float swing, float ticks) {
-        rotateLegsOnGround(state, move, swing, ticks);
+    protected void rotateLegsSwimming(T state) {
+        rotateLegsOnGround(state);
     }
 
     @Override
@@ -97,8 +97,8 @@ public class SeaponyModel<T extends PonyRenderState> extends UnicornModel<T> {
         }
 
         @Override
-        protected void rotateLegsSwimming(T state, float move, float swing, float ticks) {
-            rotateLegsOnGround(state, move, swing, ticks);
+        protected void rotateLegsSwimming(T state) {
+            rotateLegsOnGround(state);
         }
 
         @Override

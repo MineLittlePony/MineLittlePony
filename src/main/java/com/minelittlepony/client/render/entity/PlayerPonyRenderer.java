@@ -121,11 +121,11 @@ public class PlayerPonyRenderer<Player extends Avatar & ClientAvatarEntity>
     }
 
     @Override
-    protected void setupRotations(AvatarRenderState state, PoseStack matrices, float animationProgress, float bodyYaw) {
+    protected void setupRotations(AvatarRenderState state, PoseStack matrices, float bodyRot, float entityScale) {
         manager.completeStateUpdate(state);
         model = lookupModel(state).body();
         shadowRadius = ((PlayerPonyRenderState)state).attributes.size.shadowSize();
-        manager.setupTransforms((PlayerPonyRenderState)state, matrices, animationProgress, bodyYaw);
+        manager.setupTransforms((PlayerPonyRenderState)state, matrices, bodyRot, entityScale);
     }
 
     @Override

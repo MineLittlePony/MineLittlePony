@@ -195,17 +195,13 @@ public abstract class AbstractPonyModel<T extends PonyRenderState> extends Clien
     }
 
     /**
-    *
     * Used to set the legs rotation based on walking/crouching animations.
-    *
-    * Takes the same parameters as {@link AbstractPonyModel.setRotationAndAngles}
-    *
     */
     protected void rotateLegs(T state) {
         if (state.attributes.isSwimming) {
-            rotateLegsSwimming(state, state.speedValue, state.walkAnimationPos, state.ageInTicks);
+            rotateLegsSwimming(state);
         } else {
-            rotateLegsOnGround(state, state.speedValue, state.walkAnimationPos, state.ageInTicks);
+            rotateLegsOnGround(state);
         }
 
         float cos = Mth.cos(body.yRot) * 5;
@@ -234,10 +230,8 @@ public abstract class AbstractPonyModel<T extends PonyRenderState> extends Clien
 
     /**
      * Rotates legs in a quopy fashion whilst swimming.
-     *
-     * Takes the same parameters as {@link AbstractPonyModel.setRotationAndAngles}
      */
-    protected void rotateLegsSwimming(T state, @Deprecated float move, @Deprecated float swing, @Deprecated float ticks) {
+    protected void rotateLegsSwimming(T state) {
         float lerp = state.submergedInWater ? (float)state.attributes.motionLerp : 1;
 
         float legLeft = (MathUtil.Angles._90_DEG + Mth.sin((state.walkAnimationSpeed / 3) + 2 * Mth.PI / 3) / 2) * lerp;
@@ -255,11 +249,11 @@ public abstract class AbstractPonyModel<T extends PonyRenderState> extends Clien
      * Rotates legs in quopy fashion for walking.
      *
      */
-    protected void rotateLegsOnGround(T state, float move, float swing, float ticks) {
-        float angle = Mth.PI * (float) Math.pow(swing, 16);
+    protected void rotateLegsOnGround(T state) {
+        float angle = Mth.PI * (float) Math.pow(state.walkAnimationSpeed, 16);
 
-        float baseRotation = state.walkAnimationSpeed * 0.6662F; // magic number ahoy
-        float scale = state.walkAnimationPos / 4;
+        float baseRotation = state.walkAnimationPos * 0.6662F; // magic number ahoy
+        float scale = state.walkAnimationSpeed / 4;
 
         float rainboomLegLotation = state.attributes.getMainInterpolator().interpolate(
                 "rainboom_leg_rotation",
@@ -299,13 +293,13 @@ public abstract class AbstractPonyModel<T extends PonyRenderState> extends Clien
                 if (state.attributes.shouldLiftArm(pose, complement, sigma)) {
                     float swag = 1;
                     if (!state.attributes.isFlying && both) {
-                        swag -= (float)Math.pow(state.walkAnimationPos, 2);
+                        swag -= (float)Math.pow(state.walkAnimationSpeed, 2);
                     }
 
                     float mult = 1 - swag/2;
                     arm.xRot = arm.xRot * mult - (Mth.PI / 10) * swag;
                     arm.zRot = -sigma * (Mth.PI / 15);
-                    arm.zRot += 0.3F * -state.walkAnimationPos * sigma;
+                    arm.zRot += 0.3F * -state.walkAnimationSpeed * sigma;
 
                     if (state.attributes.isCrouching) {
                         arm.x -= sigma * 2;
@@ -319,7 +313,7 @@ public abstract class AbstractPonyModel<T extends PonyRenderState> extends Clien
             case BLOCK:
                 arm.xRot = (arm.xRot / 2 - 0.9424779F) - 0.3F;
                 arm.yRot = sigma * Mth.PI / 9;
-                arm.zRot += 0.3F * -state.walkAnimationPos * sigma;
+                arm.zRot += 0.3F * -state.walkAnimationSpeed * sigma;
                 if (complement == pose) {
                     arm.yRot -= sigma * Mth.PI / 18;
                 }

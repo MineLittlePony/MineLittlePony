@@ -54,7 +54,7 @@ public abstract class PonyPosture {
         if (RenderPass.getCurrent() == RenderPass.GUI || RenderPass.getCurrent() == RenderPass.WORLD) {
             if (entity instanceof AbstractClientPlayer) {
                 state.isFallFlying = false;
-                state.bodyRot = 0;
+                state.flyingYRot = 0;
             }
         }
     }
