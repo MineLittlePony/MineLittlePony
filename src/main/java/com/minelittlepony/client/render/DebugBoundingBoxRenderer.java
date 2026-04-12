@@ -53,22 +53,24 @@ public final class DebugBoundingBoxRenderer {
         fillyCam.set(true);
         final float alteredHeight = entity.getEyeHeight(entity.getPose());
 
-        final float pitch = entity.getViewYRot(tickProgress);
-        final float rescaledPitch = HorseCam.rescaleCameraPitch(entity, alteredHeight, vanillaHeight, pitch);
+        final float pitch = entity.getViewXRot(tickProgress);
+        final float rescaledPitch = HorseCam.rescaleCameraPitch(entity, alteredHeight, vanillaHeight, pitch, tickProgress);
 
-        var a = entity.position().add(0, vanillaHeight, 0);
-        var b = HorseCam.getRaycastPos(entity, a, rescaledPitch);
+        final Vec3 entityPos = entity.getPosition(tickProgress);
+
+        var a = entityPos.add(0, vanillaHeight, 0);
+        var b = HorseCam.getRaycastPos(entity, a, rescaledPitch, tickProgress);
         if (b != null) {
             Gizmos.line(a, b, CommonColors.RED, 4);
         }
 
-        a = entity.position().add(0, alteredHeight, 0);
-        b = HorseCam.getRaycastPos(entity, a, pitch);
+        a = entityPos.add(0, alteredHeight, 0);
+        b = HorseCam.getRaycastPos(entity, a, pitch, tickProgress);
         if (b != null) {
             Gizmos.line(a, b, CommonColors.WHITE, 4);
         }
 
-        var corner = new Vec3(b.x, b.y + (entity.getY() - b.y + vanillaHeight), b.z);
+        var corner = new Vec3(b.x, b.y + (entityPos.y - b.y + vanillaHeight), b.z);
 
         Gizmos.line(b, corner, CommonColors.YELLOW, 4);
         Gizmos.line(a.with(Direction.Axis.Y, corner.y), corner, CommonColors.BLUE, 4);
