@@ -1,6 +1,5 @@
 package com.minelittlepony.client.model;
 
-import com.minelittlepony.api.config.PonyConfig;
 import com.minelittlepony.api.model.*;
 import com.minelittlepony.api.pony.meta.SizePreset;
 import com.minelittlepony.client.render.entity.state.PlayerPonyRenderState;
@@ -129,7 +128,7 @@ public abstract class AbstractPonyModel<T extends PonyRenderState> extends Clien
             head.pitch = 0.5F;
         }
 
-        if (PonyConfig.getInstance().chibiMode.get()) {
+        if (entity.attributes.isChibi) {
             head.xScale += 0.5;
             head.zScale += 0.5;
             head.yScale += 0.5;
