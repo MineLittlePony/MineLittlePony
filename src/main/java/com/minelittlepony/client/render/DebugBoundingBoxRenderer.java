@@ -51,21 +51,24 @@ public final class DebugBoundingBoxRenderer {
         final float alteredHeight = entity.getEyeHeight(entity.getPose());
 
         final float pitch = entity.getPitch(tickProgress);
-        final float rescaledPitch = HorseCam.rescaleCameraPitch(entity, alteredHeight, vanillaHeight, pitch);
+        final float rescaledPitch = HorseCam.rescaleCameraPitch(entity, alteredHeight, vanillaHeight, pitch, tickProgress);
 
-        var a = entity.getEntityPos().add(0, vanillaHeight, 0);
-        var b = HorseCam.getRaycastPos(entity, a, rescaledPitch);
+        final Vec3d entityPos = entity.getLerpedPos(tickProgress);
+
+        var a = entityPos.add(0, vanillaHeight, 0);
+        var b = HorseCam.getRaycastPos(entity, a, rescaledPitch, tickProgress);
+
         if (b != null) {
             GizmoDrawing.line(a, b, Colors.RED, 4);
         }
 
-        a = entity.getEntityPos().add(0, alteredHeight, 0);
-        b = HorseCam.getRaycastPos(entity, a, pitch);
+        a = entityPos.add(0, alteredHeight, 0);
+        b = HorseCam.getRaycastPos(entity, a, pitch, tickProgress);
         if (b != null) {
             GizmoDrawing.line(a, b, Colors.WHITE, 4);
         }
 
-        var corner = new Vec3d(b.x, b.y + (entity.getY() - b.y + vanillaHeight), b.z);
+        var corner = new Vec3d(b.x, b.y + (entityPos.y - b.y + vanillaHeight), b.z);
 
         GizmoDrawing.line(b, corner, Colors.YELLOW, 4);
         GizmoDrawing.line(a.withAxis(Direction.Axis.Y, corner.y), corner, Colors.BLUE, 4);

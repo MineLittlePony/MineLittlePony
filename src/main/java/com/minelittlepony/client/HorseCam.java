@@ -54,7 +54,7 @@ public class HorseCam {
                     // noop
                     // Ignore misses, helps with bows, arrows, and projectiles
                     if (client.crosshairTarget != null && client.crosshairTarget.getType() == HitResult.Type.BLOCK) {
-                        return rescaleCameraPitch(player, alteredHeight, vanillaHeight, pitch);
+                        return rescaleCameraPitch(player, alteredHeight, vanillaHeight, pitch, 1);
                     }
                 }
             }
@@ -73,9 +73,9 @@ public class HorseCam {
      *
      * @return The new pitch value, otherwise the original value passed in.
      */
-    public static float rescaleCameraPitch(Entity entity, double fromHeight, double toHeight, float originalPitch) {
-        Vec3d start = entity.getEntityPos().add(0, fromHeight, 0);
-        Vec3d end = getRaycastPos(entity, start, originalPitch);
+    public static float rescaleCameraPitch(Entity entity, double fromHeight, double toHeight, float originalPitch, float tickProgress) {
+        Vec3d start = entity.getLerpedPos(tickProgress).add(0, fromHeight, 0);
+        Vec3d end = getRaycastPos(entity, start, originalPitch, tickProgress);
 
         if (end == null) {
             return originalPitch;
@@ -97,10 +97,10 @@ public class HorseCam {
         return (float)newPitch;
     }
 
-    public static @Nullable Vec3d getRaycastPos(Entity entity, Vec3d start, float pitch) {
+    public static @Nullable Vec3d getRaycastPos(Entity entity, Vec3d start, float pitch, float tickProgress) {
         BlockHitResult hit = entity.getEntityWorld().raycast(new RaycastContext(
                 start,
-                start.add(entity.getRotationVector(pitch, entity.getYaw()).multiply(16)),
+                start.add(entity.getRotationVector(pitch, entity.getYaw(tickProgress)).multiply(16)),
                 RaycastContext.ShapeType.OUTLINE, RaycastContext.FluidHandling.NONE, entity)
         );
         return hit == null ? null : hit.getPos();
