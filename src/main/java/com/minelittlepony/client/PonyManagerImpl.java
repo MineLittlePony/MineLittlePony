@@ -11,7 +11,7 @@ import com.mojang.authlib.GameProfile;
 
 import org.jetbrains.annotations.Nullable;
 
-import net.minecraft.client.player.AbstractClientPlayer;
+import net.minecraft.client.entity.ClientAvatarEntity;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
 import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
 import net.minecraft.client.resources.DefaultPlayerSkin;
@@ -118,9 +118,10 @@ public class PonyManagerImpl implements PonyManager, ResourceManagerReloadListen
     @Nullable
     private Identifier getSkin(LivingEntity entity) {
         if (entity instanceof Avatar player) {
-            if (player instanceof AbstractClientPlayer clientPlayer && getProfile(player) != null) {
+            if (player instanceof ClientAvatarEntity clientPlayer && (player instanceof ForcedPony || getProfile(player) != null)) {
                 return clientPlayer.getSkin().body().texturePath();
             }
+            return null;
         }
 
         if (MineLittlePony.getInstance().getRenderDispatcher().getPonyRenderer(entity) instanceof LivingEntityRenderer renderer) {
