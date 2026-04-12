@@ -66,10 +66,10 @@ public class PonyWings<S extends PonyRenderState> implements SubModel<S>, MsonMo
         if (state.attackTime > 0) {
             flap = Mth.sin(Mth.sqrt(state.attackTime) * Mth.TWO_PI);
         } else {
-            float pi = Mth.PI * (float) Math.pow(state.walkAnimationPos, 16);
+            float pi = Mth.PI * (float) Math.pow(state.walkAnimationSpeed, 16);
 
-            float mve = state.speedValue * 0.6662f; // magic number ahoy (actually 2/3)
-            float srt = state.walkAnimationPos * 0.25F;
+            float mve = state.walkAnimationPos * 0.6662f; // magic number ahoy (actually 2/3)
+            float srt = state.walkAnimationSpeed * 0.25F;
 
             flap = Mth.cos(mve + pi) * srt;
         }
