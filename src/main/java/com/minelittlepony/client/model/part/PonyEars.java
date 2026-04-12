@@ -39,7 +39,7 @@ public class PonyEars implements SubModel<PonyRenderState>, MsonModel {
             left.z = right.z = 1.5F;
         }
 
-        float limbSpeed = Mth.clamp(state.walkAnimationPos, 0, 1);
+        float limbSpeed = Mth.clamp(state.walkAnimationSpeed, 0, 1);
 
         float forwardFold = 0.14F * limbSpeed;
         float sidewaysFlop = 0.11F * limbSpeed;
