@@ -136,7 +136,7 @@ public interface ArmourRendererPlugin {
 
     @Nullable
     default RenderType getCapeLayer(HumanoidRenderState entity, Identifier texture) {
-        return RenderTypes.entitySolid(texture);
+        return RenderTypes.entityTranslucent(texture);
     }
 
     @Deprecated(forRemoval = true)
