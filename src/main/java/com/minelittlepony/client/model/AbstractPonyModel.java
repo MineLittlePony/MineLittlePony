@@ -125,7 +125,7 @@ public abstract class AbstractPonyModel<T extends PonyRenderState> extends Clien
             head.xScale += 0.5;
             head.zScale += 0.5;
             head.yScale += 0.5;
-            float bobScale = entity.getAttributes().getMainInterpolator().interpolate("head_bob", entity.walkAnimationPos, 120) * 0.4F;
+            float bobScale = entity.getAttributes().getMainInterpolator().interpolate("head_bob", entity.walkAnimationSpeed, 120) * 0.4F;
             head.zRot += Mth.sin(entity.ageInTicks / 2F) * bobScale;
             head.yRot += Mth.sin(entity.ageInTicks / 3F) * bobScale;
             head.xRot += Mth.cos(entity.ageInTicks / 2F) * bobScale * 1.2F;
