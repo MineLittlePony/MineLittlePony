@@ -26,7 +26,7 @@ public class LionTail implements SubModel<PonyRenderState> {
 
         float baseSail = 1F;
 
-        float speed = state.walkAnimationPos > 0.01F ? 6 : 90;
+        float speed = state.walkAnimationSpeed > 0.01F ? 6 : 90;
         Interpolator interpolator = state.attributes.getMainInterpolator();
 
         float straightness = 1.6F * (1 + (float)Math.sin(state.ageInTicks / speed) / 8F);
@@ -47,7 +47,7 @@ public class LionTail implements SubModel<PonyRenderState> {
         bend = interpolator.interpolate("kirin_tail_bendiness", bend, 10);
 
         tail.xRot = baseSail;
-        tail.xRot += state.walkAnimationPos / 2;
+        tail.xRot += state.walkAnimationSpeed / 2;
         tail.yRot = twist;
         tail.zRot = bodySwing * 2;
 
