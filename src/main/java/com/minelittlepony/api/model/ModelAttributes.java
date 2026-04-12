@@ -73,6 +73,10 @@ public class ModelAttributes {
      */
     public boolean isHorsey;
     /**
+     * Flag indicating that this model should have a larger than normal head that wobbles.
+     */
+    public boolean isChibi;
+    /**
      * Flag indicating whether the pony is a player
      */
     public boolean isPlayer;
@@ -195,6 +199,7 @@ public class ModelAttributes {
         isRidingInteractive = entity != null && PonyPosture.isRidingAPony(entity);
         isLeftHanded = entity != null && entity.getMainArm() == HumanoidArm.LEFT;
         isHorsey = PonyConfig.getInstance().horsieMode.get();
+        isChibi = PonyConfig.getInstance().chibiMode.get();
         featureSkins = entity == null ? Set.of() : SkinsProxy.getInstance().getAvailableSkins(entity);
         mainArm = entity == null ? Minecraft.getInstance().options.mainHand().get() : entity.getMainArm();
         activeHand = entity == null ? InteractionHand.MAIN_HAND : entity.getUsedItemHand();
