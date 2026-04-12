@@ -16,7 +16,6 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import java.util.*;
 import java.util.function.*;
 
-import net.minecraft.client.renderer.Sheets;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.entity.*;
 import net.minecraft.client.renderer.entity.layers.CustomHeadLayer;
@@ -24,6 +23,7 @@ import net.minecraft.client.renderer.entity.layers.RenderLayer;
 import net.minecraft.client.renderer.entity.state.AvatarRenderState;
 import net.minecraft.client.renderer.item.ItemModelResolver;
 import net.minecraft.client.renderer.state.level.CameraRenderState;
+import net.minecraft.data.AtlasIds;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.world.entity.EquipmentSlot;
@@ -68,7 +68,7 @@ public abstract class AbstractPonyRenderer<
 
     @SuppressWarnings({"unchecked", "rawtypes"})
     protected void addFeatures(EntityRendererProvider.Context context) {
-        addLayer(new ArmourFeature<>(this, context.getEquipmentAssets(), context.getAtlas(Sheets.ARMOR_TRIMS_SHEET)));
+        addLayer(new ArmourFeature<>(this, context.getEquipmentAssets(), context.getAtlas(AtlasIds.ARMOR_TRIMS)));
         addPonyFeature(createHeldItemFeature(context));
         addLayer(createSkullFeature(context));
         addPonyFeature(new ElytraFeature<>(this, context.getEquipmentRenderer()));

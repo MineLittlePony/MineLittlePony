@@ -21,7 +21,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.ClientAvatarEntity;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.player.LocalPlayer;
-import net.minecraft.client.renderer.Sheets;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.layers.*;
@@ -33,6 +32,7 @@ import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.Direction;
 import net.minecraft.core.component.DataComponents;
+import net.minecraft.data.AtlasIds;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.*;
 import net.minecraft.world.InteractionHand;
@@ -72,7 +72,7 @@ public class PlayerPonyRenderer<Player extends Avatar & ClientAvatarEntity>
                     || feature instanceof WingsLayer
                     || feature instanceof ParrotOnShoulderLayer;
         });
-        addPonyFeature(new ArmourFeature<>(this, context.getEquipmentAssets(), context.getAtlas(Sheets.ARMOR_TRIMS_SHEET)));
+        addPonyFeature(new ArmourFeature<>(this, context.getEquipmentAssets(), context.getAtlas(AtlasIds.ARMOR_TRIMS)));
         addPonyFeature(new HeldItemFeature<>(this));
         addPonyFeature(new DJPon3Feature<>(this));
         addPonyFeature(new CapeFeature(this, context.getModelSet(), context.getEquipmentAssets()));

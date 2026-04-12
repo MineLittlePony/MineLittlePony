@@ -1,7 +1,6 @@
 package com.minelittlepony.client.render.entity;
 
 import net.minecraft.client.model.object.armorstand.ArmorStandModel;
-import net.minecraft.client.renderer.Sheets;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.entity.*;
 import net.minecraft.client.renderer.entity.layers.CustomHeadLayer;
@@ -11,6 +10,7 @@ import net.minecraft.client.renderer.item.ItemModelResolver;
 import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.core.Rotations;
+import net.minecraft.data.AtlasIds;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
@@ -51,7 +51,7 @@ public class PonyStandRenderer extends LivingEntityRenderer<ArmorStand, PonyStan
     public PonyStandRenderer(EntityRendererProvider.Context context) {
         super(context, ModelType.ARMOUR_STAND.createModel(), 0);
         itemModelManager = context.getItemModelResolver();
-        addLayer(new PonifiedFeature<>(this, new ArmourFeature<>(this.context, context.getEquipmentAssets(), context.getAtlas(Sheets.ARMOR_TRIMS_SHEET))));
+        addLayer(new PonifiedFeature<>(this, new ArmourFeature<>(this.context, context.getEquipmentAssets(), context.getAtlas(AtlasIds.ARMOR_TRIMS))));
         addLayer(new PonifiedFeature<>(this, new HeldItemFeature<>(this.context)));
         addLayer(new PonifiedFeature<>(this, new ElytraFeature<>(this.context, context.getEquipmentRenderer())));
         addLayer(new PonifiedFeature<>(this, new SkullFeature<>(this.context, context.getPlayerSkinRenderCache(), context.getModelSet(), CustomHeadLayer.Transforms.DEFAULT, false)));

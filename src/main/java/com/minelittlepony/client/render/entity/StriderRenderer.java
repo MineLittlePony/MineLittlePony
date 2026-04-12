@@ -1,10 +1,10 @@
 package com.minelittlepony.client.render.entity;
 
-import net.minecraft.client.renderer.Sheets;
 import net.minecraft.client.renderer.entity.*;
 import net.minecraft.client.renderer.entity.layers.SimpleEquipmentLayer;
 import net.minecraft.client.renderer.entity.state.HumanoidRenderState;
 import net.minecraft.client.resources.model.EquipmentClientInfo;
+import net.minecraft.data.AtlasIds;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.EquipmentSlot;
@@ -27,7 +27,7 @@ public class StriderRenderer extends MobRenderer<Strider, StriderRenderer.State,
 
     public StriderRenderer(EntityRendererProvider.Context context) {
         super(context, ModelType.STRIDER.createModel(), 0.5F);
-        addLayer(new SimpleEquipmentLayer<>(this, new PonifiedEquipmentRenderer(context.getEquipmentAssets(), context.getAtlas(Sheets.ARMOR_TRIMS_SHEET)),
+        addLayer(new SimpleEquipmentLayer<>(this, new PonifiedEquipmentRenderer(context.getEquipmentAssets(), context.getAtlas(AtlasIds.ARMOR_TRIMS)),
                 EquipmentClientInfo.LayerType.STRIDER_SADDLE,
                 state -> state.saddleStack,
                 ModelType.STRIDER_SADDLE.createModel(),
