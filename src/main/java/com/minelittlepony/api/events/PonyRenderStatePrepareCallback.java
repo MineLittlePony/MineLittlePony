@@ -4,7 +4,6 @@ import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 
 import com.minelittlepony.api.model.PonyModel;
-import com.minelittlepony.client.render.entity.state.PonyRenderState;
 import com.minelittlepony.api.model.ModelAttributes;
 
 /**
@@ -20,5 +19,5 @@ public interface PonyRenderStatePrepareCallback {
         }
     });
 
-    void onPonyRenderStatePrepared(PonyRenderState state, PonyModel<?> model, ModelAttributes.Mode mode);
+    void onPonyRenderStatePrepared(PonyModel.AttributedHolder state, PonyModel<?> model, ModelAttributes.Mode mode);
 }

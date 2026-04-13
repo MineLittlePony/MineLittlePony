@@ -6,7 +6,6 @@ import net.minecraft.world.item.ItemStack;
 
 import com.minelittlepony.api.model.armour.ArmorModelRegistry;
 import com.minelittlepony.api.model.armour.ArmourVariant;
-import com.minelittlepony.client.model.ClientPonyModel;
 import com.minelittlepony.mson.api.ModelKey;
 import com.minelittlepony.mson.api.MsonModel;
 
@@ -16,11 +15,11 @@ import java.util.function.Function;
  * Container class for the various models and their associated piece of armour.
  */
 public record Models<M extends PonyModel<?>> (
-        Function<ModelKey<ClientPonyModel<?>>, ClientPonyModel<?>> armor,
+        Function<ModelKey<PonyModel<?>>, PonyModel<?>> armor,
         M body
     ) {
 
-    public Models(ModelKey<? super M> modelKey, MsonModel.Factory<ClientPonyModel<?>> armorFactory) {
+    public Models(ModelKey<? super M> modelKey, MsonModel.Factory<PonyModel<?>> armorFactory) {
         this(Util.memoize(key -> key.createModel(armorFactory)), modelKey.createModel());
     }
 
@@ -28,11 +27,11 @@ public record Models<M extends PonyModel<?>> (
         this(Util.memoize(k -> k.createModel()), key.createModel());
     }
 
-    public ClientPonyModel<?> getArmourModel(ItemStack stack, EquipmentClientInfo.LayerType layerType, ArmourVariant variant) {
+    public PonyModel<?> getArmourModel(ItemStack stack, EquipmentClientInfo.LayerType layerType, ArmourVariant variant) {
         return armor.apply(ArmorModelRegistry.getModelKey(stack.getItem(), layerType, variant));
     }
 
-    public Models<M> withArmorFactory(MsonModel.Factory<ClientPonyModel<?>> armorFactory) {
+    public Models<M> withArmorFactory(MsonModel.Factory<PonyModel<?>> armorFactory) {
         return new Models<>(Util.memoize(key -> key.createModel(armorFactory)), body);
     }
 }

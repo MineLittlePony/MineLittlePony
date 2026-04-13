@@ -88,7 +88,7 @@ public final class ModelType {
 
     static <T extends Model<?> & PonyModel<?>> PlayerModelKey<T> registerPlayer(String name, Race race,
             BiFunction<ModelPart, Boolean, T> constructor,
-            MsonModel.Factory<ClientPonyModel<?>> armorFactory) {
+            MsonModel.Factory<PonyModel<?>> armorFactory) {
         return Untyped.cast(PLAYER_MODELS.computeIfAbsent(race, _ -> new PlayerModelKey<T>(name, constructor, armorFactory)));
     }
 
