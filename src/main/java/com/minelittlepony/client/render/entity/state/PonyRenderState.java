@@ -1,6 +1,7 @@
 package com.minelittlepony.client.render.entity.state;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.model.HumanoidModel.ArmPose;
 import net.minecraft.client.renderer.entity.layers.HumanoidArmorLayer;
 import net.minecraft.client.renderer.entity.state.AvatarRenderState;
 import net.minecraft.client.renderer.item.ItemModelResolver;
@@ -187,6 +188,10 @@ public class PonyRenderState extends AvatarRenderState implements PonyModel.Attr
     protected void updateHeldItems(ItemModelResolver resolver, LivingEntity entity) {
         rightHeldItem.updateItemRenderState(this, resolver, entity.getItemHeldByArm(HumanoidArm.RIGHT), ItemDisplayContext.THIRD_PERSON_RIGHT_HAND, entity);
         leftHeldItem.updateItemRenderState(this, resolver, entity.getItemHeldByArm(HumanoidArm.LEFT), ItemDisplayContext.THIRD_PERSON_LEFT_HAND, entity);
+    }
+
+    public ArmPose getArmPoseForArm(final HumanoidArm arm) {
+        return arm == HumanoidArm.RIGHT ? rightArmPose : leftArmPose;
     }
 
     protected Race computeRace(@Nullable LivingEntity entity, Pony pony) {

@@ -5,9 +5,9 @@ import net.minecraft.world.entity.HumanoidArm;
 
 import com.minelittlepony.api.model.MobPosingHelper;
 import com.minelittlepony.client.model.entity.race.AlicornModel;
-import com.minelittlepony.client.render.entity.state.PonyRenderState;
+import com.minelittlepony.client.render.entity.state.HostilePonyRenderState;
 
-public class ZomponyModel<T extends PonyRenderState> extends AlicornModel<T> {
+public class ZomponyModel<T extends HostilePonyRenderState> extends AlicornModel<T> {
     public ZomponyModel(ModelPart tree) {
         super(tree, false);
     }
@@ -15,12 +15,12 @@ public class ZomponyModel<T extends PonyRenderState> extends AlicornModel<T> {
     @Override
     protected void rotateLegs(T state) {
         super.rotateLegs(state);
-        if (shouldLiftBothArms(state)) {
-            MobPosingHelper.rotateUndeadArms(state, this, state.walkAnimationPos, state.ageInTicks);
+        if (shouldAnimateAsZombie(state)) {
+            MobPosingHelper.animateZombieArms(getArm(HumanoidArm.LEFT), getArm(HumanoidArm.RIGHT), state.aggressive, state);
         }
     }
 
-    protected boolean shouldLiftBothArms(T state) {
-        return (state.mainArm == HumanoidArm.LEFT ? state.leftArmPose : state.rightArmPose) == ArmPose.EMPTY;
+    protected boolean shouldAnimateAsZombie(T state) {
+        return true;
     }
 }

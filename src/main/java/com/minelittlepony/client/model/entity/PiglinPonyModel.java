@@ -2,9 +2,11 @@ package com.minelittlepony.client.model.entity;
 
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.util.Mth;
+import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.entity.monster.piglin.PiglinArmPose;
 
 import com.minelittlepony.client.render.entity.PonyPiglinRenderer;
+import com.minelittlepony.util.Sigma;
 
 public class PiglinPonyModel extends ZomponyModel<PonyPiglinRenderer.State> {
 
@@ -30,8 +32,8 @@ public class PiglinPonyModel extends ZomponyModel<PonyPiglinRenderer.State> {
     @Override
     public void setHeadRotation(float animationProgress, float yaw, float pitch) {
         super.setHeadRotation(animationProgress, yaw, pitch);
-        leftFlap.zRot = -(float)(-(Math.cos((double)(animationProgress * (float) Math.PI * 0.2F * 1.2F)) + 2.5)) * 0.2F;
-        rightFlap.zRot = -(float)(Math.cos((double)(animationProgress * (float) Math.PI * 0.2F)) + 2.5) * 0.2F;
+        leftFlap.zRot = -(Mth.cos(animationProgress * Mth.PI * 0.2F * 1.2F) + 2.5F) * -0.2F;
+        rightFlap.zRot = (Mth.cos(animationProgress * Mth.PI * 0.2F) + 2.5F) * -0.2F;
     }
 
     @Override
@@ -39,15 +41,16 @@ public class PiglinPonyModel extends ZomponyModel<PonyPiglinRenderer.State> {
         super.rotateLegs(state);
 
         if (state.activity == PiglinArmPose.ADMIRING_ITEM) {
-            leftArm.yRot = 0.5F;
-            leftArm.xRot = -1.9F;
-            leftArm.y += 4;
-            leftArm.z += 3;
-            leftArm.x += 2;
-            head.xRot = Mth.sin(state.ageInTicks / 12) / 6 + 0.5F;
-            head.yRot = 0;
+            ModelPart mainArm = getArm(state.mainArm.getOpposite());
+            @Sigma float sigma = state.mainArm == HumanoidArm.RIGHT ? Sigma.LEFT : Sigma.RIGHT;
 
-            head.zRot = Mth.sin(state.ageInTicks / 10) / 3F;
+            mainArm.yRot = 0.5F * sigma;
+            mainArm.xRot = -1.9F;
+            mainArm.zRot = mainArm.getInitialPose().zRot();
+            mainArm.y += 4;
+            mainArm.z += 3;
+            mainArm.x += 2;
+            head.setRotation(Mth.sin(state.ageInTicks / 12) / 6 + 0.5F, 0, Mth.sin(state.ageInTicks / 10) / 3F);
         } else if (state.activity == PiglinArmPose.DANCING) {
 
             float speed = state.ageInTicks / 60;
@@ -74,7 +77,7 @@ public class PiglinPonyModel extends ZomponyModel<PonyPiglinRenderer.State> {
     }
 
     @Override
-    protected boolean shouldLiftBothArms(PonyPiglinRenderer.State state) {
-        return state.zombified && super.shouldLiftBothArms(state);
+    protected boolean shouldAnimateAsZombie(PonyPiglinRenderer.State state) {
+        return state.zombified;
     }
 }

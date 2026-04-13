@@ -225,12 +225,25 @@ public abstract class AbstractPonyModel<T extends PonyRenderState> extends Clien
         ModelPart rightArm = getArm(HumanoidArm.RIGHT);
 
         if (!state.attributes.isSwimming && !state.attributes.isGoingFast) {
-            alignArmForAction(state, leftArm, state.leftArmPose, state.rightArmPose, Sigma.RIGHT);
-            alignArmForAction(state, rightArm, state.rightArmPose, state.leftArmPose, Sigma.LEFT);
+            alignArmForAction(state, leftArm, HumanoidArm.RIGHT);
+            alignArmForAction(state, rightArm, HumanoidArm.LEFT);
         }
         if (!state.attributes.isLyingDown) {
             if (state.attackTime > 0) {
-                QuadrupedalArmPosing.punch(state, state.mainArm == HumanoidArm.LEFT ? leftArm : rightArm, body, getHead());
+                switch (state.swingAnimationType) {
+                    case NONE:
+                        break;
+                    case STAB:
+                        SpearAnimations.thirdPersonAttackHand(this, state);
+                        break;
+                    case WHACK:
+                        QuadrupedalArmPosing.punch(state, state.mainArm == HumanoidArm.LEFT ? leftArm : rightArm, body, getHead());
+                        break;
+                    default:
+                        break;
+
+                }
+
             }
             QuadrupedalArmPosing.idle(state, leftArm, rightArm);
         }
@@ -238,25 +251,21 @@ public abstract class AbstractPonyModel<T extends PonyRenderState> extends Clien
 
     /**
      * Aligns an arm for the appropriate arm pose
-     *
-     * @param arm   The arm model to align
-     * @param pose  The post to align to
-     * @param complement Pose of the other arm
-     * @param sigma The side.1 for right, -1 of left.
      */
-    protected void alignArmForAction(T state, ModelPart arm, ArmPose pose, ArmPose complement, @Sigma float sigma) {
+    protected void alignArmForAction(T state, ModelPart arm, HumanoidArm side) {
+        ArmPose pose = state.getArmPoseForArm(side);
         switch (pose) {
             case EMPTY -> arm.yRot = 0;
-            case ITEM -> QuadrupedalArmPosing.holdItem(state, arm, pose, complement, sigma);
-            case BLOCK -> QuadrupedalArmPosing.holdShield(state, arm, pose, complement, sigma);
+            case ITEM -> QuadrupedalArmPosing.holdItem(state, arm, pose, state.getArmPoseForArm(side.getOpposite()), side);
+            case BLOCK -> QuadrupedalArmPosing.holdShield(state, arm, pose, state.getArmPoseForArm(side.getOpposite()), side);
             case BOW_AND_ARROW -> QuadrupedalArmPosing.aimBow(state, head, arm);
-            case CROSSBOW_HOLD -> QuadrupedalArmPosing.aimCrossbow(state, head, arm, false, sigma);
-            case CROSSBOW_CHARGE -> QuadrupedalArmPosing.aimCrossbow(state, head, arm, true, sigma);
-            case THROW_TRIDENT -> QuadrupedalArmPosing.throwTrident(state, arm, sigma);
-            case SPYGLASS -> QuadrupedalArmPosing.spyglass(state, head, arm, sigma);
-            case TOOT_HORN -> QuadrupedalArmPosing.blowHorn(state, head, arm, sigma);
-            case BRUSH -> QuadrupedalArmPosing.brushBlock(state, arm, sigma);
-            case SPEAR -> SpearAnimations.thirdPersonHandUse(arm, head, sigma > 0, state.getUseItemStackForArm(sigma > 0 ? HumanoidArm.RIGHT : HumanoidArm.LEFT), state);
+            case CROSSBOW_HOLD -> QuadrupedalArmPosing.aimCrossbow(state, head, arm, false, side);
+            case CROSSBOW_CHARGE -> QuadrupedalArmPosing.aimCrossbow(state, head, arm, true, side);
+            case THROW_TRIDENT -> QuadrupedalArmPosing.throwTrident(state, arm, side);
+            case SPYGLASS -> QuadrupedalArmPosing.spyglass(state, head, arm, side);
+            case TOOT_HORN -> QuadrupedalArmPosing.blowHorn(state, head, arm, side);
+            case BRUSH -> QuadrupedalArmPosing.brushBlock(state, arm, side);
+            case SPEAR -> SpearAnimations.thirdPersonHandUse(arm, head, side == HumanoidArm.RIGHT, state.getUseItemStackForArm(side), state);
             default -> {}
         }
     }
