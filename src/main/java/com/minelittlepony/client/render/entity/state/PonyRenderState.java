@@ -207,6 +207,11 @@ public class PonyRenderState extends AvatarRenderState implements PonyModel.Attr
         return race;
     }
 
+    @Override
+    public final AvatarRenderState getRenderState() {
+        return this;
+    }
+
     public boolean hasMagicGlow() {
         return race.hasHorn() && glowColor != 0;
     }

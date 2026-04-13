@@ -3,12 +3,11 @@ package com.minelittlepony.api.pony;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
+import net.minecraft.client.renderer.entity.player.AvatarRenderer;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.Avatar;
 
 import org.jetbrains.annotations.Nullable;
-
-import com.minelittlepony.client.render.entity.PlayerPonyRenderer;
 
 import java.util.*;
 import java.util.function.Predicate;
@@ -29,11 +28,23 @@ public record PonyForm(Identifier id, Predicate<Avatar> shouldApply, RendererFac
     public static final List<Identifier> VALUES = new ArrayList<>();
     public static final Map<Identifier, PonyForm> REGISTRY = new HashMap<>();
 
+    /**
+     * Registers a pony form.
+     *
+     * Forms registered during the "minelittlepony" initialiser will be applied to the game.
+     *
+     * @param id          The ID to use to reference this form
+     * @param shouldApply Predicate to check whether the form should apply.
+     * @param factory     Factory for producing a entity renderer to use for this form.
+     */
     public static void register(Identifier id, Predicate<Avatar> shouldApply, RendererFactory<?> factory) {
         VALUES.add(0, id);
         REGISTRY.put(id, new PonyForm(id, shouldApply, factory));
     }
 
+    /**
+     * Gets the applicable form a player should take (if any)
+     */
     @Nullable
     public static PonyForm of(Avatar player) {
         for (Identifier id : VALUES) {
@@ -46,7 +57,7 @@ public record PonyForm(Identifier id, Predicate<Avatar> shouldApply, RendererFac
         return null;
     }
 
-    public interface RendererFactory<T extends PlayerPonyRenderer<?>> {
+    public interface RendererFactory<T extends AvatarRenderer<?>> {
         T create(EntityRendererProvider.Context context, boolean slimArms);
     }
 }

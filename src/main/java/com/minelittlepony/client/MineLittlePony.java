@@ -51,8 +51,7 @@ public class MineLittlePony implements ClientModInitializer {
 
     private final KeyMapping keyBinding = new KeyMapping("key.minelittlepony.settings", InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_F9, KeyMapping.Category.MISC);
 
-    private final PonyRenderDispatcher renderDispatcher = new PonyRenderDispatcher();
-    private final AtomicBoolean initialized = new AtomicBoolean();
+    private final PonyRenderDispatcherImpl renderDispatcher = new PonyRenderDispatcherImpl();
     private final AtomicBoolean configChanged = new AtomicBoolean();
 
     private boolean hasHdSkins;
@@ -108,13 +107,11 @@ public class MineLittlePony implements ClientModInitializer {
         MagicGlow.bootstrap();
 
         FabricLoader.getInstance().getEntrypoints("minelittlepony", ClientModInitializer.class).forEach(ClientModInitializer::onInitializeClient);
+
+        renderDispatcher.initialise(Minecraft.getInstance().getEntityRenderDispatcher(), false);
     }
 
     private void onTick(Minecraft client) {
-        if (!initialized.getAndSet(true)) {
-            renderDispatcher.initialise(client.getEntityRenderDispatcher(), false);
-        }
-
         if (configChanged.getAndSet(false) && client.screen instanceof PonySettingsScreen screen) {
             screen.init(screen.width, screen.height);
         }
@@ -165,7 +162,7 @@ public class MineLittlePony implements ClientModInitializer {
     /**
      * Gets the static pony render manager responsible for all entity renderers.
      */
-    public PonyRenderDispatcher getRenderDispatcher() {
+    public PonyRenderDispatcherImpl getRenderDispatcher() {
         return renderDispatcher;
     }
 

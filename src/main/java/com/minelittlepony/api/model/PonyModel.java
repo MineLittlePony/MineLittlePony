@@ -2,6 +2,7 @@ package com.minelittlepony.api.model;
 
 import net.minecraft.client.model.HeadedModel;
 import net.minecraft.client.model.geom.ModelPart;
+import net.minecraft.client.renderer.entity.state.AvatarRenderState;
 import net.minecraft.client.renderer.entity.state.EntityRenderState;
 import net.minecraft.world.entity.HumanoidArm;
 
@@ -10,7 +11,6 @@ import com.minelittlepony.mson.api.MsonModel;
 import com.mojang.blaze3d.vertex.PoseStack;
 
 public interface PonyModel<T extends EntityRenderState & PonyModel.AttributedHolder> extends MsonModel, ModelWithHooves<T>, HeadedModel {
-
     ModelPart getBodyPart(BodyPart part);
 
     /**
@@ -32,6 +32,8 @@ public interface PonyModel<T extends EntityRenderState & PonyModel.AttributedHol
 
     public interface AttributedHolder {
         ModelAttributes getAttributes();
+
+        AvatarRenderState getRenderState();
 
         Race getRace();
 

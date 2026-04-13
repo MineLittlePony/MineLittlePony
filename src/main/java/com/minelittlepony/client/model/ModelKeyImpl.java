@@ -17,7 +17,7 @@ import com.minelittlepony.mson.impl.model.RootContext;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 
-final class ModelKeyImpl<M extends Model<?>> implements ModelKey<M>, LocalBlock {
+public final class ModelKeyImpl<M extends Model<?>> implements ModelKey<M>, LocalBlock {
 
     private final Map<String, Incomplete<Float>> horseModeValues = Util.make(new HashMap<>(), map -> {
         map.put("head_elongation", Incomplete.completed(-1F));
@@ -29,7 +29,7 @@ final class ModelKeyImpl<M extends Model<?>> implements ModelKey<M>, LocalBlock 
     private final ModelKey<M> key;
     private final MsonModel.Factory<M> constr;
 
-    ModelKeyImpl(Identifier id, MsonModel.Factory<M> constr) {
+    public ModelKeyImpl(Identifier id, MsonModel.Factory<M> constr) {
         this.key = Mson.getInstance().registerModel(id, constr);
         this.constr = constr;
     }

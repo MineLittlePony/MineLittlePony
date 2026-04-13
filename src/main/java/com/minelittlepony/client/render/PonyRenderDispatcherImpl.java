@@ -1,8 +1,11 @@
 package com.minelittlepony.client.render;
 
 import com.google.common.base.Predicates;
+import com.minelittlepony.api.model.*;
 import com.minelittlepony.api.pony.*;
+import com.minelittlepony.api.pony.meta.Race;
 import com.minelittlepony.client.model.ClientPonyModel;
+import com.minelittlepony.client.model.ModelType;
 import com.minelittlepony.client.render.entity.*;
 import com.minelittlepony.client.render.entity.state.PlayerPonyRenderState;
 import com.minelittlepony.client.render.entity.state.PonyRenderState;
@@ -10,6 +13,7 @@ import com.minelittlepony.common.util.Untyped;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.ClientAvatarEntity;
+import net.minecraft.client.model.Model;
 import net.minecraft.client.renderer.entity.*;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.Avatar;
@@ -26,8 +30,8 @@ import java.util.function.Function;
 /**
  * Render manager responsible for replacing and restoring entity renderers when the client settings change.
  */
-public class PonyRenderDispatcher {
-    public PonyRenderDispatcher() {
+public class PonyRenderDispatcherImpl implements PonyRenderDispatcher {
+    public PonyRenderDispatcherImpl() {
         PonyForm.register(PonyForm.DEFAULT, Predicates.alwaysTrue(), PlayerPonyRenderer::new);
         PonyForm.register(PonyForm.SEAPONY, PonyPosture::hasSeaponyForm, (context, slimArms) -> new AquaticPlayerPonyRenderer<>(context, slimArms, DefaultPonySkinHelper.SEAPONY_SKIN_TYPE_ID, PonyPosture::isSeaponyFormActive));
         PonyForm.register(PonyForm.NIRIK, PonyPosture::hasNirikForm, (context, slimArms) -> new FormChangingPlayerPonyRenderer<>(context, slimArms, DefaultPonySkinHelper.NIRIK_SKIN_TYPE_ID, PonyPosture::isNirikFormActive));
@@ -60,6 +64,11 @@ public class PonyRenderDispatcher {
             }
         });
         MobRenderers.REGISTRY.values().forEach(i -> i.changer().accept(i, Mson.getInstance().getEntityRendererRegistry()));
+    }
+
+    @Override
+    public <T extends Model<?> & PonyModel<?>> PlayerModelKey<T> getPlayerModel(Race race) {
+        return ModelType.getPlayerModel(race);
     }
 
     @SuppressWarnings("unchecked")

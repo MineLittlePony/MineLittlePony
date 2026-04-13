@@ -2,6 +2,7 @@ package com.minelittlepony.client.render.blockentity.skull;
 
 import com.minelittlepony.api.config.PonyConfig;
 import com.minelittlepony.api.config.PonyLevel;
+import com.minelittlepony.api.model.PlayerModelKey;
 import com.minelittlepony.api.pony.Pony;
 import com.minelittlepony.api.pony.meta.*;
 import com.minelittlepony.client.model.*;

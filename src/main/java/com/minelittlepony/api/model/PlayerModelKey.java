@@ -1,11 +1,10 @@
-package com.minelittlepony.client.model;
+package com.minelittlepony.api.model;
 
 import net.minecraft.client.model.Model;
 import net.minecraft.client.model.geom.ModelPart;
 
-import com.minelittlepony.api.model.Models;
-import com.minelittlepony.api.model.PonyModel;
 import com.minelittlepony.client.MineLittlePony;
+import com.minelittlepony.client.model.ModelKeyImpl;
 import com.minelittlepony.mson.api.*;
 
 import java.util.function.*;
@@ -15,7 +14,7 @@ public record PlayerModelKey<M extends Model<?> & PonyModel<?>> (
         ModelKey<M> alexKey,
         MsonModel.Factory<PonyModel<?>> armorFactory
 ) {
-    PlayerModelKey(String name,
+    public PlayerModelKey(String name,
             BiFunction<ModelPart, Boolean, M> modelFactory,
             MsonModel.Factory<PonyModel<?>> armorFactory
     ) {
