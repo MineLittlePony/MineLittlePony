@@ -66,7 +66,7 @@ public class PonySkullRenderer {
     public Data getSkullState(SkullBlock.Type skullType, @Nullable ResolvableProfile profile, @Nullable Identifier overrideTexture, float animation) {
         @Nullable
         ISkull skull = skulls.apply(skullType);
-        return skull == null ? null :new Data(skull, overrideTexture, profile, animation);
+        return skull == null ? null : new Data(skull, overrideTexture, profile, animation);
     }
 
     /**
