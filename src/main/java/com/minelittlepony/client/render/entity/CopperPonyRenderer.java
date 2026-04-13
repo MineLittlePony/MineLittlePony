@@ -10,6 +10,7 @@ import net.minecraft.world.entity.animal.golem.CopperGolemState;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.component.BlockItemStateProperties;
 import net.minecraft.world.level.block.WeatheringCopper;
+import net.minecraft.world.level.block.WeatheringCopper.WeatherState;
 import net.minecraft.world.level.block.state.BlockState;
 
 import org.jetbrains.annotations.Nullable;
@@ -28,14 +29,15 @@ import java.util.Optional;
 public class CopperPonyRenderer extends PonyRenderer<CopperGolem, CopperPonyRenderer.State, ClientPonyModel<CopperPonyRenderer.State>> {
     public static final Identifier BASE_TEXTURE = MineLittlePony.id("textures/entity/copper_golem/copper_golem_dragon.png");
 
-    private static final TextureSupplier<CopperGolem> TEXTURES = entity -> {
-        return MineLittlePony.id("textures/entity/copper_golem/" + getKey(entity.getWeatherState()) + "copper_golem_dragon.png");
+    public static final TextureSupplier<WeatherState> STAGE_TEXTURES = stage -> {
+        return MineLittlePony.id("textures/entity/copper_golem/copper_golem_" + getKey(stage) + "dragon.png");
     };
+    public static final TextureSupplier<CopperGolem> TEXTURES = entity -> STAGE_TEXTURES.apply(entity.getWeatherState());
     private static final TextureSupplier<State> EYES_TEXTURES = state -> {
-        return MineLittlePony.id("textures/entity/copper_golem/" + getKey(state.oxidationLevel) + "copper_golem_eyes_dragon.png");
+        return MineLittlePony.id("textures/entity/copper_golem/copper_golem_eyes_" + getKey(state.oxidationLevel) + "dragon.png");
     };
 
-    private static String getKey(WeatheringCopper.WeatherState level) {
+    public static String getKey(WeatheringCopper.WeatherState level) {
         return level == WeatheringCopper.WeatherState.UNAFFECTED ? "" : level.getSerializedName() + "_";
     }
 

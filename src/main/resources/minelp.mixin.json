@@ -5,7 +5,6 @@
     "compatibilityLevel": "JAVA_16",
     "client": [
         "MixinCamera",
-        "MixinCopperGolemStatueModelRenderer",
         "MixinDefaultSkinHelper",
         "MixinEntityHitboxDebugRenderer",
         "MixinFishingBobberEntityRenderer",

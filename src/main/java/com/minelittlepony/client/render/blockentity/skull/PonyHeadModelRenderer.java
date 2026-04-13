@@ -12,13 +12,13 @@ import net.minecraft.world.level.block.SkullBlock;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Vector3fc;
 
+import com.minelittlepony.client.render.CopperPonyBlockEntityRenderer;
 import com.mojang.blaze3d.vertex.PoseStack;
 
 import java.util.Optional;
 import java.util.function.Consumer;
 
 public class PonyHeadModelRenderer<T> implements SpecialModelRenderer<Tuple<PonySkullRenderer.Data, T>> {
-
     private final SpecialModelRenderer<T> renderer;
 
     private final SkullBlock.Type kind;
@@ -33,10 +33,16 @@ public class PonyHeadModelRenderer<T> implements SpecialModelRenderer<Tuple<Pony
     }
 
     public static SpecialModelRenderer<?> create(SpecialModelRenderer.Unbaked<?> unbaked, SpecialModelRenderer<?> renderer) {
-        if (unbaked instanceof SkullSpecialRenderer.Unbaked a) {
-            return renderer instanceof SkullSpecialRenderer r ? new PonyHeadModelRenderer<>(r, a.kind(), a.textureOverride(), a.animation()) : renderer;
+        if (unbaked instanceof CopperGolemStatueSpecialRenderer.Unbaked a && renderer instanceof CopperGolemStatueSpecialRenderer r) {
+            return new CopperPonyBlockEntityRenderer.CopperPonyModelRenderer<>(r, a.texture());
         }
-        return renderer instanceof PlayerHeadSpecialRenderer r ? new PonyHeadModelRenderer<>(r, SkullBlock.Types.PLAYER, Optional.empty(), 0F) : renderer;
+        if (unbaked instanceof SkullSpecialRenderer.Unbaked a && renderer instanceof SkullSpecialRenderer r) {
+            return new PonyHeadModelRenderer<>(r, a.kind(), a.textureOverride(), a.animation());
+        }
+        if (renderer instanceof PlayerHeadSpecialRenderer r) {
+            return new PonyHeadModelRenderer<>(r, SkullBlock.Types.PLAYER, Optional.empty(), 0F);
+        }
+        return renderer;
     }
 
     @Override
