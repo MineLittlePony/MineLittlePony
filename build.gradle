@@ -129,6 +129,22 @@ processResources {
     }
 }
 
+task apiJar(type: Jar) {
+  archiveClassifier = 'api'
+  dependsOn jar
+  from zipTree(jar.archiveFile)
+  include 'fabric.mod.json'
+  include 'minelp_logo.png'
+  include 'minelp.aw'
+  include 'minelp.mixin.json'
+  include 'com/minelittlepony/api/**'
+  include 'com/minelittlepony/util/**'
+}
+
+tasks.named("build").configure {
+  dependsOn(apiJar)
+}
+
 tasks.withType(JavaCompile) {
     options.encoding = "UTF-8"
 }
