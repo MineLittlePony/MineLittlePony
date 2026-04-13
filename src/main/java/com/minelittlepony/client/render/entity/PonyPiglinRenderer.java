@@ -10,7 +10,7 @@ import com.minelittlepony.client.MineLittlePony;
 import com.minelittlepony.client.model.ModelType;
 import com.minelittlepony.client.model.entity.PiglinPonyModel;
 import com.minelittlepony.client.render.entity.npc.textures.TextureSupplier;
-import com.minelittlepony.client.render.entity.state.PonyRenderState;
+import com.minelittlepony.client.render.entity.state.HostilePonyRenderState;
 
 public class PonyPiglinRenderer extends PonyRenderer<HostileEntity, PonyPiglinRenderer.State, PiglinPonyModel> {
     public static final Identifier PIGLIN = MineLittlePony.id("textures/entity/piglin/piglin_pony.png");
@@ -39,7 +39,7 @@ public class PonyPiglinRenderer extends PonyRenderer<HostileEntity, PonyPiglinRe
     }
 
     @Override
-    public ArmPose getArmPose(ArmPose initial, HostileEntity entity, Arm arm) {
+    public ArmPose getArmPose(HostileEntity entity, Arm arm) {
         if (entity instanceof AbstractPiglinEntity piglin) {
             return switch (arm) {
                 case LEFT -> switch (piglin.getActivity()) {
@@ -54,7 +54,7 @@ public class PonyPiglinRenderer extends PonyRenderer<HostileEntity, PonyPiglinRe
             };
         }
 
-        return initial;
+        return super.getArmPose(entity, arm);
     }
 
     public void updateRenderState(HostileEntity entity, State state, float tickDelta) {
@@ -64,7 +64,7 @@ public class PonyPiglinRenderer extends PonyRenderer<HostileEntity, PonyPiglinRe
         state.shaking |= entity instanceof AbstractPiglinEntity piglin && piglin.shouldZombify();
     }
 
-    public static class State extends PonyRenderState {
+    public static class State extends HostilePonyRenderState {
         public boolean zombified;
         public PiglinActivity activity = PiglinActivity.DEFAULT;
     }

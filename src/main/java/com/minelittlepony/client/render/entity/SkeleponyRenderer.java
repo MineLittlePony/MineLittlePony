@@ -17,14 +17,12 @@ import net.minecraft.client.render.command.OrderedRenderCommandQueue;
 import net.minecraft.client.render.entity.EntityRendererFactory;
 import net.minecraft.client.render.entity.LivingEntityRenderer;
 import net.minecraft.client.render.entity.feature.FeatureRenderer;
-import net.minecraft.client.render.entity.model.BipedEntityModel;
-import net.minecraft.client.render.entity.model.BipedEntityModel.ArmPose;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.mob.*;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
 import net.minecraft.util.*;
+
+import java.util.function.Supplier;
 
 import org.jetbrains.annotations.Nullable;
 
@@ -39,57 +37,41 @@ public class SkeleponyRenderer<T extends AbstractSkeletonEntity, S extends Skele
     public static final Identifier PARCHED_SKELETON_OVERLAY = MineLittlePony.id("textures/entity/skeleton/parched_pony_overlay.png");
     public static final Identifier BOGGED_SKELETON_OVERLAY = MineLittlePony.id("textures/entity/skeleton/bogged_pony_overlay.png");
 
-    public SkeleponyRenderer(EntityRendererFactory.Context context, Identifier texture, float scale) {
+    private final Supplier<S> stateFactory;
+
+    public SkeleponyRenderer(EntityRendererFactory.Context context, Identifier texture, float scale, Supplier<S> stateFactory) {
         super(context, ModelType.SKELETON, TextureSupplier.of(texture), scale);
+        this.stateFactory = stateFactory;
     }
 
-    @SuppressWarnings("unchecked")
-    @Override
-    public S createRenderState() {
-        return (S)new State();
-    }
-
-    @Override
-    public BipedEntityModel.ArmPose getArmPose(BipedEntityModel.ArmPose initial, T entity, Arm arm) {
-        if (arm == entity.getMainArm()) {
-            ItemStack mainHand = entity.getMainHandStack();
-            if (!mainHand.isEmpty()) {
-                return mainHand.getItem() == Items.BOW && entity.isAttacking() ? ArmPose.BOW_AND_ARROW : ArmPose.ITEM;
-            }
-        }
-
-        return initial;
+    public final S createRenderState() {
+        return stateFactory.get();
     }
 
     public static SkeleponyRenderer<SkeletonEntity, State> skeleton(EntityRendererFactory.Context context) {
-        return new SkeleponyRenderer<>(context, SKELETON, 1);
+        return new SkeleponyRenderer<>(context, SKELETON, 1, State::new);
     }
 
     public static SkeleponyRenderer<StrayEntity, State> stray(EntityRendererFactory.Context context) {
-        return PonyRenderer.appendFeature(new SkeleponyRenderer<StrayEntity, State>(context, STRAY, 1), ctx -> {
+        return PonyRenderer.appendFeature(new SkeleponyRenderer<StrayEntity, State>(context, STRAY, 1, State::new), ctx -> {
             return new ClothingFeature<State, AlicornModel<State>>(ctx, ModelType.SKELETON_CLOTHES, STRAY_SKELETON_OVERLAY);
         });
     }
 
     public static SkeleponyRenderer<BoggedEntity, BoggedState> bogged(EntityRendererFactory.Context context) {
-        return PonyRenderer.appendFeature(PonyRenderer.appendFeature(new SkeleponyRenderer<>(context, BOGGED, 1) {
-            @Override
-            public BoggedState createRenderState() {
-                return new BoggedState();
-            }
-        }, ctx -> {
+        return PonyRenderer.appendFeature(PonyRenderer.appendFeature(new SkeleponyRenderer<>(context, BOGGED, 1, BoggedState::new), ctx -> {
             return new ClothingFeature<BoggedState, AlicornModel<BoggedState>>(ctx, ModelType.SKELETON_CLOTHES, BOGGED_SKELETON_OVERLAY);
         }), BoggedMushroomsFeature::new);
     }
 
     public static SkeleponyRenderer<ParchedEntity, State> parched(EntityRendererFactory.Context context) {
-        return PonyRenderer.appendFeature(new SkeleponyRenderer<ParchedEntity, State>(context, PARCHED, 1), ctx -> {
+        return PonyRenderer.appendFeature(new SkeleponyRenderer<ParchedEntity, State>(context, PARCHED, 1, State::new), ctx -> {
             return new ClothingFeature<State, AlicornModel<State>>(ctx, ModelType.SKELETON_CLOTHES, PARCHED_SKELETON_OVERLAY);
         });
     }
 
     public static SkeleponyRenderer<WitherSkeletonEntity, State> wither(EntityRendererFactory.Context context) {
-        return new SkeleponyRenderer<>(context, WITHER, 1.2F);
+        return new SkeleponyRenderer<>(context, WITHER, 1.2F, State::new);
     }
 
     public static class BoggedMushroomsFeature<

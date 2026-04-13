@@ -44,15 +44,6 @@ public class IllagerPonyRenderer<
         return (S)new State();
     }
 
-    static ArmPose getHoldingPose(IllagerEntity.State state) {
-        switch (state) {
-            case BOW_AND_ARROW: return ArmPose.BOW_AND_ARROW;
-            case CROSSBOW_CHARGE: return ArmPose.CROSSBOW_CHARGE;
-            case CROSSBOW_HOLD: return ArmPose.CROSSBOW_HOLD;
-            default: return ArmPose.EMPTY;
-        }
-    }
-
     @Override
     protected HeldItemFeature<S, M> createHeldItemFeature(EntityRendererFactory.Context context) {
         return new IllagerHeldItemFeature<>(this);
@@ -61,12 +52,17 @@ public class IllagerPonyRenderer<
     public static IllagerPonyRenderer<PillagerEntity, State, ChangelingModel<State>> pillager(EntityRendererFactory.Context context) {
         return new IllagerPonyRenderer<PillagerEntity, State, ChangelingModel<State>>(context, ModelType.PILLAGER, PILLAGER) {
             @Override
-            public ArmPose getArmPose(ArmPose initial, PillagerEntity state, Arm arm) {
-                if (state.getMainArm() == arm) {
-                    return getHoldingPose(state.getState());
+            public ArmPose getArmPose(PillagerEntity entity, Arm arm) {
+                if (entity.getMainArm() == arm) {
+                    switch (entity.getState()) {
+                        case BOW_AND_ARROW: return ArmPose.BOW_AND_ARROW;
+                        case CROSSBOW_CHARGE: return ArmPose.CROSSBOW_CHARGE;
+                        case CROSSBOW_HOLD: return ArmPose.CROSSBOW_HOLD;
+                        default: return ArmPose.EMPTY;
+                    }
                 }
 
-                return ArmPose.EMPTY;
+                return super.getArmPose(entity, arm);
             }
         };
     }
@@ -93,7 +89,6 @@ public class IllagerPonyRenderer<
         S extends IllagerPonyRenderer.State,
         M extends AlicornModel<S>
     > extends HeldItemFeature<S, M> {
-
         public IllagerHeldItemFeature(PonyRenderContext<T, S, M> livingPony) {
             super(livingPony);
         }

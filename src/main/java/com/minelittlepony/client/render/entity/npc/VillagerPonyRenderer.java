@@ -46,11 +46,11 @@ public class VillagerPonyRenderer extends AbstractNpcRenderer<VillagerEntity, Vi
     }
 
     @Override
-    public BipedEntityModel.ArmPose getArmPose(BipedEntityModel.ArmPose initial, VillagerEntity entity, Arm arm) {
+    public BipedEntityModel.ArmPose getArmPose(VillagerEntity entity, Arm arm) {
         if (arm == entity.getMainArm() && !entity.getMainHandStack().isEmpty()) {
             return BipedEntityModel.ArmPose.ITEM;
         }
-        return initial;
+        return super.getArmPose(entity, arm);
     }
 
     public static class State extends SillyPonyTextureSupplier.State {

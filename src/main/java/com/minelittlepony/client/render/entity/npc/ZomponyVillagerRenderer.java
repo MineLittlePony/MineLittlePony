@@ -1,16 +1,20 @@
 package com.minelittlepony.client.render.entity.npc;
 
+import net.minecraft.client.item.ItemModelManager;
 import net.minecraft.client.render.entity.EntityRendererFactory;
-import net.minecraft.client.render.entity.model.BipedEntityModel.ArmPose;
-import net.minecraft.entity.mob.ZombieVillagerEntity;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.mob.*;
 import net.minecraft.util.Arm;
 
+import org.jetbrains.annotations.Nullable;
+
 import com.minelittlepony.api.model.*;
+import com.minelittlepony.api.pony.Pony;
 import com.minelittlepony.client.VariatedTextureSupplier;
 import com.minelittlepony.client.model.ClientPonyModel;
 import com.minelittlepony.client.render.entity.npc.textures.*;
 
-public class ZomponyVillagerRenderer extends AbstractNpcRenderer<ZombieVillagerEntity, SillyPonyTextureSupplier.State> {
+public class ZomponyVillagerRenderer extends AbstractNpcRenderer<ZombieVillagerEntity, ZomponyVillagerRenderer.State> {
     private static final TextureSupplier<String> FORMATTER = TextureSupplier.formatted("minelittlepony", "textures/entity/zombie_villager/zombie_%s.png");
     private static final TextureSupplier<ZombieVillagerEntity> TEXTURES = TextureSupplier.ofPool(
             VariatedTextureSupplier.BACKGROUND_ZOMPONIES_POOL,
@@ -25,12 +29,12 @@ public class ZomponyVillagerRenderer extends AbstractNpcRenderer<ZombieVillagerE
     }
 
     @Override
-    public SillyPonyTextureSupplier.State createRenderState() {
-        return new SillyPonyTextureSupplier.State();
+    public State createRenderState() {
+        return new State();
     }
 
     @Override
-    public void updateRenderState(ZombieVillagerEntity entity, SillyPonyTextureSupplier.State state, float tickDelta) {
+    public void updateRenderState(ZombieVillagerEntity entity, State state, float tickDelta) {
         super.updateRenderState(entity, state, tickDelta);
         if (entity.isConverting()) {
             state.bodyYaw += (float) (Math.cos(entity.age * 3.25D) * (Math.PI / 4));
@@ -38,11 +42,18 @@ public class ZomponyVillagerRenderer extends AbstractNpcRenderer<ZombieVillagerE
     }
 
     @Override
-    protected void initializeModel(ClientPonyModel<SillyPonyTextureSupplier.State> model) {
+    protected void initializeModel(ClientPonyModel<State> model) {
         model.onSetModelAngles((m, state) -> {
-            if ((state.mainArm == Arm.LEFT ? state.leftArmPose : state.rightArmPose) == ArmPose.EMPTY) {
-                MobPosingHelper.rotateUndeadArms(state, m, state.limbSwingAnimationProgress, state.age);
-            }
+            MobPosingHelper.animateZombieArms(m.getArm(Arm.LEFT), m.getArm(Arm.RIGHT), state.aggressive, state);
         });
+    }
+
+    public static class State extends SillyPonyTextureSupplier.State {
+        public boolean aggressive;
+
+        public void updateState(ItemModelManager resolver, @Nullable LivingEntity entity, Models<?> models, Pony pony, ModelAttributes.Mode mode) {
+            super.updateState(resolver, entity, models, pony, mode);
+            this.aggressive = entity instanceof HostileEntity m && m.isAttacking();
+        }
     }
 }

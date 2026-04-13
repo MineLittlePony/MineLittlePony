@@ -2,9 +2,11 @@ package com.minelittlepony.client.model.entity;
 
 import net.minecraft.client.model.ModelPart;
 import net.minecraft.entity.mob.PiglinActivity;
+import net.minecraft.util.Arm;
 import net.minecraft.util.math.MathHelper;
 
 import com.minelittlepony.client.render.entity.PonyPiglinRenderer;
+import com.minelittlepony.util.Sigma;
 
 public class PiglinPonyModel extends ZomponyModel<PonyPiglinRenderer.State> {
 
@@ -30,8 +32,8 @@ public class PiglinPonyModel extends ZomponyModel<PonyPiglinRenderer.State> {
     @Override
     public void setHeadRotation(float animationProgress, float yaw, float pitch) {
         super.setHeadRotation(animationProgress, yaw, pitch);
-        leftFlap.roll = -(float)(-(Math.cos((double)(animationProgress * (float) Math.PI * 0.2F * 1.2F)) + 2.5)) * 0.2F;
-        rightFlap.roll = -(float)(Math.cos((double)(animationProgress * (float) Math.PI * 0.2F)) + 2.5) * 0.2F;
+        leftFlap.roll = -(MathHelper.cos(animationProgress * MathHelper.PI * 0.2F * 1.2F) + 2.5F) * -0.2F;
+        rightFlap.roll = (MathHelper.cos(animationProgress * MathHelper.PI * 0.2F) + 2.5F) * -0.2F;
     }
 
     @Override
@@ -39,15 +41,16 @@ public class PiglinPonyModel extends ZomponyModel<PonyPiglinRenderer.State> {
         super.rotateLegs(state);
 
         if (state.activity == PiglinActivity.ADMIRING_ITEM) {
-            leftArm.yaw = 0.5F;
-            leftArm.pitch = -1.9F;
-            leftArm.originY += 4;
-            leftArm.originZ += 3;
-            leftArm.originX += 2;
-            head.pitch = MathHelper.sin(state.age / 12) / 6 + 0.5F;
-            head.yaw = 0;
+            ModelPart mainArm = getArm(state.mainArm.getOpposite());
+            @Sigma float sigma = state.mainArm == Arm.RIGHT ? Sigma.LEFT : Sigma.RIGHT;
 
-            head.roll = MathHelper.sin(state.age / 10) / 3F;
+            mainArm.yaw = 0.5F * sigma;
+            mainArm.pitch = -1.9F;
+            mainArm.roll = mainArm.getDefaultTransform().roll();
+            mainArm.originY += 4;
+            mainArm.originZ += 3;
+            mainArm.originX += 2;
+            head.setAngles(MathHelper.sin(state.age / 12) / 6 + 0.5F, 0, MathHelper.sin(state.age / 10) / 3F);
         } else if (state.activity == PiglinActivity.DANCING) {
 
             float speed = state.age / 60;
@@ -74,7 +77,7 @@ public class PiglinPonyModel extends ZomponyModel<PonyPiglinRenderer.State> {
     }
 
     @Override
-    protected boolean shouldLiftBothArms(PonyPiglinRenderer.State state) {
-        return state.zombified && super.shouldLiftBothArms(state);
+    protected boolean shouldAnimateAsZombie(PonyPiglinRenderer.State state) {
+        return state.zombified;
     }
 }

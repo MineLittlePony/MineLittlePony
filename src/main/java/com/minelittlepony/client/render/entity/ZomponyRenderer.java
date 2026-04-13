@@ -10,9 +10,9 @@ import com.minelittlepony.client.MineLittlePony;
 import com.minelittlepony.client.model.ModelType;
 import com.minelittlepony.client.model.entity.ZomponyModel;
 import com.minelittlepony.client.render.entity.npc.textures.TextureSupplier;
-import com.minelittlepony.client.render.entity.state.PonyRenderState;
+import com.minelittlepony.client.render.entity.state.HostilePonyRenderState;
 
-public class ZomponyRenderer<T extends HostileEntity> extends PonyRenderer<T, PonyRenderState, ZomponyModel<PonyRenderState>> {
+public class ZomponyRenderer<T extends HostileEntity> extends PonyRenderer<T, HostilePonyRenderState, ZomponyModel<HostilePonyRenderState>> {
     public static final Identifier ZOMBIE = MineLittlePony.id("textures/entity/zombie/zombie_pony.png");
     public static final Identifier HUSK = MineLittlePony.id("textures/entity/zombie/husk_pony.png");
     public static final Identifier DROWNED = MineLittlePony.id("textures/entity/zombie/drowned_pony.png");
@@ -24,12 +24,12 @@ public class ZomponyRenderer<T extends HostileEntity> extends PonyRenderer<T, Po
     }
 
     @Override
-    public PonyRenderState createRenderState() {
-        return new PonyRenderState();
+    public HostilePonyRenderState createRenderState() {
+        return new HostilePonyRenderState();
     }
 
     @Override
-    public void updateRenderState(T entity, PonyRenderState state, float tickDelta) {
+    public void updateRenderState(T entity, HostilePonyRenderState state, float tickDelta) {
         super.updateRenderState(entity, state, tickDelta);
         state.race = isWinged(entity) ? (state.race.hasHorn() ? Race.ALICORN : Race.PEGASUS) : state.race;
     }

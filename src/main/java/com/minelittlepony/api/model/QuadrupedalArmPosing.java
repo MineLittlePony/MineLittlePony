@@ -3,6 +3,7 @@ package com.minelittlepony.api.model;
 import net.minecraft.client.model.ModelPart;
 import net.minecraft.client.render.entity.model.BipedEntityModel.ArmPose;
 import net.minecraft.client.render.entity.state.BipedEntityRenderState;
+import net.minecraft.util.Arm;
 import net.minecraft.util.math.MathHelper;
 
 import com.minelittlepony.api.pony.meta.SizePreset;
@@ -10,6 +11,9 @@ import com.minelittlepony.util.MathUtil;
 import com.minelittlepony.util.Sigma;
 
 public interface QuadrupedalArmPosing {
+    static @Sigma float sigmaOf(Arm arm) {
+        return arm == Arm.LEFT ? Sigma.LEFT : Sigma.RIGHT;
+    }
     /**
      * Animates arm swinging.
      *
@@ -28,12 +32,13 @@ public interface QuadrupedalArmPosing {
         arm.roll = -deltaZ * 0.4F;
     }
 
-    static <T extends BipedEntityRenderState & PonyModel.AttributedHolder> void holdItem(T state, ModelPart arm, ArmPose pose, ArmPose complement, @Sigma float side) {
+    static <T extends BipedEntityRenderState & PonyModel.AttributedHolder> void holdItem(T state, ModelPart arm, ArmPose pose, ArmPose complement, Arm side) {
+        @Sigma float sigma = sigmaOf(side);
         arm.yaw = 0;
 
         boolean both = pose == complement;
 
-        if (state.getAttributes().shouldLiftArm(pose, complement, side)) {
+        if (state.getAttributes().shouldLiftArm(pose, complement, sigma)) {
             float swag = 1;
             if (!state.getAttributes().isFlying && both) {
                 swag -= (float)Math.pow(state.limbSwingAnimationProgress, 2);
@@ -41,23 +46,24 @@ public interface QuadrupedalArmPosing {
 
             float mult = 1 - swag/2;
             arm.pitch = arm.pitch * mult - (MathHelper.PI / 10) * swag;
-            arm.yaw = -side * (MathHelper.PI / 15);
-            arm.roll += 0.3F * -state.limbSwingAnimationProgress * side;
+            arm.yaw = -sigma * (MathHelper.PI / 15);
+            arm.roll += 0.3F * -state.limbSwingAnimationProgress * sigma;
 
             if (state.getAttributes().isCrouching) {
-                arm.originX -= side * 2;
+                arm.originX -= sigma * 2;
             }
         }
     }
 
-    static <T extends BipedEntityRenderState & PonyModel.AttributedHolder> void holdShield(T state, ModelPart arm, ArmPose pose, ArmPose complement, @Sigma float side) {
+    static <T extends BipedEntityRenderState & PonyModel.AttributedHolder> void holdShield(T state, ModelPart arm, ArmPose pose, ArmPose complement, Arm side) {
+        @Sigma float sigma = sigmaOf(side);
         arm.pitch = (arm.pitch / 2 - 0.9424779F) - 0.3F;
-        arm.yaw = side * MathHelper.PI / 9;
-        arm.roll += 0.3F * -state.limbSwingAnimationProgress * side;
+        arm.yaw = sigma * MathHelper.PI / 9;
+        arm.roll += 0.3F * -state.limbSwingAnimationProgress * sigma;
         if (complement == pose) {
-            arm.yaw -= side * MathHelper.PI / 18;
+            arm.yaw -= sigma * MathHelper.PI / 18;
         }
-        arm.originX += side;
+        arm.originX += sigma;
         arm.originZ += 3;
         if (state.getAttributes().isCrouching) {
             arm.originY += 4;
@@ -74,19 +80,19 @@ public interface QuadrupedalArmPosing {
         }
     }
 
-    static <T extends BipedEntityRenderState & PonyModel.AttributedHolder> void aimCrossbow(T state, ModelPart head, ModelPart arm, boolean charged, @Sigma float side) {
+    static <T extends BipedEntityRenderState & PonyModel.AttributedHolder> void aimCrossbow(T state, ModelPart head, ModelPart arm, boolean charged, Arm side) {
         aimBow(state, head, arm);
         if (charged) {
             arm.pitch = -0.8F;
             arm.yaw = head.yaw + 0.06F;
-            arm.roll += 0.3F * -state.limbSwingAmplitude * side;
+            arm.roll += 0.3F * -state.limbSwingAmplitude * sigmaOf(side);
         } else {
             arm.roll = head.roll - MathUtil.Angles._90_DEG;
             arm.yaw = head.yaw + 0.06F;
         }
     }
 
-    static <T extends BipedEntityRenderState & PonyModel.AttributedHolder> void spyglass(T state, ModelPart head, ModelPart arm, @Sigma float side) {
+    static <T extends BipedEntityRenderState & PonyModel.AttributedHolder> void spyglass(T state, ModelPart head, ModelPart arm, Arm side) {
         float addedPitch = state.sneaking ? -0.2617994F : 0;
         float minPitch = state.sneaking ? -1.8F : -2.4F;
         arm.pitch = MathHelper.clamp(head.pitch - 1.9198622F - addedPitch, minPitch, 3.3F);
@@ -94,7 +100,7 @@ public interface QuadrupedalArmPosing {
 
         if (state.sneaking) {
             arm.originY += 9;
-            arm.originX -= 6 * side;
+            arm.originX -= 6 * sigmaOf(side);
             arm.originZ -= 2;
         }
         if (state.getAttributes().size == SizePreset.TALL) {
@@ -105,23 +111,24 @@ public interface QuadrupedalArmPosing {
         }
     }
 
-    static <T extends BipedEntityRenderState & PonyModel.AttributedHolder> void throwTrident(T state, ModelPart arm, @Sigma float side) {
+    static <T extends BipedEntityRenderState & PonyModel.AttributedHolder> void throwTrident(T state, ModelPart arm, Arm side) {
         arm.pitch = MathUtil.Angles._90_DEG * 2;
-        arm.roll += (0.3F * -state.limbSwingAmplitude + 0.6F) * side;
+        arm.roll += (0.3F * -state.limbSwingAmplitude + 0.6F) * sigmaOf(side);
         arm.originY ++;
     }
 
-    static <T extends BipedEntityRenderState & PonyModel.AttributedHolder> void blowHorn(T state, ModelPart head, ModelPart arm, @Sigma float side) {
+    static <T extends BipedEntityRenderState & PonyModel.AttributedHolder> void blowHorn(T state, ModelPart head, ModelPart arm, Arm side) {
+        @Sigma float sigma = sigmaOf(side);
         arm.pitch = MathHelper.clamp(head.pitch, -0.55f, 1.2f) - 1.7835298f;
-        arm.yaw = head.yaw - 0.1235988f * side;
+        arm.yaw = head.yaw - 0.1235988f * sigma;
         arm.originY += 3;
-        arm.roll += 0.3F * -state.limbSwingAmplitude * side;
+        arm.roll += 0.3F * -state.limbSwingAmplitude * sigma;
     }
 
-    static <T extends BipedEntityRenderState & PonyModel.AttributedHolder> void brushBlock(T state, ModelPart arm, @Sigma float side) {
+    static <T extends BipedEntityRenderState & PonyModel.AttributedHolder> void brushBlock(T state, ModelPart arm, Arm side) {
         arm.pitch = arm.pitch * 0.5f - 0.62831855f;
         arm.yaw = 0;
-        arm.roll += 0.3F * -state.limbSwingAmplitude * side;
+        arm.roll += 0.3F * -state.limbSwingAmplitude * sigmaOf(side);
     }
 
     static <T extends BipedEntityRenderState & PonyModel.AttributedHolder> void idle(T state, ModelPart leftArm, ModelPart rightArm) {

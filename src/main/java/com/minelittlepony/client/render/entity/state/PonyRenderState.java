@@ -6,6 +6,7 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.item.ItemModelManager;
 import net.minecraft.client.render.entity.equipment.EquipmentModel;
 import net.minecraft.client.render.entity.feature.ArmorFeatureRenderer;
+import net.minecraft.client.render.entity.model.BipedEntityModel.ArmPose;
 import net.minecraft.client.render.entity.state.PlayerEntityRenderState;
 import net.minecraft.client.render.item.ItemRenderState;
 import net.minecraft.component.DataComponentTypes;
@@ -192,6 +193,10 @@ public class PonyRenderState extends PlayerEntityRenderState implements PonyMode
     protected void updateHeldItems(ItemModelManager resolver, LivingEntity entity) {
         rightHeldItem.updateItemRenderState(this, resolver, entity.getStackInArm(Arm.RIGHT), ItemDisplayContext.THIRD_PERSON_RIGHT_HAND, entity);
         leftHeldItem.updateItemRenderState(this, resolver, entity.getStackInArm(Arm.LEFT), ItemDisplayContext.THIRD_PERSON_LEFT_HAND, entity);
+    }
+
+    public ArmPose getArmPoseForArm(final Arm arm) {
+        return arm == Arm.RIGHT ? rightArmPose : leftArmPose;
     }
 
     protected Race computeRace(@Nullable LivingEntity entity, Pony pony) {
