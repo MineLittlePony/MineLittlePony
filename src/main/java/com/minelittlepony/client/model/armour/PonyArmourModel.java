@@ -8,6 +8,7 @@ import com.minelittlepony.client.render.entity.state.PonyRenderState;
 public class PonyArmourModel<T extends PonyRenderState> extends AbstractPonyModel<T> {
     public PonyArmourModel(ModelPart tree) {
         super(tree, false);
+        hat.skipDraw = true;
     }
 
     @Override

@@ -2,7 +2,6 @@ package com.minelittlepony.client.model;
 
 import net.minecraft.client.model.Model;
 import net.minecraft.client.model.geom.ModelPart;
-import net.minecraft.client.model.object.armorstand.ArmorStandModel;
 import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.world.entity.LivingEntity;
 
@@ -13,6 +12,7 @@ import com.minelittlepony.api.pony.meta.Race;
 import com.minelittlepony.api.pony.meta.Wearable;
 import com.minelittlepony.client.MineLittlePony;
 import com.minelittlepony.client.model.armour.PonyArmourModel;
+import com.minelittlepony.client.model.armour.PonyArmourStandModel;
 import com.minelittlepony.client.model.entity.*;
 import com.minelittlepony.client.model.entity.race.*;
 import com.minelittlepony.client.model.gear.*;
@@ -53,7 +53,7 @@ public final class ModelType {
 
     public static final ModelKey<PonyElytra> ELYTRA = register("elytra", PonyElytra::new);
 
-    public static final ModelKey<ArmorStandModel> ARMOUR_STAND = register("armour_stand", ArmorStandModel::new);
+    public static final ModelKey<PonyArmourStandModel> ARMOUR_STAND = register("armour_stand", PonyArmourStandModel::new);
     public static final ModelKey<ClientPonyModel<?>> INNER_VANILLA_ARMOR = register("armor/inner_vanilla_armor", PonyArmourModel::new);
     public static final ModelKey<ClientPonyModel<?>> OUTER_VANILLA_ARMOR = register("armor/outer_vanilla_armor", PonyArmourModel::new);
     public static final ModelKey<ClientPonyModel<?>> INNER_PONY_ARMOR = register("armor/inner_pony_armor", PonyArmourModel::new);
