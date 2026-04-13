@@ -40,7 +40,6 @@ public class VillagerPonyRenderer extends AbstractNpcRenderer<Villager, Villager
     public void extractRenderState(Villager entity, State state, float tickDelta) {
         super.extractRenderState(entity, state, tickDelta);
         state.headRolling = entity.getUnhappyCounter() > 0;
-        state.yRot = 0.3F * Mth.sin(0.45F * state.ageInTicks);
     }
 
     public static class State extends SillyPonyTextureSupplier.State {

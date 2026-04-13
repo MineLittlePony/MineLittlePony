@@ -34,24 +34,24 @@ abstract class AbstractNpcRenderer<
     }
 
     @Override
-    public boolean shouldRender(ClientPonyModel<S> model, S entity, Wearable wearable, Gear<S> gear) {
+    public boolean shouldRender(ClientPonyModel<S> model, S state, Wearable wearable, Gear<S> gear) {
         if (wearable == Wearable.SADDLE_BAGS_BOTH) {
-            return entity.hasSaddlebags;
+            return state.hasSaddlebags;
         }
 
         if (wearable == Wearable.MUFFIN) {
-            return entity.hasMuffinHat;
+            return state.hasMuffinHat;
         }
 
-        return super.shouldRender(model, entity, wearable, gear);
+        return super.shouldRender(model, state, wearable, gear);
     }
 
     protected abstract void initializeModel(ClientPonyModel<S> model);
 
     @Override
-    public Identifier getDefaultTexture(S villager, Wearable wearable) {
+    public Identifier getDefaultTexture(S state, Wearable wearable) {
         if (wearable.isSaddlebags()) {
-            return clothing.createTexture(villager, "accessory");
+            return clothing.createTexture(state, "accessory");
         }
         return wearable.getDefaultTexture();
     }
