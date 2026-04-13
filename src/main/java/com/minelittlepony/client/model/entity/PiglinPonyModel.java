@@ -21,8 +21,8 @@ public class PiglinPonyModel extends ZomponyModel<PonyPiglinRenderer.State> {
     public void setModelAngles(PonyPiglinRenderer.State state) {
         super.setModelAngles(state);
 
-        float progress = state.ageInTicks * 0.1F + state.walkAnimationSpeed * 0.5F;
-        float range = 0.08F + state.walkAnimationPos * 0.4F;
+        float progress = state.ageInTicks * 0.1F + state.walkAnimationPos * 0.5F;
+        float range = 0.08F + state.walkAnimationSpeed * 0.4F;
         rightFlap.zRot = -0.5235988F - Mth.cos(progress * 1.2F) * range;
         leftFlap.zRot =   0.5235988F + Mth.cos(progress) * range;
     }
