@@ -7,6 +7,7 @@ import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.SkullBlockRenderer;
 import net.minecraft.client.renderer.blockentity.state.SkullBlockRenderState;
+import net.minecraft.client.renderer.entity.layers.CustomHeadLayer;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
 import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
 import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
@@ -75,7 +76,7 @@ abstract class MixinSkullBlockEntityRenderer implements BlockEntityRenderer<Skul
     }
 }
 
-@Mixin(value = SkullBlockRenderer.class, priority = 2000)
+@Mixin(value = CustomHeadLayer.class, priority = 2000)
 abstract class MixinCustomHeadRenderer<S extends LivingEntityRenderState, M extends EntityModel<S> & HeadedModel> extends RenderLayer<S, M> {
     MixinCustomHeadRenderer() {super(null); }
 
