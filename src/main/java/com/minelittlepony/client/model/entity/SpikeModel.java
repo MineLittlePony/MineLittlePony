@@ -58,17 +58,17 @@ public class SpikeModel extends ClientPonyModel<CopperPonyRenderer.State> {
     @Override
     protected void setModelAngles(CopperPonyRenderer.State state) {
         root.z += 3;
-        float baseRotation = state.walkAnimationSpeed * 0.6662F; // magic number ahoy
-        float scale = state.walkAnimationPos;
+        float baseRotation = state.walkAnimationPos * 0.6662F; // magic number ahoy
+        float scale = state.walkAnimationSpeed;
 
         tail.yRot = Mth.sin(baseRotation) * scale / state.speedValue;
         tail2.yRot = tail.yRot;
         tail3.yRot = tail.yRot;
 
         if (state.rightHandItemState.isEmpty() && state.leftHandItemState.isEmpty()) {
-            walkingWithoutItemAnimation.applyWalk(state.walkAnimationSpeed, state.walkAnimationPos, 2, 2.5F);
+            walkingWithoutItemAnimation.applyWalk(state.walkAnimationPos, state.walkAnimationSpeed, 2, 2.5F);
         } else {
-            walkingWithItemAnimation.applyWalk(state.walkAnimationSpeed, state.walkAnimationPos, 2, 2.5F);
+            walkingWithItemAnimation.applyWalk(state.walkAnimationPos, state.walkAnimationSpeed, 2, 2.5F);
             this.clampArmRotations();
         }
 
