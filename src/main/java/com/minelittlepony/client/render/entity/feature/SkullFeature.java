@@ -61,7 +61,7 @@ public class SkullFeature<
                 matrices.translate(0, headTransformation.skullYOffset(), 0);
                 matrices.scale(n, n, n);
                 matrices.translate(0, 0.1F, -0.1F);
-                PonySkullRenderer.INSTANCE.pushState(PonySkullRenderer.INSTANCE.getSkullState(state.wornHeadType, state.wornHeadProfile, null, state.wornHeadAnimationPos));
+                PonySkullRenderer.INSTANCE.pushState(PonySkullRenderer.INSTANCE.getSkullState(headState.skullType(), headState.wearingSkullProfile(), null, state.wornHeadAnimationPos));
                 SkullBlockRenderer.submitSkull(state.wornHeadAnimationPos, matrices, frame, light,
                         headModels.apply(headState.skullType()),
                         getRenderLayer(headState),
