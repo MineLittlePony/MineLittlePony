@@ -13,7 +13,7 @@
 		"arm_rotation_x": 0,
 		"arm_rotation_x_neg": [0, "-", "#arm_rotation_x"],
 		"arm_rotation_z": 2,
-		"arm_rotation_y": 8,
+		"arm_rotation_y": 12,
 		"head_pivot_y": 0,
 		"neck_dilate_y": -0.1,
 		"neck_dilate_z": -0.3,
@@ -266,7 +266,7 @@
 			"texture": { "u": 40, "v": 16 },
 			"cubes": [
 				{
-					"from": [ "#arm_x_neg", 4, "#arm_z"],
+					"from": [ "#arm_x_neg", 0, "#arm_z"],
 					"size": [ "#arm_width",  "#arm_length",  "#arm_depth" ]
 				}
 			],
@@ -276,7 +276,7 @@
           "texture": { "u": 40, "v": 32 },
           "cubes": [
             {
-              "from": [ "#arm_x_neg", 4, "#arm_z"],
+              "from": [ "#arm_x_neg", 0, "#arm_z"],
               "size": [ "#arm_width",  "#arm_length",  "#arm_depth" ],
               "dilate": 0.25
             }
@@ -289,7 +289,7 @@
 			"texture": { "u": 32, "v": 48 },
 			"cubes": [
 				{
-					"from": [ "#arm_x", 4, "#arm_z"],
+					"from": [ "#arm_x", 0, "#arm_z"],
 					"size": [ "#arm_width",  "#arm_length",  "#arm_depth" ]
 				}
 			],
@@ -299,7 +299,7 @@
           "texture": { "u": 48, "v": 48 },
           "cubes": [
             {
-              "from": [ "#arm_x", 4, "#arm_z"],
+              "from": [ "#arm_x", 0, "#arm_z"],
               "size": [ "#arm_width",  "#arm_length",  "#arm_depth" ],
               "dilate": 0.25
             }
@@ -312,7 +312,7 @@
 			"texture": { "u": 0, "v": 16 },
 			"cubes": [
 				{
-					"from": [ "#arm_x_neg", 4, "#arm_z"],
+					"from": [ "#arm_x_neg", 0, "#arm_z"],
 					"size": [ "#arm_width",  "#arm_length",  "#arm_depth" ]
 				}
 			],
@@ -322,7 +322,7 @@
           "texture": { "u": 0, "v": 32 },
           "cubes": [
             {
-              "from": [ "#arm_x_neg", 4, "#arm_z"],
+              "from": [ "#arm_x_neg", 0, "#arm_z"],
               "size": [ "#arm_width",  "#arm_length",  "#arm_depth" ],
               "dilate": 0.25 
             }
@@ -335,7 +335,7 @@
 			"texture": { "u": 16, "v": 48 },
 			"cubes": [
 				{
-					"from": [ "#arm_x", 4, "#arm_z"],
+					"from": [ "#arm_x", 0, "#arm_z"],
 					"size": [ "#arm_width",  "#arm_length",  "#arm_depth" ]
 				}
 			],
@@ -345,7 +345,7 @@
           "texture": { "u": 0, "v": 48 },
           "cubes": [
             {
-              "from": [ "#arm_x", 4, "#arm_z"],
+              "from": [ "#arm_x", 0, "#arm_z"],
               "size": [ "#arm_width",  "#arm_length",  "#arm_depth" ],
               "dilate": 0.25
             }

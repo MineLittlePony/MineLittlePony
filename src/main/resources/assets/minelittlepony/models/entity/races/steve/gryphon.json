@@ -9,11 +9,11 @@
       "data": "minelittlepony:components/lion_tail"
     },
     "left_arm": {
-      "pivot": ["#arm_rotation_x", "#arm_rotation_y", 0],
+      "pivot": ["#arm_rotation_x", "#arm_rotation_y", "#arm_rotation_z"],
       "texture": { "u": 32, "v": 49 },
       "cubes": [
         {
-          "from": [ "#arm_x", 4, "#front_leg_outset_z"],
+          "from": [ "#arm_x", 0, "#front_leg_outset_z"],
           "size": [ "#arm_width", "#elbow_point", "#arm_depth" ],
           "dilate": [0, 0, -0.5]
         }
@@ -24,7 +24,7 @@
           "data": "minelittlepony:components/cube",
           "locals": {
             "x": "#arm_x",
-            "y": 8,
+            "y": 4,
             "z": "#arm_z",
             "u": 32,
             "v": 48,
@@ -39,7 +39,7 @@
           "data": "minelittlepony:components/cube",
           "locals": {
             "x": "#arm_x",
-            "y": [2.99, "+", "#arm_length"],
+            "y": [-1.01, "+", "#arm_length"],
             "z": "#back_leg_outset_z",
             "u": 32,
             "v": 48,
@@ -54,7 +54,7 @@
           "texture": { "u": 48, "v": 48 },
           "cubes": [
             {
-              "from": [ "#arm_x", 4, "#arm_z"],
+              "from": [ "#arm_x", 0, "#arm_z"],
               "size": [ "#arm_width",  "#arm_length",  "#arm_depth" ],
               "dilate": 0.25
             }
@@ -63,11 +63,11 @@
       }
     },
     "right_arm": {
-      "pivot": ["#arm_rotation_x_neg", "#arm_rotation_y", 0],
+      "pivot": ["#arm_rotation_x_neg", "#arm_rotation_y", "#arm_rotation_z"],
       "texture": { "u": 40, "v": 17 },
       "cubes": [
         {
-          "from": [ "#arm_x_neg", 4, "#front_leg_outset_z"],
+          "from": [ "#arm_x_neg", 0, "#front_leg_outset_z"],
           "size": [ "#arm_width", "#elbow_point", "#arm_depth" ],
           "dilate": [0, 0, -0.5]
         }
@@ -78,7 +78,7 @@
           "data": "minelittlepony:components/cube",
           "locals": {
             "x": "#arm_x_neg",
-            "y": 8,
+            "y": 4,
             "z": "#arm_z",
             "u": 40,
             "v": 16,
@@ -93,7 +93,7 @@
           "data": "minelittlepony:components/cube",
           "locals": {
             "x": "#arm_x_neg",
-            "y": [2.99, "+", "#arm_length"],
+            "y": [-1.01, "+", "#arm_length"],
             "z": "#back_leg_outset_z",
             "u": 40,
             "v": 16,
@@ -108,7 +108,7 @@
           "texture": { "u": 40, "v": 32 },
           "cubes": [
             {
-              "from": [ "#arm_x_neg", 4, "#arm_z"],
+              "from": [ "#arm_x_neg", 0, "#arm_z"],
               "size": [ "#arm_width",  "#arm_length",  "#arm_depth" ],
               "dilate": 0.25
             }

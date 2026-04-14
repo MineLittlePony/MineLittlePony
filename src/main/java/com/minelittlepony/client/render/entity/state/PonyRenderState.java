@@ -225,7 +225,7 @@ public class PonyRenderState extends AvatarRenderState implements PonyModel.Attr
     }
 
     protected float getLegOutset() {
-        float outset = attributes.isLyingDown ? 3.6F : attributes.isCrouching ? 1 : 5;
+        float outset = attributes.isGoingFast ? 5.5F : attributes.isLyingDown ? 3.6F : attributes.isCrouching ? 1 : 5;
         return smallArms ? Math.max(1, outset - 1) : outset;
     }
 

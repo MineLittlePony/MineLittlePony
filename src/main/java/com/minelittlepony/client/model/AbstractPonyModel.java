@@ -36,8 +36,8 @@ public abstract class AbstractPonyModel<T extends PonyRenderState> extends Clien
     public static final Pivot HEAD_SNEAKING = new Pivot(0, 6, -2);
     public static final Pivot BODY_SNEAKING = new Pivot(0, 7, -4);
     public static final Pivot BODY_RIDING = new Pivot(0, 1, 4);
-    public static final Pivot FONT_LEGS_SLEEPING = new Pivot(0, 2, 6);
-    public static final Pivot BACK_LEGS_SLEEPING = new Pivot(0, 2, -6);
+    public static final Pivot FONT_LEGS_SLEEPING = new Pivot(0, -2, 2);
+    public static final Pivot BACK_LEGS_SLEEPING = new Pivot(0, -2, -2);
 
     protected final ModelPart neck;
 
@@ -104,14 +104,16 @@ public abstract class AbstractPonyModel<T extends PonyRenderState> extends Clien
             rotateArms(entity);
         }
 
-        if (entity.hasPose(Pose.CROUCHING)) {
-            ponyCrouch(entity);
-        } else if (entity.hasPose(Pose.SITTING)) {
-            ponySit();
-        } else {
-            adjustBody(entity, 0, Pivot.ZERO);
-            if (entity.attributes.isLyingDown) {
-                ponySleep();
+        if (!entity.attributes.isGoingFast) {
+            if (entity.isCrouching) {
+                ponyCrouch(entity);
+            } else if (entity.hasPose(Pose.SITTING)) {
+                ponySit();
+            } else {
+                adjustBody(entity, 0, Pivot.ZERO);
+                if (entity.attributes.isLyingDown) {
+                    ponySleep();
+                }
             }
         }
 
@@ -133,6 +135,11 @@ public abstract class AbstractPonyModel<T extends PonyRenderState> extends Clien
 
         parts.forEach(part -> part.setAngles(Untyped.cast(this), entity));
         mainRenderList.pose(entity);
+
+
+        //rightLeg.yScale += Minecraft.getInstance().getDeltaTracker().getGameTimeDeltaPartialTick(false);
+
+
     }
 
     /**
@@ -152,6 +159,9 @@ public abstract class AbstractPonyModel<T extends PonyRenderState> extends Clien
 
         rightLeg.xRot = MathUtil.Angles._90_DEG;
         leftLeg.xRot = MathUtil.Angles._90_DEG;
+
+        Pivot FONT_LEGS_SLEEPING = new Pivot(0, -2, 2);
+        Pivot BACK_LEGS_SLEEPING = new Pivot(0, -2, -2);
 
         FONT_LEGS_SLEEPING.add(rightArm);
         FONT_LEGS_SLEEPING.add(leftArm);
@@ -203,6 +213,17 @@ public abstract class AbstractPonyModel<T extends PonyRenderState> extends Clien
             legRPX += 2;
         }
 
+        if (state.attributes.isGoingFast) {
+            rightLeg.y -= 4;
+            rightLeg.z += 2;
+            leftLeg.y -= 4;
+            leftLeg.z += 2;
+            rightArm.y -= 4;
+            rightArm.z -= 2;
+            leftArm.y -= 4;
+            leftArm.z -= 2;
+        }
+
         rightArm.x = -legRPX;
         rightLeg.x = -legRPX;
 
@@ -225,8 +246,8 @@ public abstract class AbstractPonyModel<T extends PonyRenderState> extends Clien
         ModelPart rightArm = getArm(HumanoidArm.RIGHT);
 
         if (!state.attributes.isSwimming && !state.attributes.isGoingFast) {
-            alignArmForAction(state, leftArm, HumanoidArm.RIGHT);
-            alignArmForAction(state, rightArm, HumanoidArm.LEFT);
+            alignArmForAction(state, rightArm, HumanoidArm.RIGHT);
+            alignArmForAction(state, leftArm, HumanoidArm.LEFT);
         }
         if (!state.attributes.isLyingDown) {
             if (state.attackTime > 0) {
@@ -278,8 +299,6 @@ public abstract class AbstractPonyModel<T extends PonyRenderState> extends Clien
         adjustBodyComponents(pitch, origin);
         if (!state.attributes.isHorsey) {
             neck.setPos(0, origin.y(), origin.z());
-            rightLeg.y = FRONT_LEGS_Y;
-            leftLeg.y = FRONT_LEGS_Y;
         } else {
             neck.setPos(0, origin.y() - 1, origin.z() - 2);
             neck.xRot = Angles._30_DEG;
