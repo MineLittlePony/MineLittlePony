@@ -12,7 +12,7 @@ import com.minelittlepony.util.Sigma;
 
 public interface QuadrupedalArmPosing {
     static @Sigma float sigmaOf(HumanoidArm arm) {
-        return arm == HumanoidArm.LEFT ? Sigma.LEFT : Sigma.RIGHT;
+        return arm == HumanoidArm.LEFT ? Sigma.RIGHT : Sigma.LEFT;
     }
     /**
      * Animates arm swinging.
