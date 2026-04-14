@@ -66,6 +66,7 @@ public final class ModelType {
     public static final GearModelKey<AbstractGearModel<?>> MUFFIN = registerGear("muffin", Wearable.MUFFIN, t -> new WearableGear<>(t.getChild("crown"), Wearable.MUFFIN, BodyPart.HEAD, 0.45F));
     public static final GearModelKey<AbstractGearModel<?>> WITCH_HAT = registerGear("witch_hat", Wearable.HAT, t -> new WearableGear<>(t.getChild("hat"), Wearable.HAT, BodyPart.HEAD, 0.7F));
     public static final GearModelKey<DeerAntlers<?>> ANTLERS = registerGear("antlers", Wearable.ANTLERS, DeerAntlers::new);
+    public static final GearModelKey<DJPon3EarsModel> MOUSE_EARS = registerGear(DJ_PON_3, Wearable.MOUSE_EARS, DJPon3EarsModel::new);
 
     public static final PlayerModelKey<ClientPonyModel<?>> ALICORN = registerPlayer("alicorn", Race.ALICORN, AlicornModel::new);
     public static final PlayerModelKey<ClientPonyModel<?>> UNICORN = registerPlayer("unicorn", Race.UNICORN, UnicornModel::new);
@@ -100,6 +101,11 @@ public final class ModelType {
     static <T extends AbstractGearModel<?>> GearModelKey<T> registerGear(GearModelKey<T> key, Wearable wearable, MsonModel.Factory<T> constructor) {
         return Untyped.cast(GEAR_MODELS.computeIfAbsent(wearable, _ -> new GearModelKey<T>(key.key, constructor)));
     }
+
+    static <T extends Model<?> & Gear<?>> GearModelKey<T> registerGear(ModelKey<T> key, Wearable wearable, MsonModel.Factory<T> constructor) {
+        return Untyped.cast(GEAR_MODELS.computeIfAbsent(wearable, _ -> new GearModelKey<T>(key, constructor)));
+    }
+
 
     static <T extends Model<?>> ModelKey<T> register(String name, MsonModel.Factory<T> constructor) {
         return new ModelKeyImpl<T>(MineLittlePony.id(name), constructor);

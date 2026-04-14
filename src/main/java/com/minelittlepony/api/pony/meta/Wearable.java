@@ -19,7 +19,8 @@ public enum Wearable implements TValue<Wearable> {
     SADDLE_BAGS_LEFT  (0xC6, Pony.id("textures/models/saddlebags.png")),
     SADDLE_BAGS_RIGHT (0xC7, Pony.id("textures/models/saddlebags.png")),
     SADDLE_BAGS_BOTH  (0xC8, Pony.id("textures/models/saddlebags.png")),
-    STETSON           (0xFA, Pony.id("textures/models/stetson.png"));
+    STETSON           (0xFA, Pony.id("textures/models/stetson.png")),
+    MOUSE_EARS        (0xFB, Pony.id("textures/models/mouse_ears.png"));
 
     private int triggerValue;
 

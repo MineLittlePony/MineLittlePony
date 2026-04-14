@@ -35,7 +35,7 @@ public class DJPon3Feature<
             body.transform(state, BodyPart.HEAD, stack);
             body.getHead().translateAndRotate(stack);
 
-            stack.scale(1.3333334F, 1.3333334F, 1.3333334F);
+            stack.scale(DJPon3EarsModel.DEFAULT_SCALE, DJPon3EarsModel.DEFAULT_SCALE, DJPon3EarsModel.DEFAULT_SCALE);
             stack.translate(0, 0.3F, 0);
 
             deadMau5.setVisible(true);
