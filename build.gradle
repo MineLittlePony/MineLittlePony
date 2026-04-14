@@ -181,6 +181,11 @@ publishing {
         maven(MavenPublication) {
             from components.java
 
+            artifact(apiJar) {
+                builtBy apiJar
+                classifier 'api'
+            }
+
             pom {
                 name = "MineLittlePony"
                 description = "Ponify your Minecraft experience!"
