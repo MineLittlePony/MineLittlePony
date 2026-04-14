@@ -2,10 +2,10 @@ package com.minelittlepony.client.render.blockentity.skull;
 
 import com.google.common.base.Suppliers;
 import com.minelittlepony.api.config.PonyConfig;
+import com.minelittlepony.api.model.skull.Skull;
 import com.minelittlepony.api.pony.Pony;
 import com.minelittlepony.client.model.ClientPonyModel;
 import com.minelittlepony.client.render.MobRenderers;
-import com.minelittlepony.client.render.blockentity.skull.PonySkullRenderer.ISkull;
 import com.minelittlepony.client.render.entity.state.PonyRenderState;
 import com.minelittlepony.mson.api.ModelKey;
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -23,7 +23,7 @@ import net.minecraft.world.item.component.ResolvableProfile;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Vector3f;
 
-public class MobSkull<S extends PonyRenderState> implements ISkull {
+public class MobSkull<S extends PonyRenderState> implements Skull {
     private final Identifier texture;
     private final MobRenderers type;
 

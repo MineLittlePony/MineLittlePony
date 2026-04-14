@@ -3,10 +3,10 @@ package com.minelittlepony.client.render.blockentity.skull;
 import com.minelittlepony.api.config.PonyConfig;
 import com.minelittlepony.api.config.PonyLevel;
 import com.minelittlepony.api.model.PlayerModelKey;
+import com.minelittlepony.api.model.skull.Skull;
 import com.minelittlepony.api.pony.Pony;
 import com.minelittlepony.api.pony.meta.*;
 import com.minelittlepony.client.model.*;
-import com.minelittlepony.client.render.blockentity.skull.PonySkullRenderer.ISkull;
 import com.minelittlepony.client.render.entity.state.PlayerPonyRenderState;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
@@ -26,7 +26,7 @@ import net.minecraft.world.item.component.ResolvableProfile;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Vector3f;
 
-public class PlayerPonySkull implements ISkull {
+public class PlayerPonySkull implements Skull {
     private final Map<PlayerModelKey<AbstractPonyModel<?>>, AbstractPonyModel<?>> modelCache = new HashMap<>();
     private final DJPon3EarsModel deadMau5 = ModelType.DJ_PON_3.createModel();
 
@@ -82,7 +82,7 @@ public class PlayerPonySkull implements ISkull {
         stack.popPose();
         if (hasMouseEars(state.profile)) {
             stack.pushPose();
-            stack.scale(1.3333334f, 1.3333334f, 1.3333334f);
+            stack.scale(DJPon3EarsModel.DEFAULT_SCALE, DJPon3EarsModel.DEFAULT_SCALE, DJPon3EarsModel.DEFAULT_SCALE);
             stack.translate(0, 0.05F, 0);
             frame.order(0).submitModel(deadMau5, state, stack, layer, state.light, OverlayTexture.NO_OVERLAY, color, null, state.outlineColor, state.crumblingOverlay);
             stack.popPose();

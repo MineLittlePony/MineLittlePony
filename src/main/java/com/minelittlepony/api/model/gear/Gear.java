@@ -44,6 +44,9 @@ public interface Gear<S extends HumanoidRenderState & PonyModel.AttributedHolder
      */
     BodyPart getGearLocation();
 
+    /**
+     * Whether this piece of gear stacks on top of other gear.
+     */
     default boolean isStackable() {
         return getStackingHeight() > 0;
     }
