@@ -90,29 +90,22 @@ public class PonyWings<S extends PonyRenderState> implements SubModel<S>, MsonMo
         }
 
         boolean extended = pegasus.wingsAreOpen(state);
-
         boolean bags = !extended && state.isWearing(Wearable.SADDLE_BAGS_BOTH);
 
-        boolean useLegacyWing = (
-                state.getAttributes().isEmbedded(Wearable.SADDLE_BAGS_BOTH)
-            || state.getAttributes().isEmbedded(Wearable.SADDLE_BAGS_LEFT)
-            || state.getAttributes().isEmbedded(Wearable.SADDLE_BAGS_RIGHT)
-        );
+        var left = getLeft(state);
+        var right = getRight(state);
 
-        leftWing.open = extended;
-        leftWing.bags = bags;
-        leftWing.setAngles(model, state, flap, flapAngle);
+        left.open = extended;
+        left.bags = bags;
+        left.setAngles(model, state, flap, flapAngle);
 
-        rightWing.open = extended;
-        rightWing.bags = bags;
-        rightWing.setAngles(model, state, -flap, -flapAngle);
+        right.open = extended;
+        right.bags = bags;
+        right.setAngles(model, state, -flap, -flapAngle);
 
         if (legacyWing != rightWing) {
-            rightWing.root.skipDraw = useLegacyWing;
-            legacyWing.root.skipDraw = !useLegacyWing;
-            legacyWing.open = extended;
-            legacyWing.bags = bags;
-            legacyWing.setAngles(model, state, -flap, -flapAngle);
+            rightWing.root.visible = right == rightWing;
+            legacyWing.root.visible = right == legacyWing;
         }
     }
 
