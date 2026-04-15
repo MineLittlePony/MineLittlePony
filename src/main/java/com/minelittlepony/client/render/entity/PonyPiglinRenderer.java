@@ -48,11 +48,11 @@ public class PonyPiglinRenderer extends PonyRenderer<Mob, PonyPiglinRenderer.Sta
                 case LEFT -> switch (piglin.getArmPose()) {
                     case CROSSBOW_HOLD -> ArmPose.CROSSBOW_HOLD;
                     case CROSSBOW_CHARGE -> ArmPose.CROSSBOW_CHARGE;
-                    default -> ArmPose.EMPTY;
+                    default -> super.getArmPose(entity, arm);
                 };
                 case RIGHT -> switch (piglin.getArmPose()) {
                     case ADMIRING_ITEM -> ArmPose.ITEM;
-                    default -> ArmPose.EMPTY;
+                    default -> super.getArmPose(entity, arm);
                 };
             };
         }
