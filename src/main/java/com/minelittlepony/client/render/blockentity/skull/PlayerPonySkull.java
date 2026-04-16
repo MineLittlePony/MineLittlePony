@@ -18,8 +18,7 @@ import net.minecraft.client.util.DefaultSkinHelper;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.component.type.ProfileComponent;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.math.ColorHelper;
-import net.minecraft.util.math.RotationAxis;
+import net.minecraft.util.math.*;
 
 import org.jetbrains.annotations.Nullable;
 import org.joml.Vector3f;
@@ -62,8 +61,10 @@ public class PlayerPonySkull implements ISkull {
         stack.push();
         if (state.profile != null && "Dinnerbone".equals(state.profile.getGameProfile().name())) {
             stack.translate(0, -0.5F, 0);
-            stack.multiply(RotationAxis.POSITIVE_X.rotationDegrees(180));
-            stack.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(180));
+            stack.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(-state.yaw)
+                    .rotateLocalZ(180 * MathHelper.RADIANS_PER_DEGREE)
+                    .rotateLocalY(state.yaw * MathHelper.RADIANS_PER_DEGREE)
+            );
         }
 
         MatrixStack copyStack = new MatrixStack();
