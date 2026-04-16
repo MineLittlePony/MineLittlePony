@@ -135,6 +135,7 @@ public abstract class AbstractPonyRenderer<
             if (state.attributes.isSitting && state.hasVehicle) {
                 stack.translate(0, 0.25F, 0);
             }
+            stack.translate(0, state.vehicleOffset, 0);
         }
 
         stack.scale(scale, scale, scale);

@@ -125,7 +125,12 @@ public class PonyRenderState extends PlayerEntityRenderState implements PonyMode
         baby = attributes.size == SizePreset.FOAL;
         race = PonyDisplayTags.of(entity).race().orElseGet(() -> computeRace(entity, pony));
         glowColor = PonyDisplayTags.of(entity).magicColor().orElse(attributes.metadata.glowColor());
-        vehicleOffset = hasVehicle && entity != null ? entity.getVehicle().getEyeHeight(pose) : 0;
+
+        if (hasVehicle) {
+            vehicleOffset = (float)(entity.getBoundingBox().minY - entity.getVehicle().getBoundingBox().minY - entity.getVehicle().getAttachments().getPoint(EntityAttachmentType.PASSENGER, 0, 0).y);
+        } else {
+            vehicleOffset = 0;
+        }
         riderOffset = getRiderYOffset();
         nameplateYOffset = getNamePlateYOffset();
         legOutset = getLegOutset();
@@ -249,8 +254,7 @@ public class PonyRenderState extends PlayerEntityRenderState implements PonyMode
         float y = -(height + 0.5F);
 
         // Then we add our own offsets.
-        y += attributes.visualHeight * attributes.size.scaleFactor() + 0.25F;
-        y += vehicleOffset;
+        y += attributes.visualHeight * attributes.size.scaleFactor() + 0.75F;
 
         if (isInSneakingPose) {
             y -= 0.25F;
