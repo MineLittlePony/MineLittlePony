@@ -149,7 +149,8 @@ public class PonyRenderState extends PlayerEntityRenderState implements PonyMode
         headVisible = entity != MinecraftClient.getInstance().getCameraEntity()
                 || !MinecraftClient.getInstance().options.getPerspective().isFirstPerson()
                 || MinecraftClient.getInstance().gameRenderer.getCamera().getCameraPos().squaredDistanceTo(entity.getCameraPosVec(age - (int)age)) > 1
-                || RenderPass.getCurrent() != RenderPass.WORLD;
+                || RenderPass.getCurrent() != RenderPass.WORLD
+                || IrisApiCompat.isOnShadowPass();
 
         if (entity != null) {
             updateHeldItems(resolver, entity);
