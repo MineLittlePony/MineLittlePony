@@ -212,12 +212,14 @@ public class ModelAttributes {
 
     @Deprecated
     static class LinearInterpolator implements Interpolator {
+        @Deprecated
         static LoadingCache<UUID, LinearInterpolator> instanceCache = CacheBuilder.newBuilder()
             .expireAfterAccess(30, TimeUnit.SECONDS)
             .build(CacheLoader.from(LinearInterpolator::new));
 
         private final Map<String, Float> properties = new HashMap<>();
 
+        @Deprecated
         @Override
         public float interpolate(String key, float to, float animationSpeed) {
             float from = properties.getOrDefault(key, to);

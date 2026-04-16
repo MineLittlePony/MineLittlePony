@@ -65,20 +65,14 @@ public class PonySkullRenderer {
 
     @Nullable
     public Data getSkullState(SkullBlock.SkullType skullType, @Nullable ProfileComponent profile) {
-        return getSkullState(skullType, profile, null);
+        return getSkullState(skullType, profile, null, 0);
     }
 
     @Nullable
-    public Data getSkullState(SkullBlock.SkullType skullType, @Nullable ProfileComponent profile, @Nullable Identifier overrideTexture) {
+    public Data getSkullState(SkullBlock.SkullType skullType, @Nullable ProfileComponent profile, @Nullable Identifier overrideTexture, float animation) {
         @Nullable
         ISkull skull = skulls.apply(skullType);
-
-        if (skull == null) {
-            return null;
-        }
-
-        Identifier texture = overrideTexture == null ? skull.getSkinResource(profile) : overrideTexture;
-        return new Data(skull, RenderLayers.entityTranslucent(texture), Pony.getManager().getPony(texture), profile);
+        return skull == null ? null : new Data(skull, overrideTexture, profile, animation);
     }
 
     /**
@@ -87,9 +81,23 @@ public class PonySkullRenderer {
      * Implement this interface if you want to extend our behaviour, modders.
      */
     public interface ISkull {
-        void render(MatrixStack stack, State state, OrderedRenderCommandQueue queue, Pony pony, RenderLayer layer);
+        @Deprecated
+        default void render(MatrixStack stack, State state, OrderedRenderCommandQueue queue, Pony pony, RenderLayer layer) {
 
-        boolean canRender(PonyConfig config);
+        }
+
+        default void render(MatrixStack stack, State state, OrderedRenderCommandQueue frame, RenderLayer layer) {
+            render(stack, state, frame, state.pony, layer);
+        }
+
+        @Deprecated
+        default boolean canRender(PonyConfig config) {
+            return false;
+        }
+
+        default boolean canRender(Pony pony, @Nullable ProfileComponent profile, PonyConfig config) {
+            return canRender(config);
+        }
 
         Identifier getSkinResource(@Nullable ProfileComponent profile);
 
@@ -99,43 +107,55 @@ public class PonySkullRenderer {
             public int light;
             public @Nullable ModelCommandRenderer.CrumblingOverlayCommand crumblingOverlay;
             public @Nullable ProfileComponent profile;
+            public Pony pony;
         }
     }
 
-    public interface Proxy {
-        void setPonySkullData(Data data);
-    }
+    public record Data(ISkull model, @Nullable Identifier overrideTexture, @Nullable ProfileComponent profile, float animation) {
 
-    public record Data(ISkull model, RenderLayer layer, Pony pony, @Nullable ProfileComponent profile) {
-        public boolean render(@Nullable Direction direction, float yaw, float poweredTicks, MatrixStack matrices, OrderedRenderCommandQueue queue, int light, int outlineColor, @Nullable ModelCommandRenderer.CrumblingOverlayCommand crumblingOverlay) {
-            if (!model.canRender(PonyConfig.getInstance())) {
+        public boolean canRender() {
+            return model.canRender(pony(), profile, PonyConfig.getInstance());
+        }
+
+        public RenderLayer layer() {
+            return RenderLayers.entityTranslucent(pony().texture());
+        }
+
+        public Pony pony() {
+            return Pony.getManager().getPony(overrideTexture == null ? model.getSkinResource(profile) : overrideTexture);
+        }
+
+        public boolean render(@Nullable Direction direction, float yaw, MatrixStack matrices, OrderedRenderCommandQueue frame, int light, int outlineColor, @Nullable ModelCommandRenderer.CrumblingOverlayCommand crumblingOverlay) {
+            final Pony pony = pony();
+
+            if (!model.canRender(pony, profile, PonyConfig.getInstance())) {
                 return false;
             }
 
             matrices.push();
-
             if (direction == null) {
                 matrices.translate(0.5, 0, 0.5);
             } else {
                 final float offset = 0.25F;
-                matrices.translate(
-                        0.5F - direction.getOffsetX() * offset,
-                        offset,
-                        0.5F - direction.getOffsetZ() * offset
-                );
+                 matrices.translate(
+                         0.5F - direction.getOffsetX() * offset,
+                         offset,
+                         0.5F - direction.getOffsetZ() * offset
+                 );
             }
             matrices.scale(-1, -1, 1);
 
             ISkull.State skullModelState = new ISkull.State();
-            skullModelState.poweredTicks = poweredTicks;
+            skullModelState.poweredTicks = animation;
             skullModelState.yaw = yaw;
             skullModelState.alpha = ArmourRendererPlugin.INSTANCE.get().getArmourAlpha(EquipmentSlot.HEAD, EquipmentModel.LayerType.HUMANOID);
             skullModelState.outlineColor = outlineColor;
             skullModelState.light = light;
             skullModelState.crumblingOverlay = crumblingOverlay;
             skullModelState.profile = profile;
+            skullModelState.pony = pony;
 
-            model.render(matrices, skullModelState, queue, pony, layer);
+            model.render(matrices, skullModelState, frame, layer());
 
             matrices.pop();
 

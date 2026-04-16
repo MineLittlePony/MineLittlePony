@@ -3,7 +3,7 @@ package com.minelittlepony.client.render.blockentity.skull;
 import com.minelittlepony.api.config.PonyConfig;
 import com.minelittlepony.api.config.PonyLevel;
 import com.minelittlepony.api.pony.Pony;
-import com.minelittlepony.api.pony.meta.Race;
+import com.minelittlepony.api.pony.meta.*;
 import com.minelittlepony.client.model.*;
 import com.minelittlepony.client.render.blockentity.skull.PonySkullRenderer.ISkull;
 import com.minelittlepony.client.render.entity.state.PlayerPonyRenderState;
@@ -29,8 +29,10 @@ public class PlayerPonySkull implements ISkull {
     private final DJPon3EarsModel deadMau5 = ModelType.DJ_PON_3.createModel();
 
     @Override
-    public boolean canRender(PonyConfig config) {
-        return config.ponyskulls.get() && config.ponyLevel.get() != PonyLevel.HUMANS;
+    public boolean canRender(Pony pony, @Nullable ProfileComponent profile, PonyConfig config) {
+        return config.ponyskulls.get()
+            && config.ponyLevel.get() != PonyLevel.HUMANS
+            && (!pony.race().isHuman() || hasMouseEars(profile) || (profile != null && "Dinnerbone".equals(profile.getGameProfile().name())));
     }
 
     @Override
@@ -42,25 +44,28 @@ public class PlayerPonySkull implements ISkull {
     }
 
     @Override
-    public void render(MatrixStack stack, State state, OrderedRenderCommandQueue queue, Pony pony, RenderLayer layer) {
-        Race race = pony.race();
-        boolean renderingEars = state.profile != null && "deadmau5".equals(state.profile.getGameProfile().name());
+    public void render(MatrixStack stack, State state, OrderedRenderCommandQueue queue, RenderLayer layer) {
+        Race race = state.pony.race();
         if (race.isHuman()) {
             race = Race.EARTH;
-            if (!renderingEars) {
-                return;
-            }
         }
+
         AbstractPonyModel<?> ponyHead = modelCache.computeIfAbsent(ModelType.getPlayerModel(race), key -> key.steveKey().createModel());
         PlayerPonyRenderState ponyState = new PlayerPonyRenderState();
-        ponyState.pony = pony;
-        ponyState.race = pony.race();
-        ponyState.attributes.size = pony.size();
-        ponyState.attributes.metadata = pony.metadata();
+        ponyState.pony = state.pony;
+        ponyState.race = state.pony.race();
+        ponyState.attributes.size = SizePreset.NORMAL;
+        ponyState.attributes.metadata = state.pony.metadata();
 
         int color = ColorHelper.getWhite(state.alpha);
 
         stack.push();
+        if (state.profile != null && "Dinnerbone".equals(state.profile.getGameProfile().name())) {
+            stack.translate(0, -0.5F, 0);
+            stack.multiply(RotationAxis.POSITIVE_X.rotationDegrees(180));
+            stack.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(180));
+        }
+
         MatrixStack copyStack = new MatrixStack();
         queue.getBatchingQueue(0).submitCustom(stack, layer, (entry, vertices) -> {
             Vector3f v = new Vector3f(0, -2, 2);
@@ -75,12 +80,16 @@ public class PlayerPonySkull implements ISkull {
         });
 
         stack.pop();
-        if (renderingEars) {
+        if (hasMouseEars(state.profile)) {
             stack.push();
             stack.scale(1.3333334f, 1.3333334f, 1.3333334f);
             stack.translate(0, 0.05F, 0);
             queue.getBatchingQueue(0).submitModel(deadMau5, state, stack, layer, state.light, OverlayTexture.DEFAULT_UV, color, null, state.outlineColor, state.crumblingOverlay);
             stack.pop();
         }
+    }
+
+    static boolean hasMouseEars(@Nullable ProfileComponent profile) {
+        return profile != null && "deadmau5".equals(profile.getGameProfile().name());
     }
 }

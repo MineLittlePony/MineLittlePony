@@ -16,11 +16,13 @@ import com.minelittlepony.api.model.ModelAttributes;
  */
 @Deprecated(forRemoval = true)
 public interface PonyModelPrepareCallback {
+    @Deprecated
     Event<PonyModelPrepareCallback> EVENT = EventFactory.createArrayBacked(PonyModelPrepareCallback.class, listeners -> (attributes, model, mode) -> {
         for (PonyModelPrepareCallback event : listeners) {
             event.onPonyModelPrepared(attributes, model, mode);
         }
     });
 
+    @Deprecated
     void onPonyModelPrepared(ModelAttributes attributes, PonyModel<?> model, ModelAttributes.Mode mode);
 }
