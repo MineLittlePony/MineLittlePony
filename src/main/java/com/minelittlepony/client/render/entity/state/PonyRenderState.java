@@ -145,7 +145,8 @@ public class PonyRenderState extends AvatarRenderState implements PonyModel.Attr
         headVisible = entity != Minecraft.getInstance().getCameraEntity()
                 || !Minecraft.getInstance().options.getCameraType().isFirstPerson()
                 || Minecraft.getInstance().gameRenderer.getMainCamera().position().distanceToSqr(entity.getEyePosition(ageInTicks - (int)ageInTicks)) > 1
-                || RenderPass.getCurrent() != RenderPass.WORLD;
+                || RenderPass.getCurrent() != RenderPass.WORLD
+                || IrisApiCompat.isOnShadowPass();
 
         if (entity != null) {
             updateHeldItems(resolver, entity);
