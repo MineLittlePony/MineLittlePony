@@ -58,7 +58,7 @@ public class IllagerPonyRenderer<
                         case BOW_AND_ARROW: return ArmPose.BOW_AND_ARROW;
                         case CROSSBOW_CHARGE: return ArmPose.CROSSBOW_CHARGE;
                         case CROSSBOW_HOLD: return ArmPose.CROSSBOW_HOLD;
-                        default: return ArmPose.EMPTY;
+                        default: return super.getArmPose(entity, arm);
                     }
                 }
 
