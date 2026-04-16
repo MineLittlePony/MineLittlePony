@@ -122,7 +122,11 @@ public class PonyRenderState extends AvatarRenderState implements PonyModel.Attr
         isBaby = attributes.size == SizePreset.FOAL;
         race = displayTags.race().orElseGet(() -> computeRace(entity, pony));
         glowColor = displayTags.magicColor().orElse(attributes.metadata.glowColor());
-        vehicleOffset = isPassenger && entity != null ? entity.getVehicle().getEyeHeight(pose) : 0;
+        if (isPassenger) {
+            vehicleOffset = (float)(entity.getBoundingBox().minY - entity.getVehicle().getBoundingBox().minY - entity.getVehicle().getAttachments().get(EntityAttachment.PASSENGER, 0, 0).y);
+        } else {
+            vehicleOffset = 0;
+        }
         riderOffset = getRiderYOffset();
         nameplateYOffset = getNamePlateYOffset();
         legOutset = getLegOutset();
@@ -249,8 +253,7 @@ public class PonyRenderState extends AvatarRenderState implements PonyModel.Attr
         float y = -(boundingBoxHeight + 0.5F);
 
         // Then we add our own offsets.
-        y += attributes.visualHeight * attributes.size.scaleFactor() + 0.25F;
-        y += vehicleOffset;
+        y += attributes.visualHeight * attributes.size.scaleFactor() + 0.75F;
 
         if (isCrouching) {
             y -= 0.25F;
