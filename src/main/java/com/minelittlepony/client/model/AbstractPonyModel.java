@@ -8,7 +8,6 @@ import com.minelittlepony.common.util.Untyped;
 import com.minelittlepony.mson.util.RenderList;
 import com.minelittlepony.util.MathUtil;
 import com.minelittlepony.util.MathUtil.Angles;
-import com.minelittlepony.util.Sigma;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
@@ -20,7 +19,6 @@ import net.minecraft.client.model.effects.SpearAnimations;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.util.*;
 import net.minecraft.world.entity.HumanoidArm;
-import net.minecraft.world.entity.Pose;
 
 import org.joml.Quaternionf;
 
@@ -105,9 +103,9 @@ public abstract class AbstractPonyModel<T extends PonyRenderState> extends Clien
         }
 
         if (!entity.attributes.isGoingFast) {
-            if (entity.isCrouching) {
+            if (entity.attributes.isCrouching) {
                 ponyCrouch(entity);
-            } else if (entity.hasPose(Pose.SITTING)) {
+            } else if (entity.attributes.isSitting) {
                 ponySit();
             } else {
                 adjustBody(entity, 0, Pivot.ZERO);
@@ -135,11 +133,6 @@ public abstract class AbstractPonyModel<T extends PonyRenderState> extends Clien
 
         parts.forEach(part -> part.setAngles(Untyped.cast(this), entity));
         mainRenderList.pose(entity);
-
-
-        //rightLeg.yScale += Minecraft.getInstance().getDeltaTracker().getGameTimeDeltaPartialTick(false);
-
-
     }
 
     /**
@@ -242,12 +235,12 @@ public abstract class AbstractPonyModel<T extends PonyRenderState> extends Clien
     }
 
     protected void rotateArms(T state) {
-        ModelPart leftArm = getArm(HumanoidArm.LEFT);
-        ModelPart rightArm = getArm(HumanoidArm.RIGHT);
+        ModelPart leftArm = getForeLeg(HumanoidArm.LEFT);
+        ModelPart rightArm = getForeLeg(HumanoidArm.RIGHT);
 
         if (!state.attributes.isSwimming && !state.attributes.isGoingFast) {
-            alignArmForAction(state, rightArm, HumanoidArm.RIGHT);
-            alignArmForAction(state, leftArm, HumanoidArm.LEFT);
+            alignArmForAction(state, rightArm, HumanoidArm.LEFT);
+            alignArmForAction(state, leftArm, HumanoidArm.RIGHT);
         }
         if (!state.attributes.isLyingDown) {
             if (state.attackTime > 0) {
@@ -322,7 +315,7 @@ public abstract class AbstractPonyModel<T extends PonyRenderState> extends Clien
     @Override
     public final void transformHeldItem(T state, HumanoidArm arm, PoseStack matrices) {
         transform(state, BodyPart.LEGS, matrices);
-        ModelPart a = getArm(arm);
+        ModelPart a = getForeLeg(arm);
         Quaternionf rotation = new Quaternionf().rotationZYX(a.zRot, a.yRot, a.xRot);
         matrices.mulPose(rotation);
         positionheldItem(state, arm, matrices);
@@ -330,15 +323,14 @@ public abstract class AbstractPonyModel<T extends PonyRenderState> extends Clien
     }
 
     protected void positionheldItem(T state, HumanoidArm arm, PoseStack matrices) {
-        @Sigma float left = arm == HumanoidArm.LEFT ? Sigma.LEFT : Sigma.RIGHT;
-        ArmPose pose = arm == HumanoidArm.LEFT ? state.leftArmPose : state.rightArmPose;
+        ArmPose pose = state.getArmPoseForArm(arm);
 
         if (pose == ArmPose.SPYGLASS) {
             matrices.translate(0, 0.3, 0.3);
             return;
         }
 
-        matrices.translate(-left * 0.06F, 0.355F, -0.06F);
+        matrices.translate(-QuadrupedalArmPosing.sigmaOf(arm) * 0.06F, 0.355F, -0.06F);
 
         if (pose == ArmPose.BOW_AND_ARROW) {
             matrices.translate(0, 0.1F, 0);
