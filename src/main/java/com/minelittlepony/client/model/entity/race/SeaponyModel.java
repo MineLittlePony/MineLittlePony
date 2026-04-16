@@ -61,7 +61,12 @@ public class SeaponyModel<T extends PonyRenderState> extends UnicornModel<T> {
     }
 
     @Override
-    protected void rotateLegs(T state) {
+    protected void repositionLegs(T state) {
+
+    }
+
+    @Override
+    protected void rotateArms(T state) {
         walkSeapony(state, leftArm, rightArm, leftLeg, rightLeg);
     }
 
@@ -108,7 +113,12 @@ public class SeaponyModel<T extends PonyRenderState> extends UnicornModel<T> {
         }
 
         @Override
-        protected void rotateLegs(T state) {
+        protected void repositionLegs(T state) {
+
+        }
+
+        @Override
+        protected void rotateArms(T state) {
             walkSeapony(state, leftArm, rightArm, leftLeg, rightLeg);
         }
 

@@ -7,7 +7,6 @@ import com.minelittlepony.client.transform.PonyTransformation;
 import com.minelittlepony.mson.util.RenderList;
 import com.minelittlepony.util.MathUtil;
 import com.minelittlepony.util.MathUtil.Angles;
-import com.minelittlepony.util.Sigma;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,7 +15,6 @@ import net.minecraft.client.model.ModelPart;
 import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.render.entity.state.Lancing;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.entity.EntityPose;
 import net.minecraft.util.*;
 import net.minecraft.util.math.*;
 
@@ -102,9 +100,9 @@ public abstract class AbstractPonyModel<T extends PonyRenderState> extends Clien
             rotateArms(entity);
         }
 
-        if (entity.isInPose(EntityPose.CROUCHING)) {
+        if (entity.attributes.isCrouching) {
             ponyCrouch(entity);
-        } else if (entity.isInPose(EntityPose.SITTING)) {
+        } else if (entity.attributes.isSitting) {
             ponySit();
         } else {
             adjustBody(entity, 0, Pivot.ZERO);
@@ -223,12 +221,12 @@ public abstract class AbstractPonyModel<T extends PonyRenderState> extends Clien
     }
 
     protected void rotateArms(T state) {
-        ModelPart leftArm = getArm(Arm.LEFT);
-        ModelPart rightArm = getArm(Arm.RIGHT);
+        ModelPart leftArm = getForeLeg(Arm.LEFT);
+        ModelPart rightArm = getForeLeg(Arm.RIGHT);
 
         if (!state.attributes.isSwimming && !state.attributes.isGoingFast) {
-            alignArmForAction(state, leftArm, Arm.RIGHT);
-            alignArmForAction(state, rightArm, Arm.LEFT);
+            alignArmForAction(state, leftArm, Arm.LEFT);
+            alignArmForAction(state, rightArm, Arm.RIGHT);
         }
         if (!state.attributes.isLyingDown) {
             if (state.handSwingProgress > 0) {
@@ -311,7 +309,7 @@ public abstract class AbstractPonyModel<T extends PonyRenderState> extends Clien
     @Override
     public final void transformHeldItem(T state, Arm arm, MatrixStack matrices) {
         transform(state, BodyPart.LEGS, matrices);
-        ModelPart a = getArm(arm);
+        ModelPart a = getForeLeg(arm);
         Quaternionf rotation = new Quaternionf().rotationZYX(a.roll, a.yaw, a.pitch);
         matrices.multiply(rotation);
         positionheldItem(state, arm, matrices);
@@ -319,15 +317,14 @@ public abstract class AbstractPonyModel<T extends PonyRenderState> extends Clien
     }
 
     protected void positionheldItem(T state, Arm arm, MatrixStack matrices) {
-        @Sigma float left = arm == Arm.LEFT ? Sigma.LEFT : Sigma.RIGHT;
-        ArmPose pose = arm == Arm.LEFT ? state.leftArmPose : state.rightArmPose;
+        ArmPose pose = state.getArmPoseForArm(arm);
 
         if (pose == ArmPose.SPYGLASS) {
             matrices.translate(0, 0.3, 0.3);
             return;
         }
 
-        matrices.translate(-left * 0.06F, 0.355F, -0.06F);
+        matrices.translate(-QuadrupedalArmPosing.sigmaOf(arm) * 0.06F, 0.355F, -0.06F);
 
         if (pose == ArmPose.BOW_AND_ARROW) {
             matrices.translate(0, 0.1F, 0);

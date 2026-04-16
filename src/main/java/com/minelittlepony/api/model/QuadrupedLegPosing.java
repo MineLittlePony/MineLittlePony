@@ -16,8 +16,8 @@ public interface QuadrupedLegPosing {
     ) {
         float angle = MathHelper.PI * (float) Math.pow(state.limbSwingAmplitude, 16);
 
-        float baseRotation = state.limbSwingAmplitude * 0.6662F; // magic number ahoy
-        float scale = state.limbSwingAnimationProgress * 0.25F;
+        float baseRotation = state.limbSwingAnimationProgress * 0.6662F; // magic number ahoy
+        float scale = state.limbSwingAmplitude * 0.25F;
 
         float rainboomLegLotation = state.getAttributes().getMainInterpolator().interpolate(
                 "rainboom_leg_rotation",

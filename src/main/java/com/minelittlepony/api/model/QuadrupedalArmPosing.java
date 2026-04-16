@@ -41,13 +41,13 @@ public interface QuadrupedalArmPosing {
         if (state.getAttributes().shouldLiftArm(pose, complement, sigma)) {
             float swag = 1;
             if (!state.getAttributes().isFlying && both) {
-                swag -= (float)Math.pow(state.limbSwingAnimationProgress, 2);
+                swag -= (float)Math.pow(state.limbSwingAmplitude, 2);
             }
 
             float mult = 1 - swag/2;
             arm.pitch = arm.pitch * mult - (MathHelper.PI / 10) * swag;
             arm.yaw = -sigma * (MathHelper.PI / 15);
-            arm.roll += 0.3F * -state.limbSwingAnimationProgress * sigma;
+            arm.roll += 0.3F * -state.limbSwingAmplitude * sigma;
 
             if (state.getAttributes().isCrouching) {
                 arm.originX -= sigma * 2;
