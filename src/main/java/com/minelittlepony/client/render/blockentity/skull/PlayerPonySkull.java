@@ -64,8 +64,10 @@ public class PlayerPonySkull implements Skull {
         stack.pushPose();
         if (state.profile != null && "Dinnerbone".equals(state.profile.partialProfile().name())) {
             stack.translate(0, -0.5F, 0);
-            stack.mulPose(Axis.XP.rotationDegrees(180));
-            stack.mulPose(Axis.YP.rotationDegrees(180));
+            stack.mulPose(Axis.YP.rotationDegrees(-state.yRot)
+                    .rotateLocalZ(180 * MathHelper.RADIANS_PER_DEGREE)
+                    .rotateLocalY(state.yRot * MathHelper.RADIANS_PER_DEGREE)
+            );
         }
 
         PoseStack copyStack = new PoseStack();

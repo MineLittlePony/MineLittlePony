@@ -1,7 +1,9 @@
 package com.minelittlepony.client.render.entity.npc;
 
+import net.minecraft.client.model.HumanoidModel.ArmPose;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.util.Mth;
+import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.entity.npc.villager.Villager;
 
 import com.minelittlepony.client.VariatedTextureSupplier;
@@ -40,6 +42,14 @@ public class VillagerPonyRenderer extends AbstractNpcRenderer<Villager, Villager
     public void extractRenderState(Villager entity, State state, float tickDelta) {
         super.extractRenderState(entity, state, tickDelta);
         state.headRolling = entity.getUnhappyCounter() > 0;
+    }
+
+    @Override
+    public ArmPose getArmPose(Villager entity, HumanoidArm arm) {
+        if (arm == entity.getMainArm() && !entity.getMainHandItem().isEmpty()) {
+            return ArmPose.ITEM;
+        }
+        return super.getArmPose(entity, arm);
     }
 
     public static class State extends SillyPonyTextureSupplier.State {
