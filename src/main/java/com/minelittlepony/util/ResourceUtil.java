@@ -24,6 +24,6 @@ public final class ResourceUtil {
     }
 
     public static Optional<Identifier> verifyTexture(Identifier texture) {
-        return textureExists(texture) ? Optional.of(texture) : Optional.empty();
+        return Minecraft.getInstance().getResourceManager().getResource(texture).map(_ -> texture);
     }
 }

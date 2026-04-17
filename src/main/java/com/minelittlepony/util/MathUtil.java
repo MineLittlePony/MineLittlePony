@@ -7,6 +7,7 @@ public interface MathUtil {
 
     interface Angles {
         float
+            _180_DEG = Mth.PI,
             _270_DEG = 270 * Mth.DEG_TO_RAD,
             _90_DEG = 90 * Mth.DEG_TO_RAD,
             _30_DEG = 30 * Mth.DEG_TO_RAD

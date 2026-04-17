@@ -8,6 +8,7 @@ import com.minelittlepony.api.pony.Pony;
 import com.minelittlepony.api.pony.meta.*;
 import com.minelittlepony.client.model.*;
 import com.minelittlepony.client.render.entity.state.PlayerPonyRenderState;
+import com.minelittlepony.util.MathUtil;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 
@@ -21,6 +22,7 @@ import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.resources.DefaultPlayerSkin;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.ARGB;
+import net.minecraft.util.Mth;
 import net.minecraft.world.item.component.ResolvableProfile;
 
 import org.jetbrains.annotations.Nullable;
@@ -65,8 +67,8 @@ public class PlayerPonySkull implements Skull {
         if (state.profile != null && "Dinnerbone".equals(state.profile.partialProfile().name())) {
             stack.translate(0, -0.5F, 0);
             stack.mulPose(Axis.YP.rotationDegrees(-state.yRot)
-                    .rotateLocalZ(180 * MathHelper.RADIANS_PER_DEGREE)
-                    .rotateLocalY(state.yRot * MathHelper.RADIANS_PER_DEGREE)
+                    .rotateLocalZ(MathUtil.Angles._180_DEG)
+                    .rotateLocalY(state.yRot * Mth.DEG_TO_RAD)
             );
         }
 
