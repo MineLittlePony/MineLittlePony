@@ -19,6 +19,8 @@
   "minelp.options.showscale": "Play Onmark Layouing",
   "minelp.options.fpsmagic": "Spellcraft in first-selfly",
   "minelp.options.tpsmagic": "Spellcraft in third-selfly",
+  "minelp.options.disablebucketfix": "Cripple Pail Fasten",
+  "minelp.options.disablebucketfix.tooltip": "Wend on to cripple the pail fasten for filly cam. Only brook this if you have worries meeting multiplayer senders (i.e. hypixel)",
   "minelp.options.ponyskulls": "Horseling Headbones",
   "minelp.options.frustrum": "Frustum finding outs",
   "minelp.options.flappyelytras": "Flap Wings whilst Gliding",

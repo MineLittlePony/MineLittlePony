@@ -19,6 +19,8 @@
   "minelp.options.showscale": "ShwoW-accuwawe scawing",
   "minelp.options.fpsmagic": "Wagic in fiwsw-pewson",
   "minelp.options.tpsmagic": "Wagic in thewd-pewson",
+  "minelp.options.disablebucketfix": "Turn off da bucket thingies",
+  "minelp.options.disablebucketfix.tooltip": "Turn on 2 disabul da bucket fix for fiwy cam. Only use diz if u can not haz multiplayer  (i.e. hypixel)",
   "minelp.options.ponyskulls": "Poneh Skulz",
   "minelp.options.frustrum": "Pointey Leizarz",
   "minelp.options.flappyelytras": "Flap Wingz Wilst Glidin",
