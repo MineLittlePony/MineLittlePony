@@ -1,6 +1,7 @@
 package com.minelittlepony.client.render;
 
 import com.minelittlepony.api.config.PonyDisplayTags;
+import com.minelittlepony.api.state.PonifiedRenderState;
 
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
@@ -14,7 +15,6 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import com.minelittlepony.api.config.PonyConfig;
 import com.minelittlepony.client.render.entity.*;
 import com.minelittlepony.client.render.entity.npc.*;
-import com.minelittlepony.client.render.entity.state.PonifiedRenderState;
 import com.minelittlepony.common.util.settings.Setting;
 import com.minelittlepony.mson.api.EntityRendererRegistry;
 

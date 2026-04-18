@@ -7,6 +7,7 @@ import com.minelittlepony.api.pony.Pony;
 import com.minelittlepony.api.pony.PonyData;
 import com.minelittlepony.api.pony.meta.Race;
 import com.minelittlepony.api.pony.meta.SizePreset;
+import com.minelittlepony.api.state.PreviewRenderState;
 import com.minelittlepony.client.PonyDataLoader;
 import com.minelittlepony.client.model.ClientPonyModel;
 import com.minelittlepony.client.render.entity.state.PonyRenderState;

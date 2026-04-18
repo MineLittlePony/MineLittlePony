@@ -7,16 +7,17 @@ import net.minecraft.client.resources.model.EquipmentClientInfo;
 import net.minecraft.data.AtlasIds;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.monster.Strider;
 import net.minecraft.world.item.ItemStack;
 
 import com.minelittlepony.api.pony.DefaultPonySkinHelper;
+import com.minelittlepony.api.state.PonifiedRenderState;
 import com.minelittlepony.client.MineLittlePony;
 import com.minelittlepony.client.model.ModelType;
 import com.minelittlepony.client.model.armour.PonifiedEquipmentRenderer;
 import com.minelittlepony.client.model.entity.StriderDragonModel;
-import com.minelittlepony.client.render.entity.state.PonifiedRenderState;
 import com.mojang.blaze3d.vertex.PoseStack;
 
 import java.util.UUID;
@@ -81,5 +82,10 @@ public class StriderRenderer extends MobRenderer<Strider, StriderRenderer.State,
         public boolean cold;
         public ItemStack saddleStack = ItemStack.EMPTY;
         public float flailAmount;
+
+        @Override
+        public boolean isOf(EntityType<?> entityType) {
+            return this.entityType == entityType;
+        }
     }
 }

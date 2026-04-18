@@ -29,6 +29,7 @@ import com.minelittlepony.api.model.*;
 import com.minelittlepony.api.model.armour.ArmourRendererPlugin;
 import com.minelittlepony.api.pony.*;
 import com.minelittlepony.api.pony.meta.*;
+import com.minelittlepony.api.state.PonifiedRenderState;
 import com.minelittlepony.client.compat.iris.IrisApiCompat;
 import com.minelittlepony.client.transform.PonyPosture;
 
@@ -270,6 +271,16 @@ public class PonyRenderState extends AvatarRenderState implements PonyModel.Attr
     @Override
     public ModelAttributes getAttributes() {
         return attributes;
+    }
+
+    @Override
+    public final Optional<PonyModel.AttributedHolder> getPonyState() {
+        return Optional.of(this);
+    }
+
+    @Override
+    public final boolean isOf(EntityType<?> entityType) {
+        return this.entityType == entityType;
     }
 
     public HeldItemRenderState getHeldItem(HumanoidArm arm) {

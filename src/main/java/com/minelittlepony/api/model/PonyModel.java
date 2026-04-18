@@ -4,6 +4,7 @@ import net.minecraft.client.model.HeadedModel;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.renderer.entity.state.AvatarRenderState;
 import net.minecraft.client.renderer.entity.state.EntityRenderState;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.HumanoidArm;
 
 import com.minelittlepony.api.pony.meta.*;
@@ -37,11 +38,17 @@ public interface PonyModel<T extends EntityRenderState & PonyModel.AttributedHol
 
         Race getRace();
 
+        @Deprecated
         float getSwingAmount();
 
         /**
          * Tests if this model is wearing the given piece of gear.
          */
         boolean isWearing(Wearable wearable);
+
+        /**
+         * Checks whether this state represents a certain entity type.
+         */
+        boolean isOf(EntityType<?> entityType);
     }
 }

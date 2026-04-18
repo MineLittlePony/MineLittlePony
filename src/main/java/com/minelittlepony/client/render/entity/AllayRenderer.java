@@ -8,13 +8,14 @@ import net.minecraft.client.renderer.entity.state.ArmedEntityRenderState;
 import net.minecraft.client.renderer.entity.state.HumanoidRenderState;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.Identifier;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.animal.allay.Allay;
 
 import com.minelittlepony.api.pony.DefaultPonySkinHelper;
+import com.minelittlepony.api.state.PonifiedRenderState;
 import com.minelittlepony.client.MineLittlePony;
 import com.minelittlepony.client.model.ModelType;
 import com.minelittlepony.client.model.entity.BreezieModel;
-import com.minelittlepony.client.render.entity.state.PonifiedRenderState;
 import com.mojang.blaze3d.vertex.PoseStack;
 
 import java.util.UUID;
@@ -69,5 +70,10 @@ public class AllayRenderer extends MobRenderer<Allay, AllayRenderer.State, Breez
         public boolean spinning;
         public float spinningAnimationTicks;
         public float itemHoldAnimationTicks;
+
+        @Override
+        public boolean isOf(EntityType<?> entityType) {
+            return this.entityType == entityType;
+        }
     }
 }

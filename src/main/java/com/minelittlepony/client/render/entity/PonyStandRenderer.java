@@ -14,23 +14,25 @@ import net.minecraft.data.AtlasIds;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.decoration.ArmorStand;
 
 import org.jetbrains.annotations.Nullable;
 
 import com.minelittlepony.api.config.PonyDisplayTags;
+import com.minelittlepony.api.model.PonyModel;
 import com.minelittlepony.api.model.ModelAttributes.Mode;
 import com.minelittlepony.api.pony.Pony;
 import com.minelittlepony.api.pony.PonyData;
 import com.minelittlepony.api.pony.meta.Race;
 import com.minelittlepony.api.pony.meta.SizePreset;
+import com.minelittlepony.api.state.PonifiedRenderState;
 import com.minelittlepony.client.model.ModelType;
 import com.minelittlepony.client.model.entity.PonyArmorStandEntityArmorModel;
 import com.minelittlepony.client.model.entity.race.EarthPonyModel;
 import com.minelittlepony.client.render.EquineRenderManager;
 import com.minelittlepony.client.render.PonyRenderContext;
 import com.minelittlepony.client.render.entity.feature.*;
-import com.minelittlepony.client.render.entity.state.PonifiedRenderState;
 import com.minelittlepony.client.render.entity.state.PonyRenderState;
 import com.minelittlepony.common.util.Untyped;
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -170,6 +172,16 @@ public class PonyStandRenderer extends LivingEntityRenderer<ArmorStand, PonyStan
 
     public static final class State extends ArmorStandRenderState implements PonifiedRenderState {
         public PonyState ponyState = new PonyState(this);
+
+        @Override
+        public Optional<PonyModel.AttributedHolder> getPonyState() {
+            return Optional.of(ponyState);
+        }
+
+        @Override
+        public boolean isOf(EntityType<?> entityType) {
+            return this.entityType == entityType;
+        }
     }
 
     public static class PonyState extends PonyRenderState {

@@ -15,6 +15,7 @@ import com.minelittlepony.api.events.PonyRenderStatePrepareCallback;
 import com.minelittlepony.api.model.*;
 import com.minelittlepony.api.pony.*;
 import com.minelittlepony.api.pony.meta.Wearable;
+import com.minelittlepony.api.state.PreviewRenderState;
 import com.minelittlepony.client.render.entity.state.PlayerPonyRenderState;
 import com.minelittlepony.common.util.registry.ForwardingHolder;
 import com.minelittlepony.hdskins.client.VanillaModels;

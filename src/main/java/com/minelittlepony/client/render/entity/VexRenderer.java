@@ -5,13 +5,14 @@ import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.monster.Vex;
 
 import com.minelittlepony.api.pony.DefaultPonySkinHelper;
+import com.minelittlepony.api.state.PonifiedRenderState;
 import com.minelittlepony.client.MineLittlePony;
 import com.minelittlepony.client.model.ModelType;
 import com.minelittlepony.client.model.entity.ParaspriteModel;
-import com.minelittlepony.client.render.entity.state.PonifiedRenderState;
 import com.minelittlepony.common.util.animation.Interpolator;
 import com.mojang.blaze3d.vertex.PoseStack;
 
@@ -63,5 +64,10 @@ public class VexRenderer extends MobRenderer<Vex, VexRenderer.State, ParaspriteM
         public float wingYaw;
         public float innerWingRoll;
         public float innerWingPitch;
+
+        @Override
+        public boolean isOf(EntityType<?> entityType) {
+            return this.entityType == entityType;
+        }
     }
 }
