@@ -239,8 +239,8 @@ public abstract class AbstractPonyModel<T extends PonyRenderState> extends Clien
         ModelPart rightArm = getForeLeg(HumanoidArm.RIGHT);
 
         if (!state.attributes.isSwimming && !state.attributes.isGoingFast) {
-            alignArmForAction(state, rightArm, HumanoidArm.LEFT);
-            alignArmForAction(state, leftArm, HumanoidArm.RIGHT);
+            alignArmForAction(state, rightArm, HumanoidArm.RIGHT);
+            alignArmForAction(state, leftArm, HumanoidArm.LEFT);
         }
         if (!state.attributes.isLyingDown) {
             if (state.attackTime > 0) {
@@ -279,7 +279,11 @@ public abstract class AbstractPonyModel<T extends PonyRenderState> extends Clien
             case SPYGLASS -> QuadrupedalArmPosing.spyglass(state, head, arm, side);
             case TOOT_HORN -> QuadrupedalArmPosing.blowHorn(state, head, arm, side);
             case BRUSH -> QuadrupedalArmPosing.brushBlock(state, arm, side);
-            case SPEAR -> SpearAnimations.thirdPersonHandUse(arm, head, side == HumanoidArm.RIGHT, state.getUseItemStackForArm(side), state);
+            case SPEAR -> {
+                if (state.attributes.shouldLiftArm(pose, state.getArmPoseForArm(side.getOpposite()), QuadrupedalArmPosing.sigmaOf(side))) {
+                    SpearAnimations.thirdPersonHandUse(arm, head, side == HumanoidArm.RIGHT, state.getUseItemStackForArm(side), state);
+                }
+            }
             default -> {}
         }
     }
@@ -330,7 +334,7 @@ public abstract class AbstractPonyModel<T extends PonyRenderState> extends Clien
             return;
         }
 
-        matrices.translate(-QuadrupedalArmPosing.sigmaOf(arm) * 0.06F, 0.355F, -0.06F);
+        matrices.translate(-QuadrupedalArmPosing.sigmaOf(arm) * 0.06F, 0.17F, -0.06F);
 
         if (pose == ArmPose.BOW_AND_ARROW) {
             matrices.translate(0, 0.1F, 0);

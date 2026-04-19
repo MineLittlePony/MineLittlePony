@@ -96,6 +96,10 @@ public class UnicornModel<T extends PonyRenderState> extends EarthPonyModel<T> i
 
         boolean shouldAimItem = action == ItemUseAnimation.BOW && state.attributes.itemUseTime > 0 || state.getHeldItem(arm).forwardFacing;
 
+        if (action == ItemUseAnimation.TRIDENT && state.getArmPoseForArm(arm) == ArmPose.THROW_TRIDENT) {
+            matrices.translate(0, 2, 0);
+        }
+
         if (shouldAimItem) {
             HumanoidArm main = state.attributes.mainArm;
             if (state.attributes.activeHand == InteractionHand.OFF_HAND) {

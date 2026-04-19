@@ -6,6 +6,7 @@ import net.minecraft.client.renderer.entity.state.HumanoidRenderState;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.HumanoidArm;
 
+import com.minelittlepony.api.config.PonyConfig;
 import com.minelittlepony.api.pony.meta.SizePreset;
 import com.minelittlepony.util.MathUtil;
 import com.minelittlepony.util.Sigma;
@@ -46,7 +47,7 @@ public interface QuadrupedalArmPosing {
 
             float mult = 1 - swag/2;
             arm.xRot = arm.xRot * mult - (Mth.PI / 10) * swag;
-            arm.zRot = -sigma * (Mth.PI / 15);
+            arm.zRot = sigma * (Mth.PI / 15);
             arm.zRot += 0.3F * -state.walkAnimationSpeed * sigma;
 
             if (state.getAttributes().isCrouching) {
@@ -85,10 +86,14 @@ public interface QuadrupedalArmPosing {
         if (charged) {
             arm.xRot = -0.8F;
             arm.yRot = head.yRot + 0.06F;
-            arm.zRot += 0.3F * -state.walkAnimationPos * sigmaOf(side);
+            arm.zRot += 0.3F * -state.walkAnimationSpeed * sigmaOf(side);
         } else {
-            arm.zRot = head.zRot - MathUtil.Angles._90_DEG;
-            arm.yRot = head.yRot + 0.06F;
+            arm.zRot = head.zRot;
+            arm.yRot = head.yRot - 0.3F * sigmaOf(side);
+            if (PonyConfig.getInstance().tpsmagic.get() && state.hasMagicGlow()) {
+                arm.z -= 2;
+                arm.y -= 16;
+            }
         }
     }
 
@@ -113,8 +118,13 @@ public interface QuadrupedalArmPosing {
 
     static <T extends HumanoidRenderState & PonyModel.AttributedHolder> void throwTrident(T state, ModelPart arm, HumanoidArm side) {
         arm.xRot = MathUtil.Angles._90_DEG * 2;
-        arm.zRot += (0.3F * -state.walkAnimationPos + 0.6F) * sigmaOf(side);
-        arm.y ++;
+        arm.zRot -= (0.3F * -state.walkAnimationSpeed + 0.6F) * sigmaOf(side);
+        arm.y --;
+        if (PonyConfig.getInstance().tpsmagic.get() && state.hasMagicGlow()) {
+            arm.zRot = 0;
+            arm.yRot = state.yRot * Mth.DEG_TO_RAD;
+            arm.xRot = state.xRot * Mth.DEG_TO_RAD + Mth.PI;
+        }
     }
 
     static <T extends HumanoidRenderState & PonyModel.AttributedHolder> void blowHorn(T state, ModelPart head, ModelPart arm, HumanoidArm side) {
@@ -135,12 +145,12 @@ public interface QuadrupedalArmPosing {
         float cos = Mth.cos(state.ageInTicks * 0.09F) * 0.05F + 0.05F;
         float sin = Mth.sin(state.ageInTicks * 0.067F) * 0.05F;
 
-        if (state.getAttributes().shouldLiftArm(state.leftArmPose, state.rightArmPose, 1)) {
+        if (state.getAttributes().shouldLiftArm(state.leftArmPose, state.rightArmPose, Sigma.LEFT)) {
             leftArm.zRot += cos;
             leftArm.xRot += sin;
         }
 
-        if (state.getAttributes().shouldLiftArm(state.rightArmPose, state.leftArmPose, -1)) {
+        if (state.getAttributes().shouldLiftArm(state.rightArmPose, state.leftArmPose, Sigma.RIGHT)) {
             rightArm.zRot += cos;
             rightArm.xRot += sin;
         }

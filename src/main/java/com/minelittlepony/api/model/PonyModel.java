@@ -38,6 +38,8 @@ public interface PonyModel<T extends EntityRenderState & PonyModel.AttributedHol
 
         Race getRace();
 
+        boolean hasMagicGlow();
+
         @Deprecated
         float getSwingAmount();
 
