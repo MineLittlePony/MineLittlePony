@@ -58,7 +58,7 @@ abstract class MixinSkullBlockEntityRenderer implements BlockEntityRenderer<Skul
             @Nullable final ModelFeatureRenderer.CrumblingOverlay breakProgress,
             CallbackInfo info) {
         var state = PonySkullRenderer.INSTANCE.popState();
-        if (!info.isCancelled() && state != null && state.render(matrices, frame, light, outline, breakProgress)) {
+        if (!info.isCancelled() && state != null && state.submit(matrices, frame, light, outline, breakProgress)) {
             info.cancel();
         }
     }

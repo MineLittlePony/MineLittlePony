@@ -13,8 +13,8 @@ public interface SkullRegistry {
         return PonySkullRenderer.INSTANCE;
     }
 
-    void register(SkullBlock.Type type, Supplier<Skull> factory);
+    void register(SkullBlock.Type type, Supplier<Skull<?>> factory);
 
     @Nullable
-    Supplier<Skull> get(SkullBlock.Type type);
+    Supplier<Skull<?>> get(SkullBlock.Type type);
 }

@@ -18,8 +18,10 @@ import com.mojang.blaze3d.vertex.PoseStack;
  *
  * Implement this interface if you want to extend our behaviour, modders.
  */
-public interface Skull {
-    void render(PoseStack stack, State state, SubmitNodeCollector frame, RenderType layer);
+public interface Skull<T extends Skull.State> {
+    T createState();
+
+    void submit(PoseStack stack, T state, SubmitNodeCollector frame, RenderType layer);
 
     boolean canRender(Pony pony, @Nullable ResolvableProfile profile, PonyConfig config);
 

@@ -38,13 +38,13 @@ import org.jetbrains.annotations.Nullable;
 public class PonySkullRenderer implements SkullRegistry {
     public static final PonySkullRenderer INSTANCE = new PonySkullRenderer();
 
-    public static final RenderStateDataKey<Data> DATA_KEY = RenderStateDataKey.create(() -> "Pony_Skull_State");
+    public static final RenderStateDataKey<Data<?>> DATA_KEY = RenderStateDataKey.create(() -> "Pony_Skull_State");
     @Nullable
-    private final AtomicReference<PonySkullRenderer.Data> ponySkullState = new AtomicReference<>(null);
+    private final AtomicReference<PonySkullRenderer.Data<?>> ponySkullState = new AtomicReference<>(null);
 
-    private final Map<SkullBlock.Type, Supplier<Skull>> registry = new HashMap<>();
+    private final Map<SkullBlock.Type, Supplier<Skull<?>>> registry = new HashMap<>();
 
-    private Function<SkullBlock.Type, Skull> skulls;
+    private Function<SkullBlock.Type, Skull<?>> skulls;
 
     private PonySkullRenderer() {
         reload();
@@ -64,32 +64,32 @@ public class PonySkullRenderer implements SkullRegistry {
         });
     }
 
-    public void register(SkullBlock.Type type, Supplier<Skull> factory) {
+    public void register(SkullBlock.Type type, Supplier<Skull<?>> factory) {
         registry.put(type, factory);
     }
 
     @Nullable
     @Override
-    public Supplier<Skull> get(Type type) {
+    public Supplier<Skull<?>> get(Type type) {
         return registry.get(type);
     }
 
-    public Data popState() {
+    public Data<?> popState() {
         return ponySkullState.getAndSet(null);
     }
 
-    public void pushState(@Nullable Data data) {
+    public void pushState(@Nullable Data<?> data) {
         ponySkullState.set(data);
     }
 
     @Nullable
-    public Data getSkullState(SkullBlock.Type skullType, @Nullable ResolvableProfile profile, @Nullable Identifier overrideTexture, float animation) {
+    public Data<?> getSkullState(SkullBlock.Type skullType, @Nullable ResolvableProfile profile, @Nullable Identifier overrideTexture, float animation) {
         @Nullable
-        Skull skull = skulls.apply(skullType);
-        return skull == null ? null : new Data(skull, overrideTexture, profile, animation);
+        Skull<?> skull = skulls.apply(skullType);
+        return skull == null ? null : new Data<>(skull, overrideTexture, profile, animation);
     }
 
-    public record Data(Skull model, @Nullable Identifier overrideTexture, @Nullable ResolvableProfile profile, float animation) {
+    public record Data<T extends Skull.State>(Skull<T> model, @Nullable Identifier overrideTexture, @Nullable ResolvableProfile profile, float animation) {
 
         public boolean canRender() {
             return model.canRender(pony(), profile, PonyConfig.getInstance());
@@ -103,14 +103,14 @@ public class PonySkullRenderer implements SkullRegistry {
             return Pony.getManager().getPony(overrideTexture == null ? model.getSkinResource(profile) : overrideTexture);
         }
 
-        public boolean render(PoseStack matrices, SubmitNodeCollector frame, int light, int outlineColor, @Nullable ModelFeatureRenderer.CrumblingOverlay crumblingOverlay) {
+        public boolean submit(PoseStack matrices, SubmitNodeCollector frame, int light, int outlineColor, @Nullable ModelFeatureRenderer.CrumblingOverlay crumblingOverlay) {
             final Pony pony = pony();
 
             if (!model.canRender(pony, profile, PonyConfig.getInstance())) {
                 return false;
             }
 
-            Skull.State skullModelState = new Skull.State();
+            T skullModelState = model.createState();
             skullModelState.animationPos = animation;
             skullModelState.alpha = ArmourRendererPlugin.INSTANCE.get().getArmourAlpha(EquipmentSlot.HEAD, EquipmentClientInfo.LayerType.HUMANOID);
             skullModelState.outlineColor = outlineColor;
@@ -118,7 +118,7 @@ public class PonySkullRenderer implements SkullRegistry {
             skullModelState.crumblingOverlay = crumblingOverlay;
             skullModelState.profile = profile;
             skullModelState.pony = pony;
-            model.render(matrices, skullModelState, frame, RenderTypes.entityTranslucent(pony.texture()));
+            model.submit(matrices, skullModelState, frame, RenderTypes.entityTranslucent(pony.texture()));
 
             return true;
         }

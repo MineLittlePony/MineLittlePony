@@ -18,7 +18,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import java.util.Optional;
 import java.util.function.Consumer;
 
-public class PonyHeadModelRenderer<T> implements SpecialModelRenderer<Tuple<PonySkullRenderer.Data, T>> {
+public class PonyHeadModelRenderer<T> implements SpecialModelRenderer<Tuple<PonySkullRenderer.Data<?>, T>> {
     private final SpecialModelRenderer<T> renderer;
 
     private final SkullBlock.Type kind;
@@ -46,7 +46,7 @@ public class PonyHeadModelRenderer<T> implements SpecialModelRenderer<Tuple<Pony
     }
 
     @Override
-    public Tuple<PonySkullRenderer.Data, T> extractArgument(ItemStack stack) {
+    public Tuple<PonySkullRenderer.Data<?>, T> extractArgument(ItemStack stack) {
         @Nullable
         T humanData = renderer.extractArgument(stack);
         return new Tuple<>(
@@ -60,8 +60,8 @@ public class PonyHeadModelRenderer<T> implements SpecialModelRenderer<Tuple<Pony
     }
 
     @Override
-    public void submit(Tuple<PonySkullRenderer.Data, T> data, PoseStack matrices, SubmitNodeCollector frame, int light, int overlay, boolean glint, int outline) {
-        if (data.getA() == null || !data.getA().render(matrices, frame, light, outline, null)) {
+    public void submit(Tuple<PonySkullRenderer.Data<?>, T> data, PoseStack matrices, SubmitNodeCollector frame, int light, int overlay, boolean glint, int outline) {
+        if (data.getA() == null || !data.getA().submit(matrices, frame, light, outline, null)) {
             renderer.submit(data.getB(), matrices, frame, light, overlay, glint, outline);
         }
     }

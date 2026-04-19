@@ -12,8 +12,7 @@ import com.minelittlepony.util.MathUtil;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.function.Function;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.SubmitNodeCollector;
@@ -21,15 +20,13 @@ import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.resources.DefaultPlayerSkin;
 import net.minecraft.resources.Identifier;
-import net.minecraft.util.ARGB;
-import net.minecraft.util.Mth;
+import net.minecraft.util.*;
 import net.minecraft.world.item.component.ResolvableProfile;
 
 import org.jetbrains.annotations.Nullable;
-import org.joml.Vector3f;
 
-public class PlayerPonySkull implements Skull {
-    private final Map<PlayerModelKey<AbstractPonyModel<?>>, AbstractPonyModel<?>> modelCache = new HashMap<>();
+public class PlayerPonySkull implements Skull<PonyHeadModel.State> {
+    private final Function<PlayerModelKey<AbstractPonyModel<?>>, PonyHeadModel> models = Util.memoize(key -> new PonyHeadModel(key.steveKey().createModel()));
     private final DJPon3EarsModel deadMau5 = ModelType.DJ_PON_3.createModel();
 
     @Override
@@ -48,18 +45,22 @@ public class PlayerPonySkull implements Skull {
     }
 
     @Override
-    public void render(PoseStack stack, State state, SubmitNodeCollector frame, RenderType layer) {
+    public PonyHeadModel.State createState() {
+        return new PonyHeadModel.State();
+    }
+
+    @Override
+    public void submit(PoseStack stack, PonyHeadModel.State state, SubmitNodeCollector frame, RenderType layer) {
         Race race = state.pony.race();
         if (race.isHuman()) {
             race = Race.EARTH;
         }
 
-        AbstractPonyModel<?> ponyHead = modelCache.computeIfAbsent(ModelType.getPlayerModel(race), key -> key.steveKey().createModel());
-        PlayerPonyRenderState ponyState = new PlayerPonyRenderState();
-        ponyState.pony = state.pony;
-        ponyState.race = state.pony.race();
-        ponyState.attributes.size = SizePreset.NORMAL;
-        ponyState.attributes.metadata = state.pony.metadata();
+        state.ponyState = new PlayerPonyRenderState();
+        state.ponyState.pony = state.pony;
+        state.ponyState.race = state.pony.race();
+        state.ponyState.attributes.size = SizePreset.NORMAL;
+        state.ponyState.attributes.metadata = state.pony.metadata();
 
         int color = ARGB.white(state.alpha);
 
@@ -71,18 +72,7 @@ public class PlayerPonySkull implements Skull {
                     .rotateLocalY(state.yRot * Mth.DEG_TO_RAD)
             );
         }
-
-        PoseStack copyStack = new PoseStack();
-        frame.order(0).submitCustomGeometry(stack, layer, (entry, vertices) -> {
-            Vector3f v = new Vector3f(0, -2, 2);
-            v.rotate(Axis.YP.rotationDegrees(state.yRot));
-            ponyHead.setupAnim(ponyState);
-            ponyHead.getHead().setPos(v.x, v.y, v.z);
-            ponyHead.setHeadRotation(state.animationPos, state.yRot, 0);
-            copyStack.last().set(entry);
-            ponyHead.headRenderList.accept(copyStack, vertices, state.light, OverlayTexture.NO_OVERLAY, color);
-        });
-
+        frame.order(0).submitModel(models.apply(ModelType.getPlayerModel(race)), state, stack, layer, state.light, OverlayTexture.NO_OVERLAY, color, null, state.outlineColor, state.crumblingOverlay);
         stack.popPose();
         if (hasMouseEars(state.profile)) {
             stack.pushPose();
