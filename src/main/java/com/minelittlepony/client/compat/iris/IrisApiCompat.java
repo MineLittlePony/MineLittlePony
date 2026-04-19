@@ -25,12 +25,4 @@ public interface IrisApiCompat {
 
         return IrisApiCompatImpl.wrapExactlyOnce(layer);
     }
-
-    static <T> T iris$capture(T object) {
-        if (object == null || !isIrisLoaded()) {
-            return object;
-        }
-
-        return IrisApiCompatImpl.iris$capture(object);
-    }
 }

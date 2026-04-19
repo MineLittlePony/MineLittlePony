@@ -8,6 +8,7 @@ import org.joml.Vector3f;
 import com.minelittlepony.api.model.skull.Skull;
 import com.minelittlepony.client.model.ClientPonyModel;
 import com.minelittlepony.client.render.entity.state.PonyRenderState;
+import com.minelittlepony.mson.util.PartUtil;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
@@ -16,7 +17,7 @@ class PonyHeadModel extends Model<PonyHeadModel.State> {
     private final ClientPonyModel<?> ponyModel;
 
     public PonyHeadModel(ClientPonyModel<?> ponyModel) {
-        super(ponyModel.root(), ponyModel.renderType());
+        super(PartUtil.EMPTY_PART, ponyModel.renderType());
         this.ponyModel = ponyModel;
     }
 

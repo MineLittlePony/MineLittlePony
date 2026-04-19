@@ -68,7 +68,7 @@ public class MagicOverlayRenderCommandQueue implements OrderedSubmitNodeCollecto
         if (IrisApiCompat.isOnShadowPass()) {
             return null;
         }
-        return IrisApiCompat.wrapExactlyOnce(layer.apply(renderType));
+        return layer.apply(renderType);
     }
 
     private List<BlockStateModelPart> scaleBlockParts(List<BlockStateModelPart> parts) {
@@ -143,20 +143,12 @@ public class MagicOverlayRenderCommandQueue implements OrderedSubmitNodeCollecto
 
     @Override
     public <S> void submitModel(Model<? super S> model, S state, PoseStack matrices, RenderType renderLayer, int light, int overlay, int tintedColor, @Nullable TextureAtlasSprite sprite, int outline, @Nullable CrumblingOverlay crumblingOverlay) {
-
-        var l = renderLayer = getFinalRenderType(renderLayer);
+        renderLayer = getFinalRenderType(renderLayer);
         if (renderLayer == null) {
             return;
         }
 
-        for (var pass : passes) {
-            matrices.pushPose();
-            matrices.translate(pass.translation().scale(TRANSLATION_SCALE));
-            CustomModelRenderCommand.<S>submit(parent, model, state, matrices, renderLayer, light, overlay, color, sprite, 0, null, (command, provider) -> {
-                return new ScaledVertexConsumer(provider.getBuffer(l), l, color, command.matrices()).setScale(pass.scale());
-            }, null);
-            matrices.popPose();
-        }
+        parent.submitModel(new ScaledVertexModel<>(model, passes, renderLayer), state, matrices, renderLayer, light, overlay, color, sprite, 0, null);
     }
 
     @Override
