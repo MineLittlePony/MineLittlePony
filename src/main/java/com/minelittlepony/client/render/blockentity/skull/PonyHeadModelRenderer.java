@@ -34,7 +34,7 @@ public class PonyHeadModelRenderer<T> implements SpecialModelRenderer<Tuple<Pony
 
     public static SpecialModelRenderer<?> create(SpecialModelRenderer.Unbaked<?> unbaked, SpecialModelRenderer<?> renderer) {
         if (unbaked instanceof CopperGolemStatueSpecialRenderer.Unbaked a && renderer instanceof CopperGolemStatueSpecialRenderer r) {
-            return new CopperPonyBlockEntityRenderer.CopperPonyModelRenderer<>(r, a.texture());
+            return new CopperPonyBlockEntityRenderer.CopperPonyModelRenderer<>(r, a.texture(), a.pose());
         }
         if (unbaked instanceof SkullSpecialRenderer.Unbaked a && renderer instanceof SkullSpecialRenderer r) {
             return new PonyHeadModelRenderer<>(r, a.kind(), a.textureOverride(), a.animation());

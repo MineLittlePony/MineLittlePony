@@ -13,6 +13,7 @@ import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.CommonColors;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.CopperGolemStatueBlock;
 
 import org.joml.Vector3fc;
 
@@ -48,9 +49,10 @@ public class CopperPonyBlockEntityRenderer extends CopperGolemStatueBlockRendere
 
         private final NoDataSpecialModelRenderer renderer;
 
-        public CopperPonyModelRenderer(NoDataSpecialModelRenderer renderer, Identifier texture) {
+        public CopperPonyModelRenderer(NoDataSpecialModelRenderer renderer, Identifier texture, CopperGolemStatueBlock.Pose pose) {
             this.renderer = renderer;
             this.texture = MineLittlePony.id(texture.getPath().replace(".png", "_dragon.png"));
+            state.pose = pose;
             model.setupAnim(state);
         }
 
