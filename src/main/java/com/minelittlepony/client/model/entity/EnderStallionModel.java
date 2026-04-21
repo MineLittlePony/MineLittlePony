@@ -32,11 +32,6 @@ public class EnderStallionModel extends AlicornModel<EnderStallionRenderer.State
     }
 
     @Override
-    public boolean isCasting(EnderStallionRenderer.State state) {
-        return state.carriedBlock != null && !state.carriedBlock.isAir();
-    }
-
-    @Override
     public void setModelAngles(EnderStallionRenderer.State state) {
         super.setModelAngles(state);
 

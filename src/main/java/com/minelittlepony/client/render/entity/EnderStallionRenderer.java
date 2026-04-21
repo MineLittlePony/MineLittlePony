@@ -77,6 +77,11 @@ public class EnderStallionRenderer extends PonyRenderer<EnderMan, EnderStallionR
         }
 
         @Override
+        public boolean computeIsCasting(@Nullable LivingEntity entity) {
+            return carriedBlock != null && !carriedBlock.isAir();
+        }
+
+        @Override
         protected void updateHeldItems(ItemModelResolver resolver, LivingEntity entity) {
             if (carriedBlock != null) {
                 if (mainArm == HumanoidArm.RIGHT) {

@@ -109,7 +109,6 @@ public class PonyRenderState extends AvatarRenderState implements PonyModel.Attr
         leftHeldItem.updateItemRenderState(this, resolver, armStacks.getOrDefault(HumanoidArm.LEFT, ItemStack.EMPTY), ItemDisplayContext.THIRD_PERSON_LEFT_HAND, null);
     }
 
-    @SuppressWarnings("unchecked")
     public void updateState(ItemModelResolver resolver, @Nullable LivingEntity entity, Models<?> models, Pony pony, ModelAttributes.Mode mode) {
         headEquipment = entity.getItemBySlot(EquipmentSlot.HEAD);
         this.pony = pony;
@@ -153,7 +152,7 @@ public class PonyRenderState extends AvatarRenderState implements PonyModel.Attr
             updateHeldItems(resolver, entity);
         }
         // Hide the horn glow if we're being rendered during an iris shadow pass
-        hornGlowVisible = !IrisApiCompat.isOnShadowPass() && models.body() instanceof ModelWithHorn h && h.isCasting(this);
+        hornGlowVisible = !IrisApiCompat.isOnShadowPass() && computeIsCasting(entity);
         isTechnoblade = ((
                     entity instanceof AbstractPiglin
                  || entity instanceof Player
@@ -207,6 +206,10 @@ public class PonyRenderState extends AvatarRenderState implements PonyModel.Attr
 
     protected Size computeSize(@Nullable LivingEntity entity, Size size) {
         return size;
+    }
+
+    public boolean computeIsCasting(@Nullable LivingEntity entity) {
+        return leftArmPose != ArmPose.EMPTY || rightArmPose != ArmPose.EMPTY;
     }
 
     @Override

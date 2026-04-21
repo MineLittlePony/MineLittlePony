@@ -1,6 +1,5 @@
 package com.minelittlepony.client.render.entity;
 
-import com.minelittlepony.api.model.ModelWithHorn;
 import com.minelittlepony.client.compat.iris.IrisApiCompat;
 import com.minelittlepony.client.model.ClientPonyModel;
 import com.minelittlepony.client.render.entity.npc.textures.TextureSupplier;
@@ -42,13 +41,12 @@ public abstract class PonyRenderer<
         addLayer(new ArrowLayer(this, context));
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public void extractRenderState(T entity, S state, float tickDelta) {
         super.extractRenderState(entity, state, tickDelta);
         state.leftArmPose = getArmPose(entity, HumanoidArm.LEFT);
         state.rightArmPose = getArmPose(entity, HumanoidArm.RIGHT);
-        state.hornGlowVisible = !IrisApiCompat.isOnShadowPass() && lookupModel(state).body() instanceof ModelWithHorn h && h.isCasting(state);
+        state.hornGlowVisible = !IrisApiCompat.isOnShadowPass() && state.computeIsCasting(entity);
     }
 
     protected ArmPose getArmPose(T entity, HumanoidArm arm) {
