@@ -42,6 +42,16 @@ public class UnicornModel<T extends PonyRenderState> extends EarthPonyModel<T> i
     }
 
     @Override
+    public final ModelPart getLevitation(HumanoidArm side) {
+        return side == HumanoidArm.LEFT ? leftCast : rightCast;
+    }
+
+    @Override
+    public final ModelPart getPhysicalArm(HumanoidArm side) {
+        return super.getArm(side);
+    }
+
+    @Override
     public void init(ModelView context) {
         super.init(context);
         horn = addPart(context.findByName("horn"));
