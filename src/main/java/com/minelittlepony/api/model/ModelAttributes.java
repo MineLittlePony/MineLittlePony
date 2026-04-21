@@ -5,7 +5,6 @@ import com.minelittlepony.api.pony.*;
 import com.minelittlepony.api.pony.meta.*;
 import com.minelittlepony.common.util.animation.Interpolator;
 import com.minelittlepony.util.MathUtil;
-import com.minelittlepony.util.Sigma;
 
 import java.util.*;
 
@@ -215,9 +214,9 @@ public class ModelAttributes {
         return interpolatorId;
     }
 
-    public boolean shouldLiftArm(ArmPose pose, ArmPose complement, float sigma) {
+    public boolean shouldLiftArm(ArmPose pose, ArmPose complement, HumanoidArm side) {
         return pose != ArmPose.EMPTY
-                && (pose != complement || sigma == (isLeftHanded ? Sigma.LEFT : Sigma.RIGHT))
+                && (pose != complement || side == (isLeftHanded ? HumanoidArm.LEFT : HumanoidArm.RIGHT))
                 && (complement != ArmPose.BLOCK && complement != ArmPose.CROSSBOW_HOLD && complement != ArmPose.THROW_TRIDENT);
     }
 

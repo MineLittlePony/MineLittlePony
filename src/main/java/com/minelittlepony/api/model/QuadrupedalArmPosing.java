@@ -1,17 +1,34 @@
 package com.minelittlepony.api.model;
 
+import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.HumanoidModel.ArmPose;
+import net.minecraft.client.model.effects.SpearAnimations;
 import net.minecraft.client.model.geom.ModelPart;
+import net.minecraft.client.renderer.entity.state.AvatarRenderState;
 import net.minecraft.client.renderer.entity.state.HumanoidRenderState;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.HumanoidArm;
+import net.minecraft.world.item.SwingAnimationType;
 
 import com.minelittlepony.api.config.PonyConfig;
 import com.minelittlepony.api.pony.meta.SizePreset;
 import com.minelittlepony.util.MathUtil;
 import com.minelittlepony.util.Sigma;
 
-public interface QuadrupedalArmPosing {
+import java.util.HashMap;
+import java.util.Map;
+
+public interface QuadrupedalArmPosing<
+            T extends HumanoidRenderState & PonyModel.AttributedHolder,
+            M extends HumanoidModel<AvatarRenderState> & PonyModel<T>
+        > {
+    static Map<ArmPose, QuadrupedalArmPosing<?, ?>> CUSTOM_ARM_POSES = new HashMap<>();
+    static Map<SwingAnimationType, QuadrupedalArmPosing<?, ?>> CUSTOM_SWING_ANIMATIONS = new HashMap<>();
+
+    void alignArmForAction(T state, ModelPart arm, HumanoidArm side);
+
+    void alignArmForSwing(T state, M model);
+
     static @Sigma float sigmaOf(HumanoidArm arm) {
         return arm == HumanoidArm.LEFT ? Sigma.LEFT : Sigma.RIGHT;
     }
@@ -39,7 +56,7 @@ public interface QuadrupedalArmPosing {
 
         boolean both = pose == complement;
 
-        if (state.getAttributes().shouldLiftArm(pose, complement, sigma)) {
+        if (state.getAttributes().shouldLiftArm(pose, complement, side)) {
             float swag = 1;
             if (!state.getAttributes().isFlying && both) {
                 swag -= (float)Math.pow(state.walkAnimationSpeed, 2);
@@ -141,16 +158,22 @@ public interface QuadrupedalArmPosing {
         arm.zRot += 0.3F * -state.walkAnimationPos * sigmaOf(side);
     }
 
+    static <T extends HumanoidRenderState & PonyModel.AttributedHolder> void holdSpear(T state, ModelPart arm, ModelPart head, HumanoidArm side) {
+        if (state.getAttributes().shouldLiftArm(state.getArmPoseForArm(side), state.getArmPoseForArm(side.getOpposite()), side)) {
+            SpearAnimations.thirdPersonHandUse(arm, head, side == HumanoidArm.RIGHT, state.getUseItemStackForArm(side), state);
+        }
+    }
+
     static <T extends HumanoidRenderState & PonyModel.AttributedHolder> void idle(T state, ModelPart leftArm, ModelPart rightArm) {
         float cos = Mth.cos(state.ageInTicks * 0.09F) * 0.05F + 0.05F;
         float sin = Mth.sin(state.ageInTicks * 0.067F) * 0.05F;
 
-        if (state.getAttributes().shouldLiftArm(state.leftArmPose, state.rightArmPose, Sigma.LEFT)) {
+        if (state.getAttributes().shouldLiftArm(state.leftArmPose, state.rightArmPose, HumanoidArm.LEFT)) {
             leftArm.zRot += cos;
             leftArm.xRot += sin;
         }
 
-        if (state.getAttributes().shouldLiftArm(state.rightArmPose, state.leftArmPose, Sigma.RIGHT)) {
+        if (state.getAttributes().shouldLiftArm(state.rightArmPose, state.leftArmPose, HumanoidArm.RIGHT)) {
             rightArm.zRot += cos;
             rightArm.xRot += sin;
         }

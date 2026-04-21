@@ -196,6 +196,7 @@ public class PonyRenderState extends AvatarRenderState implements PonyModel.Attr
         leftHeldItem.updateItemRenderState(this, resolver, entity.getItemHeldByArm(HumanoidArm.LEFT), ItemDisplayContext.THIRD_PERSON_LEFT_HAND, entity);
     }
 
+    @Override
     public ArmPose getArmPoseForArm(final HumanoidArm arm) {
         return arm == HumanoidArm.RIGHT ? rightArmPose : leftArmPose;
     }

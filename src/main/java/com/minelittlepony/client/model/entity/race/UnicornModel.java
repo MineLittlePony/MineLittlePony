@@ -11,6 +11,7 @@ import com.minelittlepony.api.pony.meta.SizePreset;
 import com.minelittlepony.client.model.part.UnicornHorn;
 import com.minelittlepony.client.render.entity.state.PonyRenderState;
 import com.minelittlepony.mson.api.ModelView;
+import com.minelittlepony.util.Sigma;
 import com.mojang.blaze3d.vertex.PoseStack;
 
 /**
@@ -18,18 +19,21 @@ import com.mojang.blaze3d.vertex.PoseStack;
  */
 public class UnicornModel<T extends PonyRenderState> extends EarthPonyModel<T> implements ModelWithHorn<T> {
 
-    protected final ModelPart unicornArmRight;
-    protected final ModelPart unicornArmLeft;
+    protected final ModelPart rightCast;
+    protected final ModelPart leftCast;
 
-    private boolean usingUnicornArmLeft;
-    private boolean usingUnicornArmRight;
+    private ModelPart leftItemPosingArm;
+    private ModelPart rightItemPosingArm;
 
     protected UnicornHorn<T> horn;
 
     public UnicornModel(ModelPart tree, boolean smallArms) {
         super(tree, smallArms);
-        unicornArmRight = tree.getChild("right_cast");
-        unicornArmLeft = tree.getChild("left_cast");
+        rightCast = tree.getChild("right_cast");
+        leftCast = tree.getChild("left_cast");
+
+        leftItemPosingArm = leftArm;
+        rightItemPosingArm = rightArm;
     }
 
     @Override
@@ -48,33 +52,30 @@ public class UnicornModel<T extends PonyRenderState> extends EarthPonyModel<T> i
     protected void rotateLegs(T state) {
         super.rotateLegs(state);
 
-        unicornArmRight.setRotation(0, 0, 0);
-        unicornArmRight.setPos(-7, 12, -2);
+        rightCast.setRotation(0, 0, 0);
+        rightCast.setPos(-7, 12, -2);
 
-        unicornArmLeft.setRotation(0, 0, 0);
-        unicornArmLeft.setPos(-7, 12, -2);
+        leftCast.setRotation(0, 0, 0);
+        leftCast.setPos(-7, 12, -2);
     }
 
     @Override
     protected void ponyCrouch(T state) {
         super.ponyCrouch(state);
-        unicornArmRight.xRot -= LEG_SNEAKING_PITCH_ADJUSTMENT;
-        unicornArmLeft.xRot -= LEG_SNEAKING_PITCH_ADJUSTMENT;
+        rightCast.xRot -= LEG_SNEAKING_PITCH_ADJUSTMENT;
+        leftCast.xRot -= LEG_SNEAKING_PITCH_ADJUSTMENT;
     }
 
     @Override
     protected void setModelAngles(T state) {
-        usingUnicornArmLeft = PonyConfig.getInstance().tpsmagic.get() && state.hasMagicGlow() && state.leftArmPose != ArmPose.EMPTY;
-        usingUnicornArmRight = PonyConfig.getInstance().tpsmagic.get() && state.hasMagicGlow() && state.rightArmPose != ArmPose.EMPTY;
+        leftItemPosingArm = PonyConfig.getInstance().tpsmagic.get() && state.hasMagicGlow() && state.leftArmPose != ArmPose.EMPTY ? leftCast : leftArm;
+        rightItemPosingArm = PonyConfig.getInstance().tpsmagic.get() && state.hasMagicGlow() && state.rightArmPose != ArmPose.EMPTY ? rightCast : rightArm;
         super.setModelAngles(state);
     }
 
     @Override
     public ModelPart getArm(HumanoidArm side) {
-        if ((side == HumanoidArm.LEFT ? usingUnicornArmLeft : usingUnicornArmRight)) {
-            return side == HumanoidArm.LEFT ? unicornArmLeft : unicornArmRight;
-        }
-        return super.getArm(side);
+        return side == HumanoidArm.LEFT ? leftItemPosingArm : rightItemPosingArm;
     }
 
     @Override
@@ -85,7 +86,7 @@ public class UnicornModel<T extends PonyRenderState> extends EarthPonyModel<T> i
             return;
         }
 
-        float left = arm == HumanoidArm.LEFT ? -1 : 1;
+        @Sigma float left = QuadrupedalArmPosing.sigmaOf(arm);
 
         ItemUseAnimation action = state.getHeldItem(arm).action;
         if (action == ItemUseAnimation.SPYGLASS && state.attributes.itemUseTime > 0) {

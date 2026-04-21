@@ -1,6 +1,7 @@
 package com.minelittlepony.api.model;
 
 import net.minecraft.client.model.HeadedModel;
+import net.minecraft.client.model.HumanoidModel.ArmPose;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.renderer.entity.state.AvatarRenderState;
 import net.minecraft.client.renderer.entity.state.EntityRenderState;
@@ -35,6 +36,8 @@ public interface PonyModel<T extends EntityRenderState & PonyModel.AttributedHol
         ModelAttributes getAttributes();
 
         AvatarRenderState getRenderState();
+
+        ArmPose getArmPoseForArm(HumanoidArm arm);
 
         Race getRace();
 

@@ -20,6 +20,7 @@ import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.util.*;
 import net.minecraft.world.entity.HumanoidArm;
 
+import org.jetbrains.annotations.Nullable;
 import org.joml.Quaternionf;
 
 /**
@@ -254,6 +255,11 @@ public abstract class AbstractPonyModel<T extends PonyRenderState> extends Clien
                         QuadrupedalArmPosing.punch(state, state.mainArm == HumanoidArm.LEFT ? leftArm : rightArm, body, getHead());
                         break;
                     default:
+                        @Nullable
+                        QuadrupedalArmPosing<T, AbstractPonyModel<T>> poser = Untyped.cast(QuadrupedalArmPosing.CUSTOM_SWING_ANIMATIONS.get(state.swingAnimationType));
+                        if (poser != null) {
+                            poser.alignArmForSwing(state, this);
+                        }
                         break;
 
                 }
@@ -279,12 +285,14 @@ public abstract class AbstractPonyModel<T extends PonyRenderState> extends Clien
             case SPYGLASS -> QuadrupedalArmPosing.spyglass(state, head, arm, side);
             case TOOT_HORN -> QuadrupedalArmPosing.blowHorn(state, head, arm, side);
             case BRUSH -> QuadrupedalArmPosing.brushBlock(state, arm, side);
-            case SPEAR -> {
-                if (state.attributes.shouldLiftArm(pose, state.getArmPoseForArm(side.getOpposite()), QuadrupedalArmPosing.sigmaOf(side))) {
-                    SpearAnimations.thirdPersonHandUse(arm, head, side == HumanoidArm.RIGHT, state.getUseItemStackForArm(side), state);
+            case SPEAR -> QuadrupedalArmPosing.holdSpear(state, arm, head, side);
+            default -> {
+                @Nullable
+                QuadrupedalArmPosing<T, AbstractPonyModel<T>> poser = Untyped.cast(QuadrupedalArmPosing.CUSTOM_ARM_POSES.get(pose));
+                if (poser != null) {
+                    poser.alignArmForAction(state, arm, side);
                 }
             }
-            default -> {}
         }
     }
 
