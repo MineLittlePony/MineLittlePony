@@ -315,7 +315,7 @@ public class PonyRenderState extends AvatarRenderState implements PonyModel.Attr
                     || stack.has(DataComponents.TOOL)
                     || forwardFacing;
 
-            if (PonyConfig.getInstance().tpsmagic.get() && state.hasMagicGlow()) {
+            if (state.hasMagicGlow()) {
                 float driftStrength = 0.002F;
                 levitatingItemXDrift = Mth.sin(state.ageInTicks / 20F) * driftStrength;
                 levitatingItemZDrift = Mth.cos((state.ageInTicks + 20) / 20F) * driftStrength;

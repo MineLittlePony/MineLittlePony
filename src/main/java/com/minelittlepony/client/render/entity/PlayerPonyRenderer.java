@@ -1,5 +1,6 @@
 package com.minelittlepony.client.render.entity;
 
+import com.minelittlepony.api.config.PonyConfig;
 import com.minelittlepony.api.model.*;
 import com.minelittlepony.api.model.ModelAttributes.Mode;
 import com.minelittlepony.api.pony.Pony;
@@ -208,7 +209,7 @@ public class PlayerPonyRenderer<Player extends Avatar & ClientAvatarEntity>
         }
         PonyRenderState state = renderer.createRenderState(player, Minecraft.getInstance().getDeltaTracker().getGameTimeDeltaPartialTick(false));
 
-        if (state.hasMagicGlow() && (
+        if (PonyConfig.getInstance().fpsmagic.get() && state.hasMagicGlow() && (
                 player.getItemInHand(InteractionHand.MAIN_HAND).has(DataComponents.MAP_ID)
              || player.getItemInHand(InteractionHand.OFF_HAND).has(DataComponents.MAP_ID)
         )) {

@@ -1,5 +1,6 @@
 package com.minelittlepony.client.render.entity.feature;
 
+import com.minelittlepony.api.config.PonyConfig;
 import com.minelittlepony.client.compat.iris.IrisApiCompat;
 import com.minelittlepony.client.model.ClientPonyModel;
 import com.minelittlepony.client.render.*;
@@ -47,7 +48,7 @@ public class HeldItemFeature<
 
         submitArmWithItem(state, item, stack, arm, matrices, queue, light);
 
-        if (!glintLessItem.glintlessHandItemState.isEmpty() && !IrisApiCompat.isOnShadowPass()) {
+        if (PonyConfig.getInstance().tpsmagic.get() && !glintLessItem.glintlessHandItemState.isEmpty() && !IrisApiCompat.isOnShadowPass()) {
             queue = MagicGlow.getQueue(state.glowColor, queue, LevitatingItemRenderer.getThirdPersonLevitatingItemTransformPasses(state, glintLessItem));
             submitArmWithItem(state, glintLessItem.glintlessHandItemState, stack, arm, matrices, queue, LightCoordsUtil.FULL_BRIGHT);
         }
