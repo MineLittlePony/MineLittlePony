@@ -46,12 +46,11 @@ public class StriderRenderer extends MobRenderer<Strider, StriderRenderer.State,
     public void extractRenderState(Strider entity, State state, float tickDelta) {
         super.extractRenderState(entity, state, tickDelta);
         state.uuid = entity.getUUID();
-        state.cold = entity.isFreezing();
+        state.cold = entity.isSuffocating();
         state.saddleStack = entity.getItemBySlot(EquipmentSlot.SADDLE);
         state.flailAmount = 1 + (float)Mth.clamp(entity.getDeltaMovement().y * 10, 0, 7);
         state.walkAnimationSpeed *= 2;
         state.walkAnimationPos *= 1.5F;
-
     }
 
     @Override
