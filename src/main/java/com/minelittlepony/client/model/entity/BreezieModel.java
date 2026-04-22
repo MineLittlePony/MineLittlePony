@@ -24,8 +24,8 @@ public class BreezieModel extends HumanoidModel<AllayRenderer.State> {
         super.setupAnim(state);
         hat.skipDraw = true;
 
-        float move = state.walkAnimationSpeed;
-        float swing = state.walkAnimationPos;
+        float move = state.walkAnimationPos;
+        float swing = state.walkAnimationSpeed;
 
         head.yRot = state.yRot * Mth.DEG_TO_RAD;
         head.xRot = state.xRot * Mth.DEG_TO_RAD;
