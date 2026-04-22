@@ -168,24 +168,23 @@ public abstract class AbstractPonyModel<T extends PonyRenderState> extends Clien
         neck.setPos(0, 0, 0);
         head.setPos(0, 0, 0);
 
-        leftLeg.z = 14;
+        leftLeg.z--;
         leftLeg.y = 17;
-        leftLeg.xRot = -MathUtil.QUARTER_PIE;
+        leftLeg.xRot = body.xRot - MathUtil.QUARTER_PIE;
         leftLeg.yRot = -Mth.PI / 7;
 
-        leftLeg.xRot += body.xRot;
-
-        rightLeg.z = 15;
+        rightLeg.z--;
         rightLeg.y = 17;
-        rightLeg.xRot = -MathUtil.QUARTER_PIE;
+        rightLeg.xRot = body.xRot - MathUtil.QUARTER_PIE;
         rightLeg.zRot =  Mth.PI / 7;
-
-        rightLeg.xRot += body.xRot;
 
         leftArm.zRot = -Mth.PI * 0.06f;
         leftArm.xRot += body.xRot;
         rightArm.zRot = Mth.PI * 0.06f;
         rightArm.xRot += body.xRot;
+
+        leftArm.z -= 3;
+        rightArm.z -= 3;
     }
 
     /**
