@@ -41,10 +41,12 @@ public class MineLittlePony implements ClientModInitializer {
 
     private static MineLittlePony instance;
 
+    public static final String DEFAULT_NAMESPACE = "minelittlepony";
     public static final Logger LOGGER = LogManager.getLogger("MineLittlePony");
 
     public static final Identifier PONY_HITBOXES_DEBUG_HUD_ENTRY = id("pony_hitboxes");
     public static final Identifier PONY_FILLYCAM_RAYS_DEBUG_HUD_ENTRY = id("pony_fillycam_rays");
+    private static final Identifier PONY_BUTTON_ICON = id("textures/gui/pony.png");
 
     private PonyManagerImpl ponyManager;
     private VariatedTextureSupplier variatedTextures;
@@ -69,7 +71,7 @@ public class MineLittlePony implements ClientModInitializer {
     }
 
     public static Identifier id(String name) {
-        return Identifier.fromNamespaceAndPath("minelittlepony", name);
+        return Identifier.fromNamespaceAndPath(DEFAULT_NAMESPACE, name);
     }
 
     @Override
@@ -77,7 +79,7 @@ public class MineLittlePony implements ClientModInitializer {
         hasHdSkins = FabricLoader.getInstance().isModLoaded("hdskins");
         hasModMenu = FabricLoader.getInstance().isModLoaded("modmenu");
 
-        PonyConfig config = new ClientPonyConfig(GamePaths.getConfigDirectory().resolve("minelp.json"));
+        ClientPonyConfig config = new ClientPonyConfig(GamePaths.getConfigDirectory().resolve("minelp.json"));
         ponyManager = new PonyManagerImpl(config);
         variatedTextures = new VariatedTextureSupplier();
 
@@ -99,14 +101,14 @@ public class MineLittlePony implements ClientModInitializer {
 
         new ClientSkinsProxy();
 
+        FabricLoader.getInstance().getEntrypoints("minelittlepony", ClientModInitializer.class).forEach(ClientModInitializer::onInitializeClient);
+        config.loadRenderers();
         config.load();
         config.onChangedExternally(_ -> configChanged.set(true));
 
         ClientChannel.bootstrap();
         ModelType.bootstrap();
         MagicGlow.bootstrap();
-
-        FabricLoader.getInstance().getEntrypoints("minelittlepony", ClientModInitializer.class).forEach(ClientModInitializer::onInitializeClient);
 
         renderDispatcher.initialise(Minecraft.getInstance().getEntityRenderDispatcher(), false);
     }
@@ -142,7 +144,7 @@ public class MineLittlePony implements ClientModInitializer {
                 button.getStyle()
                         .setIcon(new TextureSprite()
                                 .setPosition(2, 2)
-                                .setTexture(id("textures/gui/pony.png"))
+                                .setTexture(PONY_BUTTON_ICON)
                                 .setTextureSize(16, 16)
                                 .setSize(16, 16))
                         .setTooltip("minelp.options.title", 0, 10);
@@ -169,8 +171,11 @@ public class MineLittlePony implements ClientModInitializer {
     private static final class ClientPonyConfig extends PonyConfig {
         public ClientPonyConfig(Path path) {
             super(path);
-            MobRenderers.REGISTRY.values().forEach(r -> value("entities", r.name(), true));
             disablePonifiedArmour.onChanged(_ -> ArmourTextureResolver.INSTANCE.invalidate());
+        }
+
+        public void loadRenderers() {
+            MobRenderers.REGISTRY.values().forEach(r -> value("entities", r.name(), true));
         }
 
         @Override

@@ -1,11 +1,11 @@
 package com.minelittlepony.client.render.blockentity.skull;
 
 import com.google.common.base.Suppliers;
+import com.minelittlepony.api.config.MobPonifyCategory;
 import com.minelittlepony.api.config.PonyConfig;
 import com.minelittlepony.api.model.skull.Skull;
 import com.minelittlepony.api.pony.Pony;
 import com.minelittlepony.client.model.ClientPonyModel;
-import com.minelittlepony.client.render.MobRenderers;
 import com.minelittlepony.client.render.entity.state.PonyRenderState;
 import com.minelittlepony.mson.api.ModelKey;
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -23,12 +23,12 @@ import org.jetbrains.annotations.Nullable;
 
 public class MobSkull<S extends PonyRenderState> implements Skull<PonyHeadModel.State> {
     private final Identifier texture;
-    private final MobRenderers type;
+    private final MobPonifyCategory type;
 
     private final Supplier<PonyHeadModel> ponyHead;
     private final Supplier<S> state;
 
-    MobSkull(Identifier texture, MobRenderers type, ModelKey<? extends ClientPonyModel<?>> modelKey, Supplier<S> state) {
+    MobSkull(Identifier texture, MobPonifyCategory type, ModelKey<? extends ClientPonyModel<?>> modelKey, Supplier<S> state) {
         this.texture = texture;
         this.type = type;
         this.state = state;
