@@ -13,6 +13,7 @@
 		"arm_rotation_x": 0,
 		"arm_rotation_x_neg": [0, "-", "#arm_rotation_x"],
 		"arm_rotation_z": 2,
+    "arm_rotation_z_neg": 11,
 		"arm_rotation_y": 12,
 		"head_pivot_y": 0,
 		"neck_dilate_y": -0.1,
@@ -308,7 +309,7 @@
       }
 		},
 		"right_leg": {
-			"pivot": ["#arm_rotation_x_neg", "#arm_rotation_y", 11],
+			"pivot": ["#arm_rotation_x_neg", "#arm_rotation_y", "#arm_rotation_z_neg"],
 			"texture": { "u": 0, "v": 16 },
 			"cubes": [
 				{
@@ -331,7 +332,7 @@
       }
 		},
 		"left_leg": {
-			"pivot": ["#arm_rotation_x", "#arm_rotation_y", 11],
+			"pivot": ["#arm_rotation_x", "#arm_rotation_y", "#arm_rotation_z_neg"],
 			"texture": { "u": 16, "v": 48 },
 			"cubes": [
 				{
