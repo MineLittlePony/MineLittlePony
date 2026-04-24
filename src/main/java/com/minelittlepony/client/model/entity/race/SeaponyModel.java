@@ -60,6 +60,12 @@ public class SeaponyModel<T extends PonyRenderState> extends UnicornModel<T> {
     }
 
     @Override
+    public void transform(T state, BodyPart part, PoseStack stack) {
+        stack.translate(0, 0.6F, 0);
+        super.transform(state, part, stack);
+    }
+
+    @Override
     protected void repositionLegs(T state) {
 
     }
@@ -67,12 +73,6 @@ public class SeaponyModel<T extends PonyRenderState> extends UnicornModel<T> {
     @Override
     protected void rotateArms(T state) {
         walkSeapony(state, leftArm, rightArm, leftLeg, rightLeg);
-    }
-
-    @Override
-    public void transform(T state, BodyPart part, PoseStack stack) {
-        stack.translate(0, 0.6F, 0);
-        super.transform(state, part, stack);
     }
 
     static <T extends PonyRenderState> void walkSeapony(T state,
@@ -96,11 +96,18 @@ public class SeaponyModel<T extends PonyRenderState> extends UnicornModel<T> {
         }
     }
 
+
     public static class Armour<T extends PonyRenderState> extends PonyArmourModel<T> {
         public Armour(ModelPart tree) {
             super(tree);
             rightLeg.skipDraw = true;
             leftLeg.skipDraw = true;
+        }
+
+        @Override
+        public void transform(T state, BodyPart part, PoseStack stack) {
+            stack.translate(0, 0.6F, 0);
+            super.transform(state, part, stack);
         }
 
         @Override
@@ -111,12 +118,6 @@ public class SeaponyModel<T extends PonyRenderState> extends UnicornModel<T> {
         @Override
         protected void rotateArms(T state) {
             walkSeapony(state, leftArm, rightArm, leftLeg, rightLeg);
-        }
-
-        @Override
-        public void transform(T state, BodyPart part, PoseStack stack) {
-            stack.translate(0, 0.6F, 0);
-            super.transform(state, part, stack);
         }
     }
 }

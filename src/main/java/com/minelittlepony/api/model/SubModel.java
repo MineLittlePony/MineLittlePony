@@ -22,10 +22,5 @@ public interface SubModel<T extends EntityRenderState & PonyModel.AttributedHold
     default void setAngles(PonyModel<T> model, T state) {
     }
 
-    /**
-     * Sets whether this part should be rendered.
-     */
-    default void setVisible(boolean visible, T state) {
-
-    }
+    default void setHidden() {}
 }

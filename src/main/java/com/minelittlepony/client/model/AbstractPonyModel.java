@@ -3,7 +3,6 @@ package com.minelittlepony.client.model;
 import com.minelittlepony.api.model.*;
 import com.minelittlepony.client.render.entity.state.PlayerPonyRenderState;
 import com.minelittlepony.client.render.entity.state.PonyRenderState;
-import com.minelittlepony.client.transform.PonyTransformation;
 import com.minelittlepony.common.util.Untyped;
 import com.minelittlepony.mson.util.RenderList;
 import com.minelittlepony.util.MathUtil;
@@ -17,6 +16,7 @@ import java.util.List;
 
 import net.minecraft.client.model.effects.SpearAnimations;
 import net.minecraft.client.model.geom.ModelPart;
+import net.minecraft.client.renderer.entity.state.AvatarRenderState;
 import net.minecraft.util.*;
 import net.minecraft.world.entity.HumanoidArm;
 
@@ -40,7 +40,7 @@ public abstract class AbstractPonyModel<T extends PonyRenderState> extends Clien
 
     protected final ModelPart neck;
 
-    protected final RenderList neckRenderList;
+    private final RenderList neckRenderList;
     public final RenderList headRenderList;
     public final RenderList bodyRenderList;
 
@@ -55,10 +55,10 @@ public abstract class AbstractPonyModel<T extends PonyRenderState> extends Clien
 
         neck = tree.getChild("neck");
         mainRenderList = RenderList.of()
-            .add(bodyRenderList = withStage(BodyPart.BODY).add(body).add(body::translateAndRotate))
-            .add(neckRenderList = withStage(BodyPart.NECK).add(neck))
-            .add(headRenderList = withStage(BodyPart.HEAD).add(head))
-            .add(legsRenderList = withStage(BodyPart.LEGS).add(leftArm, rightArm, leftLeg, rightLeg));
+            .add(bodyRenderList = BodyPart.BODY.createRenderList(this).add(body).add(body::translateAndRotate))
+            .add(neckRenderList = BodyPart.NECK.createRenderList(this).add(neck))
+            .add(headRenderList = BodyPart.HEAD.createRenderList(this).add(head))
+            .add(legsRenderList = BodyPart.LEGS.createRenderList(this).add(leftArm, rightArm, leftLeg, rightLeg));
     }
 
     protected <P extends SubModel<? super T>> P addPart(P part) {
@@ -67,17 +67,23 @@ public abstract class AbstractPonyModel<T extends PonyRenderState> extends Clien
     }
 
     @Override
+    public RenderList getRenderList(BodyPart part) {
+        return switch (part) {
+            case BACK, TAIL, WINGS, BODY -> bodyRenderList;
+            case HORN, HEAD -> headRenderList;
+            case NECK -> neckRenderList;
+            case LEGS -> legsRenderList;
+            default -> mainRenderList;
+        };
+    }
+
+    @Override
     public final void renderToBuffer(PoseStack matrices, VertexConsumer vertices, int light, int overlay, int color) {
         mainRenderList.accept(matrices, vertices, light, overlay, color);
     }
 
     @Override
-    public final void renderHead(PoseStack matrices, VertexConsumer vertices, int light, int overlay, int color) {
-        headRenderList.accept(matrices, vertices, light, overlay, color);
-    }
-
-    @Override
-    protected void setModelVisibilities(T state) {
+    protected void setModelAngles(T state) {
         head.visible = state.headVisible;
         hat.visible = head.visible && !state.attributes.isHorsey;
         neck.visible = body.visible;
@@ -86,54 +92,49 @@ public abstract class AbstractPonyModel<T extends PonyRenderState> extends Clien
         } else {
             neck.skipDraw = !head.visible;
         }
-        parts.forEach(part -> part.setVisible(body.visible, state));
-    }
 
-    @Override
-    protected void setModelAngles(T entity) {
-        resetPose();
-        head.setRotation(entity.xRot * Mth.DEG_TO_RAD, entity.yRot * Mth.DEG_TO_RAD, 0);
+        head.setRotation(state.xRot * Mth.DEG_TO_RAD, state.yRot * Mth.DEG_TO_RAD, 0);
 
-        body.yRot = entity.wobbleAmount;
-        neck.yRot = entity.wobbleAmount;
+        body.yRot = state.wobbleAmount;
+        neck.yRot = state.wobbleAmount;
 
-        rotateLegs(entity);
-        repositionLegs(entity);
-        if (canAnimateArms(entity)) {
-            rotateArms(entity);
+        rotateLegs(state);
+        repositionLegs(state);
+        if (canAnimateArms(state)) {
+            rotateArms(state);
         }
 
-        if (!entity.attributes.isGoingFast) {
-            if (entity.attributes.isCrouching) {
-                ponyCrouch(entity);
-            } else if (entity.attributes.isSitting) {
+        if (!state.attributes.isGoingFast) {
+            if (state.attributes.isCrouching) {
+                ponyCrouch(state);
+            } else if (state.attributes.isSitting) {
                 ponySit();
             } else {
-                adjustBody(entity, 0, Pivot.ZERO);
-                if (entity.attributes.isLyingDown) {
+                adjustBody(state, 0, Pivot.ZERO);
+                if (state.attributes.isLyingDown) {
                     ponySleep();
                 }
             }
         }
 
-        if (entity.attributes.isHorsey) {
+        if (state.attributes.isHorsey) {
             head.y -= 3;
             head.z -= 2;
             head.xRot = 0.5F;
         }
 
-        if (entity.attributes.isChibi) {
+        if (state.attributes.isChibi) {
             head.xScale += 0.5;
             head.zScale += 0.5;
             head.yScale += 0.5;
-            float bobScale = entity.getAttributes().getMainInterpolator().interpolate("head_bob", entity.walkAnimationSpeed, 120) * 0.4F;
-            head.zRot += Mth.sin(entity.ageInTicks / 2F) * bobScale;
-            head.yRot += Mth.sin(entity.ageInTicks / 3F) * bobScale;
-            head.xRot += Mth.cos(entity.ageInTicks / 2F) * bobScale * 1.2F;
+            float bobScale = state.getAttributes().getMainInterpolator().interpolate("head_bob", state.walkAnimationSpeed, 120) * 0.4F;
+            head.zRot += Mth.sin(state.ageInTicks / 2F) * bobScale;
+            head.yRot += Mth.sin(state.ageInTicks / 3F) * bobScale;
+            head.xRot += Mth.cos(state.ageInTicks / 2F) * bobScale * 1.2F;
         }
 
-        parts.forEach(part -> part.setAngles(Untyped.cast(this), entity));
-        mainRenderList.pose(entity);
+        parts.forEach(part -> part.setAngles(Untyped.cast(this), state));
+        mainRenderList.pose(state);
     }
 
     /**
@@ -153,9 +154,6 @@ public abstract class AbstractPonyModel<T extends PonyRenderState> extends Clien
 
         rightLeg.xRot = MathUtil.Angles._90_DEG;
         leftLeg.xRot = MathUtil.Angles._90_DEG;
-
-        Pivot FONT_LEGS_SLEEPING = new Pivot(0, -2, 2);
-        Pivot BACK_LEGS_SLEEPING = new Pivot(0, -2, -2);
 
         FONT_LEGS_SLEEPING.add(rightArm);
         FONT_LEGS_SLEEPING.add(leftArm);
@@ -245,24 +243,18 @@ public abstract class AbstractPonyModel<T extends PonyRenderState> extends Clien
         if (!state.attributes.isLyingDown) {
             if (state.attackTime > 0) {
                 switch (state.swingAnimationType) {
-                    case NONE:
-                        break;
-                    case STAB:
-                        SpearAnimations.thirdPersonAttackHand(this, state);
-                        break;
-                    case WHACK:
-                        QuadrupedalArmPosing.punch(state, state.mainArm == HumanoidArm.LEFT ? leftArm : rightArm, body, getHead());
-                        break;
-                    default:
+                    case NONE -> {}
+                    case STAB -> SpearAnimations.thirdPersonAttackHand(this, state);
+                    case WHACK -> QuadrupedalArmPosing.punch(state, state.mainArm == HumanoidArm.LEFT ? leftArm : rightArm, body, getHead());
+                    default -> {
                         @Nullable
                         QuadrupedalArmPosing<T, AbstractPonyModel<T>> poser = Untyped.cast(QuadrupedalArmPosing.CUSTOM_SWING_ANIMATIONS.get(state.swingAnimationType));
                         if (poser != null) {
                             poser.alignArmForSwing(state, this);
                         }
                         break;
-
+                    }
                 }
-
             }
             QuadrupedalArmPosing.idle(state, leftArm, rightArm);
         }
@@ -295,21 +287,27 @@ public abstract class AbstractPonyModel<T extends PonyRenderState> extends Clien
         }
     }
 
+    @Override
+    public void translateToHand(AvatarRenderState state, HumanoidArm arm, PoseStack matrices) {
+        transformHeldItem(Untyped.cast(state), arm, matrices);
+        super.translateToHand(state, arm, matrices);
+    }
+
     protected boolean canAnimateArms(T state) {
         return true;
     }
 
     protected void adjustBody(T state, float pitch, Pivot origin) {
         adjustBodyComponents(pitch, origin);
-        if (!state.attributes.isHorsey) {
-            neck.setPos(0, origin.y(), origin.z());
-        } else {
-            neck.setPos(0, origin.y() - 1, origin.z() - 2);
+        neck.setPos(0, origin.y(), origin.z());
+        if (state.attributes.isHorsey) {
+            neck.y--;
+            neck.z-= 2;
             neck.xRot = Angles._30_DEG;
         }
     }
 
-    protected final void adjustBodyComponents(float pitch, Pivot origin) {
+    private final void adjustBodyComponents(float pitch, Pivot origin) {
         body.xRot = pitch;
         body.y = origin.y();
         body.z = origin.z();
@@ -323,8 +321,9 @@ public abstract class AbstractPonyModel<T extends PonyRenderState> extends Clien
         return super.getBodyPart(part);
     }
 
+
     @Override
-    public final void transformHeldItem(T state, HumanoidArm arm, PoseStack matrices) {
+    public void transformHeldItem(T state, HumanoidArm arm, PoseStack matrices) {
         transform(state, BodyPart.LEGS, matrices);
         ModelPart a = getForeLeg(arm);
         Quaternionf rotation = new Quaternionf().rotationZYX(a.zRot, a.yRot, a.xRot);
@@ -401,13 +400,7 @@ public abstract class AbstractPonyModel<T extends PonyRenderState> extends Clien
             stack.scale(1.5F, 1, 1.5F);
         }
 
-        PonyTransformation.forSize(state.attributes.size).transform(state.attributes, part, stack);
-
+        state.transformation.transform(state.attributes, part, stack);
         stack.translate(0, -originY, -originZ);
-    }
-
-    @Override
-    public void transform(T state, BodyPart bodyPart, ModelPart part) {
-        PonyTransformation.forSize(state.attributes.size).transform(state.attributes, bodyPart, part);
     }
 }

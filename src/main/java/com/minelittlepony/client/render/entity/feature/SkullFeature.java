@@ -48,10 +48,7 @@ public class SkullFeature<
             matrices.pushPose();
             matrices.scale(headTransformation.horizontalScale(), 1, headTransformation.horizontalScale());
 
-            M model = lookupModel(state).body();
-
-            model.transform(state, BodyPart.HEAD, matrices);
-            model.getHead().translateAndRotate(matrices);
+            lookupModel(state).body().transformAccessory(state, BodyPart.HEAD, matrices);
 
             float f = 1.1F;
             matrices.scale(f, f, f);

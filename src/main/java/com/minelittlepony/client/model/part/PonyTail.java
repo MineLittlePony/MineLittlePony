@@ -49,6 +49,10 @@ public class PonyTail implements SubModel<PonyRenderState>, MsonModel {
         tail.zRot = rainboom ? 0 : Mth.cos(state.walkAnimationPos * 0.8F) * 0.2f * state.walkAnimationSpeed;
         tail.yRot = state.wobbleAmount * 5;
 
+        tail.visible = !state.isSpectator;
+        tailStop = state.attributes.metadata.tailLength().ordinal();
+        shape = state.attributes.metadata.tailShape();
+
         if (state.attributes.isCrouching && !rainboom) {
             tail.setPos(0, 0, TAIL_SNEAKING_Z);
             tail.xRot = -model.getBodyPart(BodyPart.BODY).xRot + 0.1F;
@@ -77,17 +81,14 @@ public class PonyTail implements SubModel<PonyRenderState>, MsonModel {
         }
     }
 
+    public void setHidden() {
+        tail.visible = false;
+    }
+
     private void swingX(float ticks) {
         float sinTickFactor = Mth.sin(ticks * 0.067f) * 0.05f;
         tail.xRot += sinTickFactor;
         tail.yRot += sinTickFactor;
-    }
-
-    @Override
-    public void setVisible(boolean visible, PonyRenderState state) {
-        tail.visible = visible;
-        tailStop = state.attributes.metadata.tailLength().ordinal();
-        shape = state.attributes.metadata.tailShape();
     }
 
     @Override

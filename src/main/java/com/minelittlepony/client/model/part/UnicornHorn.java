@@ -44,17 +44,18 @@ public class UnicornHorn<T extends PonyRenderState> implements SubModel<T> {
     }
 
     @Override
-    public void setVisible(boolean visible, T state) {
-        tint = visible && state.hasMagicGlow() && state.headVisible && state.hornGlowVisible ? state.glowColor : 0;
-        horn.visible = visible && state.race.hasHorn() && state.headVisible;
-        glow.visible = tint != 0;
-    }
-
-    @Override
     public void setAngles(PonyModel<T> model, T state) {
         horn.resetPose();
         glow.resetPose();
-        model.transform(state, BodyPart.HORN, horn);
-        model.transform(state, BodyPart.HORN, glow);
+        tint = !state.isSpectator && state.hasMagicGlow() && state.headVisible && state.hornGlowVisible ? state.glowColor : 0;
+        horn.visible = !state.isSpectator && state.race.hasHorn() && state.headVisible;
+        glow.visible = tint != 0;
+        state.transformation.transform(state.attributes, BodyPart.HORN, horn);
+        state.transformation.transform(state.attributes, BodyPart.HORN, glow);
+    }
+
+    public void setHidden() {
+        horn.visible = false;
+        glow.visible = false;
     }
 }

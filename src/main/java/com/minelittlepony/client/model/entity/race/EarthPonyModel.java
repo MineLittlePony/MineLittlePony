@@ -33,11 +33,11 @@ public class EarthPonyModel<T extends PonyRenderState> extends AbstractPonyModel
         snout = addPart(context.findByName("snout"));
         ears = addPart(context.findByName("ears"));
 
-        mainRenderList.add(withStage(BodyPart.TAIL).add(tail));
+        mainRenderList.add(BodyPart.TAIL.createRenderList(this).add(tail));
     }
 
-    protected void setModelVisibilities(T state) {
-        super.setModelVisibilities(state);
+    protected void setModelAngles(T state) {
+        super.setModelAngles(state);
         mane.visible = state.attributes.isHorsey;
         nose.visible = state.attributes.isHorsey;
         tailStub.visible = !state.attributes.isHorsey;

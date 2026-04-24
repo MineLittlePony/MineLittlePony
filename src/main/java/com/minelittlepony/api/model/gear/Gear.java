@@ -78,9 +78,7 @@ public interface Gear<S extends HumanoidRenderState & PonyModel.AttributedHolder
      * Applies body transformations for this wearable
      */
     default void transform(S state, PonyModel<S> model, PoseStack matrices) {
-        BodyPart part = getGearLocation();
-        model.transform(state, part,  matrices);
-        model.getBodyPart(part).translateAndRotate(matrices);
+        model.transformAccessory(state, getGearLocation(),  matrices);
     }
 
     /**

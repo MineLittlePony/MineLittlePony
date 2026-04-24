@@ -6,6 +6,7 @@ import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.npc.villager.VillagerDataHolder;
 
 import com.minelittlepony.api.model.Models;
+import com.minelittlepony.api.model.PonyModel;
 import com.minelittlepony.api.model.gear.Gear;
 import com.minelittlepony.api.pony.meta.Race;
 import com.minelittlepony.api.pony.meta.Wearable;
@@ -46,7 +47,7 @@ abstract class AbstractNpcRenderer<
         return super.shouldRender(model, state, wearable, gear);
     }
 
-    protected abstract void initializeModel(ClientPonyModel<S> model);
+    protected abstract void initializeModel(PonyModel<S> model);
 
     @Override
     public Identifier getDefaultTexture(S state, Wearable wearable) {

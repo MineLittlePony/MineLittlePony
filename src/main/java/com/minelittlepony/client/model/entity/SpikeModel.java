@@ -16,6 +16,7 @@ import com.minelittlepony.api.config.PonyConfig;
 import com.minelittlepony.api.model.BodyPart;
 import com.minelittlepony.client.model.ClientPonyModel;
 import com.minelittlepony.client.render.entity.CopperPonyRenderer;
+import com.minelittlepony.mson.util.RenderList;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 
@@ -53,6 +54,11 @@ public class SpikeModel extends ClientPonyModel<CopperPonyRenderer.State> {
             return tail;
         }
         return super.getBodyPart(part);
+    }
+
+    @Override
+    public RenderList getRenderList(BodyPart part) {
+        return RenderList.of();
     }
 
     @Override

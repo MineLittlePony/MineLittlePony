@@ -8,8 +8,6 @@ import com.minelittlepony.api.model.SubModel;
 import com.minelittlepony.client.render.entity.state.PonyRenderState;
 import com.minelittlepony.mson.api.*;
 import com.minelittlepony.mson.api.model.PartBuilder;
-import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
 
 public class PonyEars implements SubModel<PonyRenderState>, MsonModel {
     private final ModelPart right;
@@ -31,6 +29,8 @@ public class PonyEars implements SubModel<PonyRenderState>, MsonModel {
     public void setAngles(PonyModel<PonyRenderState> model, PonyRenderState state) {
         left.resetPose();
         right.resetPose();
+        right.visible = !state.race.isHuman();
+        left.visible = !state.race.isHuman();
 
         if (state.attributes.isHorsey) {
             left.x = -1;
@@ -57,15 +57,5 @@ public class PonyEars implements SubModel<PonyRenderState>, MsonModel {
                     0.01F * Mth.sin(state.ageInTicks / 2F)
                   + 0.015F * Mth.cos(state.ageInTicks / 3F);
         }
-    }
-
-    @Override
-    public void accept(PoseStack stack, VertexConsumer vertices, int overlay, int light, int color) {
-    }
-
-    @Override
-    public void setVisible(boolean visible, PonyRenderState state) {
-        right.visible = !state.race.isHuman();
-        left.visible = !state.race.isHuman();
     }
 }

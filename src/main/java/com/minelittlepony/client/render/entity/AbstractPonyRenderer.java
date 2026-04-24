@@ -10,6 +10,7 @@ import com.minelittlepony.client.render.EquineRenderManager;
 import com.minelittlepony.client.render.entity.feature.*;
 import com.minelittlepony.client.render.entity.npc.textures.TextureSupplier;
 import com.minelittlepony.client.render.entity.state.PonyRenderState;
+import com.minelittlepony.common.util.Untyped;
 import com.minelittlepony.mson.api.ModelKey;
 import com.mojang.blaze3d.vertex.PoseStack;
 
@@ -76,12 +77,11 @@ public abstract class AbstractPonyRenderer<
         addPonyFeature(new PonyBodyPartFeature<>(this, m -> ((ModelWithHorn)m).getHorn(), m -> m instanceof ModelWithHorn));
     }
 
-    @SuppressWarnings({"unchecked", "rawtypes"})
     protected final boolean addPonyFeature(RenderLayer<
                 ? extends AvatarRenderState,
                 ? extends ClientPonyModel<? extends AvatarRenderState>
             > feature) {
-        return ((List)layers).add(feature);
+        return layers.add(Untyped.cast(feature));
     }
 
     protected SkullFeature<S, M> createSkullFeature(EntityRendererProvider.Context context) {
@@ -110,15 +110,11 @@ public abstract class AbstractPonyRenderer<
 
     @Override
     protected final AABB getBoundingBoxForCulling(T entity) {
-        AABB box = manager.getBoundingBox(entity, getUnscaledBoundingBox(entity));
+        AABB box = manager.getBoundingBox(entity, entity.getBoundingBox());
         if (entity.getItemBySlot(EquipmentSlot.HEAD).is(Items.DRAGON_HEAD)) {
             return box.inflate(0.5, 0.5, 0.5);
         }
         return box;
-    }
-
-    protected AABB getUnscaledBoundingBox(T entity) {
-        return entity.getBoundingBox();
     }
 
     @Override

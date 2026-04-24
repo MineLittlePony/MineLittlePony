@@ -29,9 +29,7 @@ public class PiglinPonyModel extends ZomponyModel<PonyPiglinRenderer.State> {
         leftFlap.zRot =   0.5235988F + Mth.cos(progress) * range;
     }
 
-    @Override
-    public void setHeadRotation(float animationProgress, float yaw, float pitch) {
-        super.setHeadRotation(animationProgress, yaw, pitch);
+    public void setHeadRotation(float animationProgress) {
         leftFlap.zRot = -(Mth.cos(animationProgress * Mth.PI * 0.2F * 1.2F) + 2.5F) * -0.2F;
         rightFlap.zRot = (Mth.cos(animationProgress * Mth.PI * 0.2F) + 2.5F) * -0.2F;
     }

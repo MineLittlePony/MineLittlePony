@@ -32,6 +32,7 @@ import com.minelittlepony.api.pony.meta.*;
 import com.minelittlepony.api.state.PonifiedRenderState;
 import com.minelittlepony.client.compat.iris.IrisApiCompat;
 import com.minelittlepony.client.transform.PonyPosture;
+import com.minelittlepony.client.transform.PonyTransformation;
 
 import java.util.*;
 
@@ -56,6 +57,8 @@ public class PonyRenderState extends AvatarRenderState implements PonyModel.Attr
     public Race race = Race.HUMAN;
     public int glowColor;
 
+    public TransformedModel.BodyType transformation = PonyTransformation.NORMAL;
+
     public final HeldItemRenderState leftHeldItem = new HeldItemRenderState();
     public final HeldItemRenderState rightHeldItem = new HeldItemRenderState();
 
@@ -72,6 +75,7 @@ public class PonyRenderState extends AvatarRenderState implements PonyModel.Attr
         isBaby = attributes.size == SizePreset.FOAL;
         race = pony.race();
         glowColor = attributes.metadata.glowColor();
+        transformation = PonyTransformation.forSize(attributes.size);
         vehicleOffset = 0;
         riderOffset = getRiderYOffset();
         nameplateYOffset = getNamePlateYOffset();
@@ -122,6 +126,7 @@ public class PonyRenderState extends AvatarRenderState implements PonyModel.Attr
         isBaby = attributes.size == SizePreset.FOAL;
         race = displayTags.race().orElseGet(() -> computeRace(entity, pony));
         glowColor = displayTags.magicColor().orElse(attributes.metadata.glowColor());
+        transformation = PonyTransformation.forSize(attributes.size);
         if (isPassenger) {
             vehicleOffset = (float)(entity.getBoundingBox().minY - entity.getVehicle().getBoundingBox().minY - entity.getVehicle().getAttachments().get(EntityAttachment.PASSENGER, 0, 0).y);
         } else {
@@ -220,6 +225,11 @@ public class PonyRenderState extends AvatarRenderState implements PonyModel.Attr
     @Override
     public final AvatarRenderState getRenderState() {
         return this;
+    }
+
+    @Override
+    public final TransformedModel.BodyType getBodyType() {
+        return transformation;
     }
 
     public boolean hasMagicGlow() {

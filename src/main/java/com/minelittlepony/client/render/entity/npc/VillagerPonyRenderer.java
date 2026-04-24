@@ -6,8 +6,9 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.entity.npc.villager.Villager;
 
+import com.minelittlepony.api.model.BodyPart;
+import com.minelittlepony.api.model.PonyModel;
 import com.minelittlepony.client.VariatedTextureSupplier;
-import com.minelittlepony.client.model.ClientPonyModel;
 import com.minelittlepony.client.render.entity.npc.textures.*;
 
 public class VillagerPonyRenderer extends AbstractNpcRenderer<Villager, VillagerPonyRenderer.State> {
@@ -22,13 +23,13 @@ public class VillagerPonyRenderer extends AbstractNpcRenderer<Villager, Villager
     }
 
     @Override
-    protected void initializeModel(ClientPonyModel<State> model) {
+    protected void initializeModel(PonyModel<State> model) {
         model.onSetModelAngles((m, state) -> {
             if (state.headRolling) {
-                m.head.zRot = 0.3F * Mth.sin(0.45F * state.ageInTicks);
-                m.head.xRot = 0.4F;
+                m.getBodyPart(BodyPart.HEAD).zRot = 0.3F * Mth.sin(0.45F * state.ageInTicks);
+                m.getBodyPart(BodyPart.HEAD).xRot = 0.4F;
             } else {
-                m.head.zRot = 0;
+                m.getBodyPart(BodyPart.HEAD).zRot = 0;
             }
         });
     }

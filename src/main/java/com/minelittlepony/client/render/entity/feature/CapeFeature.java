@@ -41,36 +41,36 @@ public class CapeFeature extends AbstractPonyFeature<PlayerPonyRenderState, Clie
     }
 
     @Override
-    public void submit(PoseStack matrixStack, SubmitNodeCollector queue, int light, PlayerPonyRenderState state, float xRot, float yRot) {
-            if (!state.isInvisible && state.showCape) {
-                PlayerSkin skinTextures = state.skin;
-                if (skinTextures.cape() != null && !hasLayer(state.chestEquipment, EquipmentClientInfo.LayerType.WINGS)) {
-                    ArmourRendererPlugin plugin = ArmourRendererPlugin.INSTANCE.get();
+    public void submit(PoseStack matrices, SubmitNodeCollector queue, int light, PlayerPonyRenderState state, float xRot, float yRot) {
+        if (!state.isInvisible && state.showCape) {
+            PlayerSkin skinTextures = state.skin;
+            if (skinTextures.cape() != null && !hasLayer(state.chestEquipment, EquipmentClientInfo.LayerType.WINGS)) {
+                ArmourRendererPlugin plugin = ArmourRendererPlugin.INSTANCE.get();
 
-                    RenderType capeLayer = plugin.getCapeLayer(state, skinTextures.cape().texturePath());
-                    if (capeLayer != null) {
-                        matrixStack.pushPose();
-                        if (hasLayer(state.chestEquipment, EquipmentClientInfo.LayerType.HUMANOID)) {
-                            matrixStack.translate(0.0F, -0.053125F, 0.06875F);
-                        }
-
-                        if (((PlayerPonyRenderState)state).attributes.isSleeping) {
-                            matrixStack.translate(0, 0, 0.4F);
-                        } else {
-                            matrixStack.translate(0, 0.44F, 0);
-                        }
-                        lookupModel(state).body().transformAccessory((PlayerPonyRenderState)state, BodyPart.BACK, matrixStack);
-                        matrixStack.mulPose(Axis.XP.rotationDegrees(85 - model.body.xRot * Mth.DEG_TO_RAD));
-                        if (state.isBaby) {
-                            matrixStack.scale(1.1F, 1.1F, 1.1F);
-                        }
-
-                        queue.submitModel(this.model, state, matrixStack, capeLayer, light, OverlayTexture.NO_OVERLAY, state.outlineColor, null);
-
-                        plugin.onArmourRendered(state, matrixStack, queue, EquipmentSlot.BODY, EquipmentClientInfo.LayerType.HUMANOID, ArmourRendererPlugin.ArmourType.CAPE);
-                        matrixStack.popPose();
+                RenderType capeLayer = plugin.getCapeLayer(state, skinTextures.cape().texturePath());
+                if (capeLayer != null) {
+                    matrices.pushPose();
+                    if (hasLayer(state.chestEquipment, EquipmentClientInfo.LayerType.HUMANOID)) {
+                        matrices.translate(0.0F, -0.053125F, 0.06875F);
                     }
+
+                    if (((PlayerPonyRenderState)state).attributes.isSleeping) {
+                        matrices.translate(0, 0, 0.4F);
+                    } else {
+                        matrices.translate(0, 0.44F, 0);
+                    }
+                    lookupModel(state).body().transformAccessory((PlayerPonyRenderState)state, BodyPart.BACK, matrices);
+                    matrices.mulPose(Axis.XP.rotationDegrees(85 - model.body.xRot * Mth.DEG_TO_RAD));
+                    if (state.isBaby) {
+                        matrices.scale(1.1F, 1.1F, 1.1F);
+                    }
+
+                    queue.submitModel(this.model, state, matrices, capeLayer, light, OverlayTexture.NO_OVERLAY, state.outlineColor, null);
+
+                    plugin.onArmourRendered(state, matrices, queue, EquipmentSlot.BODY, EquipmentClientInfo.LayerType.HUMANOID, ArmourRendererPlugin.ArmourType.CAPE);
+                    matrices.popPose();
                 }
             }
         }
+    }
 }

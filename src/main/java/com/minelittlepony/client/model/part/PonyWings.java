@@ -63,6 +63,8 @@ public class PonyWings<S extends PonyRenderState> implements SubModel<S>, MsonMo
     public void setAngles(PonyModel<S> model, S state) {
         float flap = 0;
 
+        this.visible = !state.isSpectator && state.race.hasWings();
+
         if (state.attackTime > 0) {
             flap = Mth.sin(Mth.sqrt(state.attackTime) * Mth.TWO_PI);
         } else {
@@ -107,11 +109,6 @@ public class PonyWings<S extends PonyRenderState> implements SubModel<S>, MsonMo
             rightWing.root.visible = right == rightWing;
             legacyWing.root.visible = right == legacyWing;
         }
-    }
-
-    @Override
-    public void setVisible(boolean visible, S state) {
-        this.visible = visible && state.race.hasWings();
     }
 
     private boolean isBurdened(S state) {
@@ -193,7 +190,7 @@ public class PonyWings<S extends PonyRenderState> implements SubModel<S>, MsonMo
                 folded.zRot = roll;
             }
 
-            model.transform(state, BodyPart.WINGS, root);
+            state.transformation.transform(state.attributes, BodyPart.WINGS, root);
         }
 
         public void render(PoseStack matrices, VertexConsumer vertices, int overlay, int light, int color) {

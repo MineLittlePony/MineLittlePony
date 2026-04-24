@@ -19,6 +19,7 @@ public class PostureFlight extends PonyPosture {
         this.yOffset = yOffset;
     }
 
+    @Override
     public void updateState(LivingEntity entity, PonyRenderState state) {
         super.updateState(entity, state);
 

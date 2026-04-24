@@ -59,8 +59,7 @@ public class PassengerFeature<
         float scale = 1/state.attributes.size.scaleFactor();
         final double parrotModelHeight = 1.5;
 
-        getParentModel().transform(state, BodyPart.BACK, matrices);
-        getParentModel().body.translateAndRotate(matrices);
+        getParentModel().transformAccessory(state, BodyPart.BACK, matrices);
 
         matrices.translate(0, -1.28, 0);
         matrices.mulPose(Axis.ZP.rotationDegrees(left ? -5 : 5));

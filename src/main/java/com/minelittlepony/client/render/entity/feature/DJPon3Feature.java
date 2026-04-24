@@ -29,12 +29,7 @@ public class DJPon3Feature<
     public void submit(PoseStack stack, SubmitNodeCollector queue, int light, S state, float limbAngle, float limbDistance) {
         if (state.nameTag != null && "deadmau5".equals(state.nameTag.getString())) {
             stack.pushPose();
-
-            M body = getContext().getEquineManager().lookupModel(state).body();
-
-            body.transform(state, BodyPart.HEAD, stack);
-            body.getHead().translateAndRotate(stack);
-
+            lookupModel(state).body().transformAccessory(state, BodyPart.HEAD, stack);
             stack.scale(DJPon3EarsModel.DEFAULT_SCALE, DJPon3EarsModel.DEFAULT_SCALE, DJPon3EarsModel.DEFAULT_SCALE);
             stack.translate(0, 0.3F, 0);
 

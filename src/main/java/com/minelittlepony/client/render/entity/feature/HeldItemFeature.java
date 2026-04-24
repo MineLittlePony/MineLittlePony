@@ -44,7 +44,6 @@ public class HeldItemFeature<
         }
 
         matrices.pushPose();
-        getParentModel().transformHeldItem(state, arm, matrices);
 
         submitArmWithItem(state, item, stack, arm, matrices, queue, light);
 
@@ -53,5 +52,11 @@ public class HeldItemFeature<
             submitArmWithItem(state, glintLessItem.glintlessHandItemState, stack, arm, matrices, queue, LightCoordsUtil.FULL_BRIGHT);
         }
         matrices.popPose();
+    }
+
+    @Override
+    protected void renderItemHeldToEye(AvatarRenderState state, HumanoidArm arm, PoseStack matrices, SubmitNodeCollector frame, int light) {
+        getParentModel().transformHeldItem(Untyped.cast(state), arm, matrices);
+        super.renderItemHeldToEye(state, arm, matrices, frame, light);
     }
 }

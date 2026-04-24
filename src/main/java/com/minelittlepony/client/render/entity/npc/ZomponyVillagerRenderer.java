@@ -13,7 +13,6 @@ import org.jetbrains.annotations.Nullable;
 import com.minelittlepony.api.model.*;
 import com.minelittlepony.api.pony.Pony;
 import com.minelittlepony.client.VariatedTextureSupplier;
-import com.minelittlepony.client.model.ClientPonyModel;
 import com.minelittlepony.client.render.entity.npc.textures.*;
 
 public class ZomponyVillagerRenderer extends AbstractNpcRenderer<ZombieVillager, ZomponyVillagerRenderer.State> {
@@ -44,9 +43,9 @@ public class ZomponyVillagerRenderer extends AbstractNpcRenderer<ZombieVillager,
     }
 
     @Override
-    protected void initializeModel(ClientPonyModel<State> model) {
+    protected void initializeModel(PonyModel<State> model) {
         model.onSetModelAngles((m, state) -> {
-            MobPosingHelper.animateZombieArms(m.getArm(HumanoidArm.LEFT), m.getArm(HumanoidArm.RIGHT), state.aggressive, state);
+            MobPosingHelper.animateZombieArms(m.getForeLeg(HumanoidArm.LEFT), m.getForeLeg(HumanoidArm.RIGHT), state.aggressive, state);
         });
     }
 

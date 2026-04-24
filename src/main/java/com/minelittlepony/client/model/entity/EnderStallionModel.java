@@ -18,27 +18,24 @@ public class EnderStallionModel extends AlicornModel<EnderStallionRenderer.State
     }
 
     @Override
-    protected void setModelVisibilities(EnderStallionRenderer.State state) {
-        super.setModelVisibilities(state);
+    public void setModelAngles(EnderStallionRenderer.State state) {
+        super.setModelAngles(state);
         leftSleeve.visible = false;
         rightSleeve.visible = false;
 
         leftPants.visible = false;
         rightPants.visible = false;
-        tail.setVisible(false, state);
-        snout.setVisible(false, state);
-        horn.setVisible(!state.isBoss, state);
+        tail.setHidden();
+        snout.setHidden();
+        if (state.isBoss) {
+            horn.setHidden();
+        }
         leftHorn.visible = rightHorn.visible = state.isBoss;
-    }
-
-    @Override
-    public void setModelAngles(EnderStallionRenderer.State state) {
-        super.setModelAngles(state);
+        hat.visible = state.isAttacking;
 
         if (state.isAttacking) {
             head.y -= 5;
         }
-        hat.visible = state.isAttacking;
     }
 
     @Override

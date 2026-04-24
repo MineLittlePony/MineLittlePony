@@ -153,7 +153,6 @@ public class PlayerPonyRenderer<Player extends Avatar & ClientAvatarEntity>
     }
 
     @Nullable
-    @SuppressWarnings("unchecked")
     public Vec3 getHandPos(Player player, HumanoidArm arm, float swingProgress, float tickDelta) {
         if (entityRenderDispatcher.options.getCameraType().isFirstPerson() && player == Minecraft.getInstance().player) {
             return null;
@@ -175,7 +174,6 @@ public class PlayerPonyRenderer<Player extends Avatar & ClientAvatarEntity>
         scale(state, matrices);
         matrices.translate(0, -1.501F, 0);
         model.setupAnim(state);
-        ((ClientPonyModel<PlayerPonyRenderState>)model).transformHeldItem(state, arm, matrices);
         model.translateToHand(state, arm, matrices);
         ModelPart a = arm == HumanoidArm.LEFT ? model.leftArm : model.rightArm;
         Quaternionf rotation = new Quaternionf().rotationZYX(a.zRot, a.yRot, a.xRot);
@@ -198,7 +196,6 @@ public class PlayerPonyRenderer<Player extends Avatar & ClientAvatarEntity>
         return pos.add(vec.x, vec.y, vec.z);
     }
 
-    @SuppressWarnings("unchecked")
     protected void renderArm(PoseStack stack, SubmitNodeCollector queue, int light, Identifier skinTexture, boolean sleeveVisible, HumanoidArm side) {
 
         LocalPlayer player = Minecraft.getInstance().player;
@@ -233,9 +230,7 @@ public class PlayerPonyRenderer<Player extends Avatar & ClientAvatarEntity>
         arm.xRot = 0;
         arm.yRot = 0;
 
-        if (model instanceof PonyModel ponyModel) {
-            ponyModel.transform(state, BodyPart.LEGS, arm);
-        }
+        state.transformation.transform(state.attributes, BodyPart.LEGS, arm);
 
         queue.submitModelPart(arm, stack, RenderTypes.entityTranslucent(skinTexture), light, OverlayTexture.NO_OVERLAY, null);
         stack.popPose();

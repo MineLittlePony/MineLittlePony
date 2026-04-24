@@ -10,32 +10,26 @@ import net.minecraft.world.entity.HumanoidArm;
 
 import com.minelittlepony.api.pony.meta.*;
 import com.minelittlepony.mson.api.MsonModel;
-import com.mojang.blaze3d.vertex.PoseStack;
+import com.minelittlepony.mson.util.RenderList;
 
-public interface PonyModel<T extends EntityRenderState & PonyModel.AttributedHolder> extends MsonModel, ModelWithHooves<T>, HeadedModel {
+public interface PonyModel<T extends EntityRenderState & PonyModel.AttributedHolder> extends MsonModel, ModelWithHooves<T>, HeadedModel, TransformedModel<T> {
+    @Override
     ModelPart getBodyPart(BodyPart part);
 
-    /**
-     * Applies a transform particular to a certain body part.
-     */
-    default void transform(T state, BodyPart part, PoseStack matrices) { }
+    RenderList getRenderList(BodyPart part);
 
-    default void transform(T state, BodyPart bodyPart, ModelPart part) { }
+    void onSetModelAngles(PosingCallback<T> callback);
 
-    default void transformHeldItem(T state, HumanoidArm arm, PoseStack matrices) {}
-
-    /**
-     * Applies transformations to align to a certain body part.
-     */
-    default void transformAccessory(T state, BodyPart part, PoseStack matrices) {
-        transform(state, part, matrices);
-        getBodyPart(part).translateAndRotate(matrices);
+    public interface PosingCallback<S extends EntityRenderState & PonyModel.AttributedHolder> {
+        void poseModel(PonyModel<S> model, S state);
     }
 
     public interface AttributedHolder {
         ModelAttributes getAttributes();
 
         AvatarRenderState getRenderState();
+
+        TransformedModel.BodyType getBodyType();
 
         ArmPose getArmPoseForArm(HumanoidArm arm);
 

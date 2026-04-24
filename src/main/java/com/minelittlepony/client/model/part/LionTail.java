@@ -21,6 +21,7 @@ public class LionTail implements SubModel<PonyRenderState> {
     @Override
     public void setAngles(PonyModel<PonyRenderState> model, PonyRenderState state) {
         tail.resetPose();
+        tail.visible = !state.isSpectator;
 
         float bodySwing = state.wobbleAmount * 5;
 
@@ -79,11 +80,6 @@ public class LionTail implements SubModel<PonyRenderState> {
             tail.z = 14;
             tail.y = 7;
         }
-    }
-
-    @Override
-    public void setVisible(boolean visible, PonyRenderState state) {
-        tail.visible = visible;
     }
 
     @Override

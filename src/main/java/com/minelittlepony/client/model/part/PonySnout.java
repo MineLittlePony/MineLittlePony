@@ -3,6 +3,7 @@ package com.minelittlepony.client.model.part;
 import net.minecraft.client.model.geom.ModelPart;
 
 import com.minelittlepony.api.config.PonyConfig;
+import com.minelittlepony.api.model.PonyModel;
 import com.minelittlepony.api.model.SubModel;
 import com.minelittlepony.api.pony.meta.Gender;
 import com.minelittlepony.client.render.entity.state.PonyRenderState;
@@ -38,13 +39,18 @@ public class PonySnout implements SubModel<PonyRenderState>, MsonModel {
     }
 
     @Override
-    public void setVisible(boolean visible, PonyRenderState state) {
-        visible = !state.attributes.isHorsey
+    public void setAngles(PonyModel<PonyRenderState> model, PonyRenderState state) {
+        boolean visible = !state.attributes.isHorsey
                 && !state.attributes.metadata.race().isHuman()
                 && PonyConfig.getInstance().snuzzles.get();
         Gender gender = state.attributes.metadata.gender();
 
         mare.visible = (visible && gender.isMare());
         stallion.visible = (visible && gender.isStallion());
+    }
+
+    public void setHidden() {
+        mare.visible = false;
+        stallion.visible = false;
     }
 }

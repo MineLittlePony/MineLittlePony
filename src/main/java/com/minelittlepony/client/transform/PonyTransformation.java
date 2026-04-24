@@ -14,7 +14,7 @@ import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-public enum PonyTransformation {
+public enum PonyTransformation implements TransformedModel.BodyType {
     NORMAL(SizePreset.NORMAL) {
         @Override
         public void transform(ModelAttributes attributes, BodyPart part, PoseStack stack) {
@@ -322,8 +322,10 @@ public enum PonyTransformation {
         this.size = size;
     }
 
+    @Override
     public abstract void transform(ModelAttributes attributes, BodyPart part, PoseStack stack);
 
+    @Override
     public void transform(ModelAttributes attributes, BodyPart bodyPart, ModelPart part) {
 
     }
