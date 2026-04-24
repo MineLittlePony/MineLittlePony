@@ -229,8 +229,6 @@ public class PlayerPonyRenderer<Player extends Avatar & ClientAvatarEntity>
         // seapony has different angles, so make sure they're correct
         arm.xRot = 0;
         arm.yRot = 0;
-        model.rightSleeve.loadPose(model.rightArm.storePose());
-        model.leftSleeve.loadPose(model.leftArm.storePose());
 
         queue.submitModelPart(arm, stack, RenderTypes.entityTranslucent(skinTexture), light, OverlayTexture.NO_OVERLAY, null);
         stack.popPose();
