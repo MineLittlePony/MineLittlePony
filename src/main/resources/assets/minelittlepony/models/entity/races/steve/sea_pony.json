@@ -1,5 +1,8 @@
 {
 	"parent": "minelittlepony:races/steve/unicorn",
+  "locals": {
+    "arm_rotation_x": -1
+  },
 	"data": {
 		"left_fin": {
 			"type": "mson:planar",
