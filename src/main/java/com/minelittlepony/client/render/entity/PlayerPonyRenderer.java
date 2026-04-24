@@ -11,6 +11,7 @@ import com.minelittlepony.client.render.PonyRenderContext;
 import com.minelittlepony.client.render.entity.feature.*;
 import com.minelittlepony.client.render.entity.state.PlayerPonyRenderState;
 import com.minelittlepony.client.render.entity.state.PonyRenderState;
+import com.minelittlepony.util.Sigma;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 
@@ -214,12 +215,11 @@ public class PlayerPonyRenderer<Player extends Avatar & ClientAvatarEntity>
         }
 
         stack.pushPose();
-        float reflect = side == HumanoidArm.LEFT ? -1 : 1;
+        @Sigma float reflect = side == HumanoidArm.LEFT ? Sigma.LEFT : Sigma.RIGHT;
 
         stack.translate(reflect * -0.255F, -0.77F, -0.15F);
 
         model = lookupModel(state).body();
-
         ModelPart arm = side == HumanoidArm.LEFT ? model.leftArm : model.rightArm;
         arm.resetPose();
         arm.visible = true;
