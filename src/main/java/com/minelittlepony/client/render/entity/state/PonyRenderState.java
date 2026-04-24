@@ -14,7 +14,6 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.monster.piglin.AbstractPiglin;
 import net.minecraft.world.entity.monster.zombie.ZombifiedPiglin;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.*;
 import net.minecraft.world.item.component.ResolvableProfile;
 import net.minecraft.world.level.EmptyBlockGetter;
@@ -31,6 +30,7 @@ import com.minelittlepony.api.pony.*;
 import com.minelittlepony.api.pony.meta.*;
 import com.minelittlepony.api.state.PonifiedRenderState;
 import com.minelittlepony.client.compat.iris.IrisApiCompat;
+import com.minelittlepony.client.render.entity.PonyPigRenderer;
 import com.minelittlepony.client.transform.PonyPosture;
 import com.minelittlepony.client.transform.PonyTransformation;
 
@@ -160,9 +160,9 @@ public class PonyRenderState extends AvatarRenderState implements PonyModel.Attr
         hornGlowVisible = !IrisApiCompat.isOnShadowPass() && computeIsCasting(entity);
         isTechnoblade = ((
                     entity instanceof AbstractPiglin
-                 || entity instanceof Player
+                 || entity instanceof Avatar
                  || entity instanceof ZombifiedPiglin
-             ) && nameTag != null && nameTag.getString().equalsIgnoreCase("technoblade")
+             ) && PonyPigRenderer.isTechnoblade(entity)
          );
 
         // Adjust cape angles

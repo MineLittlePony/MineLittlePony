@@ -22,7 +22,7 @@ public class SillyPonyTextureSupplier {
             return false;
         }
         String name = entity.getCustomName().getString();
-        return "Derpy".equals(name) || "Dinky".equals(name);
+        return "derpy".equalsIgnoreCase(name) || "dinky".equalsIgnoreCase(name);
     }
 
     public static boolean isCrownPony(LivingEntity entity) {
@@ -30,7 +30,7 @@ public class SillyPonyTextureSupplier {
     }
 
     public static boolean isDinky(LivingEntity entity) {
-        return entity.hasCustomName() && "Dinky".equals(entity.getCustomName().getString());
+        return entity.hasCustomName() && "dinky".equalsIgnoreCase(entity.getCustomName().getString());
     }
 
     public static class State extends PonyRenderState {
