@@ -76,8 +76,7 @@ dependencies {
     api fabricApi.module("fabric-screen-api-v1", project.fabric_version)
 
     if (project.use_sodium == '1') {
-        api fabricApi.module("fabric-renderer-api-v1", project.fabric_version)
-        api fabricApi.module("fabric-block-view-api-v2", project.fabric_version)
+        api fabricApi.module("fabric-block-getter-api-v2", project.fabric_version)
         api fabricApi.module("fabric-rendering-fluids-v1", project.fabric_version)
         compileOnly "maven.modrinth:sodium:${project.sodium_version}-fabric"
     }
