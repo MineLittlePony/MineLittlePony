@@ -216,7 +216,7 @@ public class PlayerPonyRenderer<Player extends Avatar & ClientAvatarEntity>
         stack.pushPose();
         float reflect = side == HumanoidArm.LEFT ? -1 : 1;
 
-        stack.translate(reflect * -0.3F, -0.54F, 0);
+        stack.translate(reflect * -0.255F, -0.77F, -0.15F);
 
         model = lookupModel(state).body();
 
@@ -229,8 +229,8 @@ public class PlayerPonyRenderer<Player extends Avatar & ClientAvatarEntity>
         // seapony has different angles, so make sure they're correct
         arm.xRot = 0;
         arm.yRot = 0;
-
-        state.transformation.transform(state.attributes, BodyPart.LEGS, arm);
+        model.rightSleeve.loadPose(model.rightArm.storePose());
+        model.leftSleeve.loadPose(model.leftArm.storePose());
 
         queue.submitModelPart(arm, stack, RenderTypes.entityTranslucent(skinTexture), light, OverlayTexture.NO_OVERLAY, null);
         stack.popPose();
