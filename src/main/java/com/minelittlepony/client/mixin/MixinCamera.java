@@ -15,12 +15,12 @@ abstract class MixinCamera {
     @Shadow
     private Entity focusedEntity;
 
-    @ModifyArg(method = "update(Lnet/minecraft/world/BlockView;Lnet/minecraft/entity/Entity;ZZF)V", at = @At(value = "INVOKE", target = "java/lang/Math.max(FF)F"), index = 0)
+    @ModifyArg(method = "update(Lnet/minecraft/world/World;Lnet/minecraft/entity/Entity;ZZF)V", at = @At(value = "INVOKE", target = "java/lang/Math.max(FF)F"), index = 0)
     private float adjustCameraDistance(float value) {
         return value * minelp_getDistanceScale(focusedEntity);
     }
 
-    @ModifyArg(method = "update(Lnet/minecraft/world/BlockView;Lnet/minecraft/entity/Entity;ZZF)V", at = @At(value = "INVOKE", target = "java/lang/Math.max(FF)F"), index = 1)
+    @ModifyArg(method = "update(Lnet/minecraft/world/World;Lnet/minecraft/entity/Entity;ZZF)V", at = @At(value = "INVOKE", target = "java/lang/Math.max(FF)F"), index = 1)
     private float adjustVehicleCameraDistance(float value) {
         if (focusedEntity.hasVehicle() && focusedEntity.getVehicle() instanceof LivingEntity l) {
             return value * minelp_getDistanceScale(l);

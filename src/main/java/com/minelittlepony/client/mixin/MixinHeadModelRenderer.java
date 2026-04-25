@@ -11,7 +11,7 @@ import com.minelittlepony.client.render.blockentity.skull.PonyHeadModelRenderer;
 
 @Mixin(value = { HeadModelRenderer.Unbaked.class, PlayerHeadModelRenderer.Unbaked.class })
 abstract class MixinHeadModelRenderer_Unbaked {
-    @ModifyReturnValue(method = "bake(Lnet/minecraft/client/render/item/model/special/SpecialModelRenderer$BakingContext;)Lnet/minecraft/client/render/item/model/special/SpecialModelRenderer;", at = @At("RETURN"))
+    @ModifyReturnValue(method = "bake(Lnet/minecraft/client/render/item/model/special/SpecialModelRenderer$BakeContext;)Lnet/minecraft/client/render/item/model/special/SpecialModelRenderer;", at = @At("RETURN"))
     private /*synthetic bridge*/ SpecialModelRenderer<?> onBake(@Nullable SpecialModelRenderer<?> renderer) {
         return PonyHeadModelRenderer.create((SpecialModelRenderer.Unbaked)this, renderer);
     }
