@@ -19,6 +19,7 @@
   "minelp.options.showscale": "准确的显示缩放",
   "minelp.options.fpsmagic": "第一人称视角显示魔法",
   "minelp.options.tpsmagic": "第三人称视角显示魔法",
+  "minelp.options.disablebucketfix": "禁用Bucket Fix",
   "minelp.options.ponyskulls": "马化头部",
   "minelp.options.frustrum": "视锥体网格",
   "minelp.options.flappyelytras": "在滑翔时拍翅膀",
