@@ -15,68 +15,74 @@ public class VariatedTextureSupplier implements ResourceManagerReloadListener {
     public static final Identifier BACKGROUND_PONIES_POOL = MineLittlePony.id("textures/entity/pony");
     public static final Identifier BACKGROUND_ZOMPONIES_POOL = MineLittlePony.id("textures/entity/zompony");
 
-    private final Map<Identifier, SkinList> entries = new HashMap<>();
+    private final Map<Identifier, SkinList> entries = new TreeMap<>();
 
     @Override
     public void onResourceManagerReload(ResourceManager manager) {
-        entries.clear();
+        synchronized (entries) {
+            entries.values().removeIf(i -> !i.reloadAll(manager));
+        }
     }
 
-    public SkinList get(Identifier id) {
-        return entries.computeIfAbsent(id, SkinList::new);
-    }
-
-    public Optional<Identifier> get(Identifier poolId, UUID seed) {
-        return get(poolId).getId(seed);
-    }
-
-    public Optional<Identifier> get(Identifier poolId, Entity entity) {
-        return get(poolId, entity.getUUID());
+    public SkinList get(Identifier poolId) {
+        synchronized (entries) {
+            return entries.computeIfAbsent(poolId, SkinList::new);
+        }
     }
 
     public static final class SkinList {
-        private final List<Identifier> textures = new ArrayList<>();
-        private final Map<String, List<Identifier>> names = new HashMap<>();
+        private SkinSet textures;
+        private Map<String, SkinSet> names;
 
         private final Identifier id;
 
-        public SkinList(Identifier id) {
+        private SkinList(Identifier id) {
             this.id = id;
             reloadAll(Minecraft.getInstance().getResourceManager());
         }
 
-        public Optional<Identifier> getId(UUID uuid) {
-            if (textures.isEmpty() || isUser(uuid)) {
-                return Optional.empty();
-            }
+        public Optional<Identifier> getId(Entity entity) {
+            return getId(entity.getUUID());
+        }
 
-            return Optional.ofNullable(textures.get(MathUtil.mod(uuid.hashCode(), textures.size())));
+        public Optional<Identifier> getId(UUID uuid) {
+            return textures.pick(uuid);
         }
 
         public Optional<Identifier> getByName(String name, UUID uuid) {
-            List<Identifier> options = names.computeIfAbsent(name.toLowerCase(Locale.ROOT).replace(' ', '_') + ".png", id -> {
-                return textures.stream().filter(texture -> {
-                    return texture.getPath().endsWith(id);
-                }).toList();
-            });
-
-            if (options.isEmpty()) {
+            if (textures.size() == 0) {
                 return Optional.empty();
             }
 
-            return Optional.ofNullable(options.get(MathUtil.mod(uuid.hashCode(), options.size())));
+            synchronized (textures) {
+                return names.computeIfAbsent(name.toLowerCase(Locale.ROOT).replace(' ', '_') + ".png", id -> {
+                    return new SkinSet(Arrays.stream(textures.options()).filter(texture -> texture.getPath().endsWith(id)).toArray(Identifier[]::new));
+                }).pick(uuid);
+            }
         }
 
-        public void reloadAll(ResourceManager resourceManager) {
-            textures.clear();
-            textures.addAll(resourceManager.listResources(id.getPath(), path -> path.getPath().endsWith(".png")).keySet());
-            MineLittlePony.LOGGER.info("Detected {} ponies installed at {}.", textures.size(), id);
+        public boolean reloadAll(ResourceManager resourceManager) {
+            synchronized (textures) {
+                textures = new SkinSet(resourceManager.listResources(id.getPath(), path -> path.getPath().endsWith(".png")).keySet().toArray(Identifier[]::new));
+                names = new TreeMap<>();
+                MineLittlePony.LOGGER.info("Detected {} ponies installed at {}.", textures.size(), id);
+                return textures.size() > 0;
+            }
         }
 
-        static boolean isUser(UUID uuid) {
-            return Minecraft.getInstance().player != null
-                && Minecraft.getInstance().player.getUUID().equals(uuid);
+        private record SkinSet(int size, Optional<Identifier> first, Identifier[] options) {
+            private SkinSet(Identifier[] options) {
+                this(options.length, options.length > 0 ? Optional.of(options[0]) : Optional.empty(), options);
+            }
+
+            public Optional<Identifier> pick(UUID uuid) {
+                if (size < 2) {
+                    return first;
+                }
+                synchronized (this) {
+                    return Optional.ofNullable(options[MathUtil.mod(uuid.hashCode(), size)]);
+                }
+            }
         }
     }
-
 }

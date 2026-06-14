@@ -55,7 +55,7 @@ public class StriderRenderer extends MobRenderer<Strider, StriderRenderer.State,
 
     @Override
     public Identifier getTextureLocation(State state) {
-        return MineLittlePony.getInstance().getVariatedTextures().get(state.cold ? COLD_DRAGON_PONIES : DRAGON_PONIES, state.uuid).orElse(DefaultPonySkinHelper.STEVE);
+        return MineLittlePony.getInstance().getVariatedTextures().get(state.cold ? COLD_DRAGON_PONIES : DRAGON_PONIES).getId(state.uuid).orElse(DefaultPonySkinHelper.STEVE);
     }
 
     @Override

@@ -109,7 +109,7 @@ public class PonyManagerImpl implements PonyManager, ResourceManagerReloadListen
     @Override
     public Pony getBackgroundPony(@Nullable UUID uuid) {
         if (config.ponyLevel.get() == PonyLevel.PONIES) {
-            return loadPony(MineLittlePony.getInstance().getVariatedTextures().get(VariatedTextureSupplier.BACKGROUND_PONIES_POOL, uuid).orElse(DefaultPlayerSkin.get(uuid).body().texturePath()), true);
+            return loadPony(MineLittlePony.getInstance().getVariatedTextures().get(VariatedTextureSupplier.BACKGROUND_PONIES_POOL).getId(uuid).orElse(DefaultPlayerSkin.get(uuid).body().texturePath()), true);
         }
         return loadPony(DefaultPlayerSkin.get(uuid).body().texturePath(), true);
     }

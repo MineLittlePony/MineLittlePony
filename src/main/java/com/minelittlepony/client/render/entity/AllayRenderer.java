@@ -51,7 +51,7 @@ public class AllayRenderer extends MobRenderer<Allay, AllayRenderer.State, Breez
 
     @Override
     public Identifier getTextureLocation(State state) {
-        return MineLittlePony.getInstance().getVariatedTextures().get(BREEZIE_PONIES, state.uuid).orElse(DefaultPonySkinHelper.STEVE);
+        return MineLittlePony.getInstance().getVariatedTextures().get(BREEZIE_PONIES).getId(state.uuid).orElse(DefaultPonySkinHelper.STEVE);
     }
 
     @Override

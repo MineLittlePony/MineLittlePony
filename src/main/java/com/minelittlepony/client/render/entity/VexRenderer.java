@@ -53,7 +53,7 @@ public class VexRenderer extends MobRenderer<Vex, VexRenderer.State, ParaspriteM
 
     @Override
     public Identifier getTextureLocation(State state) {
-        return MineLittlePony.getInstance().getVariatedTextures().get(PARASPRITE_PONIES, state.uuid).orElse(DefaultPonySkinHelper.STEVE);
+        return MineLittlePony.getInstance().getVariatedTextures().get(PARASPRITE_PONIES).getId(state.uuid).orElse(DefaultPonySkinHelper.STEVE);
     }
 
     public static class State extends LivingEntityRenderState implements PonifiedRenderState {
