@@ -28,7 +28,7 @@ public class HorseCam {
             Minecraft client = Minecraft.getInstance();
             Player player = client.player;
 
-            if (player == null || client.isSingleplayer() || client.isLocalServer()) {
+            if (player == null || client.isLocalServer() || client.hasSingleplayerServer()) {
                 return pitch;
             }
 

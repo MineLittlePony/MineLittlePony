@@ -6,17 +6,17 @@ import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.renderer.OrderedSubmitNodeCollector;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.SubmitNodeCollector.CustomGeometryRenderer;
-import net.minecraft.client.renderer.SubmitNodeCollector.ParticleGroupRenderer;
 import net.minecraft.client.renderer.block.MovingBlockRenderState;
-import net.minecraft.client.renderer.block.dispatch.BlockStateModel;
 import net.minecraft.client.renderer.block.dispatch.BlockStateModelPart;
 import net.minecraft.client.renderer.entity.state.EntityRenderState;
 import net.minecraft.client.renderer.entity.state.EntityRenderState.LeashState;
 import net.minecraft.client.renderer.entity.state.EntityRenderState.ShadowPiece;
 import net.minecraft.client.renderer.feature.ModelFeatureRenderer.CrumblingOverlay;
+import net.minecraft.client.renderer.gizmos.DrawableGizmoPrimitives.Group;
 import net.minecraft.client.renderer.item.ItemStackRenderState.FoilType;
 import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.state.level.CameraRenderState;
+import net.minecraft.client.renderer.state.level.QuadParticleRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.SimpleModelWrapper;
@@ -27,6 +27,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.util.*;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.phys.shapes.VoxelShape;
 
 import org.jetbrains.annotations.Nullable;
 import org.joml.*;
@@ -160,7 +161,7 @@ public class MagicOverlayRenderCommandQueue implements OrderedSubmitNodeCollecto
     }
 
     @Override
-    public void submitModelPart(ModelPart part, PoseStack matrices, RenderType renderLayer, int light, int overlay, @Nullable TextureAtlasSprite sprite, boolean sheeted, boolean hasFoil, int tintedColor, @Nullable CrumblingOverlay crumblingOverlay, int outlineColor) {
+    public void submitModelPart(ModelPart part, PoseStack matrices, RenderType renderLayer, int light, int overlay, @Nullable TextureAtlasSprite sprite, int tintedColor, @Nullable CrumblingOverlay crumblingOverlay, int outlineColor) {
         renderLayer = getFinalRenderType(renderLayer);
         if (renderLayer != null) {
             submitCustomPasses(matrices, renderLayer, (transform, buffer) -> part.render(transform, buffer, LightCoordsUtil.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, color), 1, sprite);
@@ -176,16 +177,16 @@ public class MagicOverlayRenderCommandQueue implements OrderedSubmitNodeCollecto
     }
 
     @Override
-    public void submitBreakingBlockModel(PoseStack poseStack, BlockStateModel model, long seed, int progress) { }
+    public void submitBreakingBlockModel(PoseStack poseStack, List<BlockStateModelPart> parts, int progress) { }
 
     @Override
-    public void submitParticleGroup(ParticleGroupRenderer particleGroupRenderer) { }
+    public void submitQuadParticleGroup(QuadParticleRenderState particles) { }
 
     @Override
     public void submitShadow(PoseStack poseStack, float radius, List<ShadowPiece> pieces) { }
 
     @Override
-    public void submitNameTag(PoseStack poseStack, @Nullable Vec3 nameTagAttachment, int offset, Component name, boolean seeThrough, int lightCoords, double distanceToCameraSq, CameraRenderState camera) { }
+    public void submitNameTag(PoseStack poseStack, @Nullable Vec3 nameTagAttachment, int offset, Component name, boolean seeThrough, int lightCoords, CameraRenderState camera) { }
 
     @Override
     public void submitText(PoseStack poseStack, float x, float y, FormattedCharSequence string, boolean dropShadow, DisplayMode displayMode, int lightCoords, int color, int backgroundColor, int outlineColor) { }
@@ -197,5 +198,11 @@ public class MagicOverlayRenderCommandQueue implements OrderedSubmitNodeCollecto
     public void submitLeash(PoseStack poseStack, LeashState leashState) { }
 
     @Override
-    public void submitMovingBlock(PoseStack matrices, MovingBlockRenderState state) { }
+    public void submitMovingBlock(PoseStack matrices, MovingBlockRenderState state, int outlineColor) { }
+
+    @Override
+    public void submitShapeOutline(PoseStack poseStack, VoxelShape shape, RenderType renderType, int color, float width, boolean afterTerrain) { }
+
+    @Override
+    public void submitGizmoPrimitives(Group group, CameraRenderState camera, boolean onTop) { }
 }

@@ -91,7 +91,7 @@ public class MineLPHDSkins extends ClientSkinsProxy implements ClientModInitiali
 
     private void renderOption(Screen screen, @Nullable Screen parent, int row, int RIGHT, ScrollContainer content) {
         content.addButton(new Button(RIGHT, row += 20, 150, 20))
-            .onClick(_ -> Minecraft.getInstance().setScreen(
+            .onClick(_ -> Minecraft.getInstance().gui.setScreen(
                     parent instanceof GuiSkins ? parent : GuiSkins.create(screen, HDSkinsServer.getInstance().getServers())
             ))
             .getStyle()

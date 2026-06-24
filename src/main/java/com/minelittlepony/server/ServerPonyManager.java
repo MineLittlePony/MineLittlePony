@@ -16,10 +16,10 @@ import com.mojang.authlib.GameProfile;
 
 import java.io.IOException;
 import java.net.URI;
+import java.time.Duration;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
@@ -27,7 +27,7 @@ public class ServerPonyManager implements PonyManager {
     static final Pony NULL_PONY = new Pony(Identifier.withDefaultNamespace("null"), () -> Optional.of(PonyData.NULL));
 
     private final LoadingCache<Identifier, Pony> poniesCache = CacheBuilder.newBuilder()
-            .expireAfterAccess(30, TimeUnit.SECONDS)
+            .expireAfterAccess(Duration.ofSeconds(30))
             .build(CacheLoader.from(resource -> {
                 return new Pony(resource, load(consumer -> {
                     CompletableFuture.runAsync(() -> {

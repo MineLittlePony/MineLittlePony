@@ -15,7 +15,6 @@
         "MixinLivingEntity",
         "MixinPlayerEntity",
         "MixinPlayerInteractItemC2SPacket",
-        "MixinVertextConsumers",
         "MixinGameRenderer"
     ]
 }

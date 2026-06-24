@@ -7,8 +7,8 @@ import net.minecraft.server.packs.resources.Resource;
 
 import com.minelittlepony.api.pony.meta.TriggerPixel;
 import com.mojang.blaze3d.buffers.*;
+import com.mojang.blaze3d.buffers.GpuBufferSlice.MappedView;
 import com.mojang.blaze3d.platform.NativeImage;
-import com.mojang.blaze3d.systems.CommandEncoder;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.textures.GpuTexture;
 
@@ -60,18 +60,15 @@ public class NativeUtil {
     private static void __reconstructNativeImage(AbstractTexture loadedTexture, Consumer<TriggerPixel.Mat> consumer, Consumer<Exception> fail, int attempt) {
         GpuTexture texture = loadedTexture.getTexture();
 
-        int format = texture.getFormat().pixelSize();
+        int format = texture.getFormat().blockSize();
         int width  = texture.getWidth(0);
         int height = texture.getHeight(0);
 
         try (GpuBuffer gpuBuffer = RenderSystem.getDevice().createBuffer(() -> "Texture Retrieval buffer", 9, width * height * format)) {
-            CommandEncoder commandEncoder = RenderSystem.getDevice().createCommandEncoder();
             RenderSystem.getDevice().createCommandEncoder().copyTextureToBuffer(texture, gpuBuffer, 0, () -> {
-                try (GpuBuffer.MappedView readView = commandEncoder.mapBuffer(gpuBuffer, true, false)) {
-                    consumer.accept((x, y) -> {
-                        y = height - y;
-                        return readView.data().getInt((x + y * width) * format);
-                    });
+                try (MappedView readView = gpuBuffer.map(true, false)) {
+                    var data = readView.data();
+                    consumer.accept((x, y) -> data.getInt((x + (height - y) * width) * format));
                 }
             }, 0);
         }

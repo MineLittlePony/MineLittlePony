@@ -10,6 +10,7 @@ import com.minelittlepony.api.model.armour.ArmourTexture;
 import com.minelittlepony.api.model.armour.ArmourTextureLookup;
 import com.minelittlepony.client.MineLittlePony;
 
+import java.time.Duration;
 import java.util.*;
 import java.util.concurrent.*;
 import java.util.stream.Collectors;
@@ -40,7 +41,7 @@ public class ArmourTextureResolver implements ArmourTextureLookup, PreparableRel
     public static final ArmourTextureResolver INSTANCE = new ArmourTextureResolver();
 
     private final LoadingCache<ArmourParameters, ArmourTexture> layerCache = CacheBuilder.newBuilder()
-            .expireAfterAccess(30, TimeUnit.SECONDS)
+            .expireAfterAccess(Duration.ofSeconds(30))
             .build(CacheLoader.from(parameters -> Stream.of(ArmourTexture.legacy(parameters.layerType(), parameters.textureId()))
                     .flatMap(this::performLookup)
                     .findFirst()

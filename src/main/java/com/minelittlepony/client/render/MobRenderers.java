@@ -3,9 +3,8 @@ package com.minelittlepony.client.render;
 import com.minelittlepony.api.config.*;
 
 import net.minecraft.resources.Identifier;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.entity.*;
+import net.minecraft.world.level.block.entity.BlockEntityTypes;
 
 import com.minelittlepony.client.MineLittlePony;
 import com.minelittlepony.client.render.entity.*;
@@ -34,56 +33,56 @@ public record MobRenderers (Identifier id, Set<BiConsumer<MobPonifyCategory, Con
     }
 
     public static final MobPonifyCategory VILLAGER = register("villagers", (state, registry) -> {
-        registry.registerEntityRenderer(EntityType.VILLAGER, state, VillagerPonyRenderer::new);
-        registry.registerEntityRenderer(EntityType.WITCH, state, WitchRenderer::new);
-        registry.registerEntityRenderer(EntityType.ZOMBIE_VILLAGER, state, ZomponyVillagerRenderer::new);
-        registry.registerEntityRenderer(EntityType.WANDERING_TRADER, state, TraderRenderer::new);
+        registry.registerEntityRenderer(EntityTypes.VILLAGER, state, VillagerPonyRenderer::new);
+        registry.registerEntityRenderer(EntityTypes.WITCH, state, WitchRenderer::new);
+        registry.registerEntityRenderer(EntityTypes.ZOMBIE_VILLAGER, state, ZomponyVillagerRenderer::new);
+        registry.registerEntityRenderer(EntityTypes.WANDERING_TRADER, state, TraderRenderer::new);
     });
     public static final MobPonifyCategory ILLAGER = register("illagers", (state, registry) -> {
-        registry.registerEntityRenderer(EntityType.VEX, state, VexRenderer::new);
-        registry.registerEntityRenderer(EntityType.EVOKER, state, IllagerPonyRenderer::evoker);
-        registry.registerEntityRenderer(EntityType.VINDICATOR, state, IllagerPonyRenderer::vindicator);
-        registry.registerEntityRenderer(EntityType.ILLUSIONER, state, IllusionistPonyRenderer::new);
-        registry.registerEntityRenderer(EntityType.PILLAGER, state, IllagerPonyRenderer::pillager);
+        registry.registerEntityRenderer(EntityTypes.VEX, state, VexRenderer::new);
+        registry.registerEntityRenderer(EntityTypes.EVOKER, state, IllagerPonyRenderer::evoker);
+        registry.registerEntityRenderer(EntityTypes.VINDICATOR, state, IllagerPonyRenderer::vindicator);
+        registry.registerEntityRenderer(EntityTypes.ILLUSIONER, state, IllusionistPonyRenderer::new);
+        registry.registerEntityRenderer(EntityTypes.PILLAGER, state, IllagerPonyRenderer::pillager);
     });
     public static final MobPonifyCategory ZOMBIE = register("zombies", (state, registry) -> {
-        registry.registerEntityRenderer(EntityType.ZOMBIE, state, ZomponyRenderer::zombie);
-        registry.registerEntityRenderer(EntityType.HUSK, state, ZomponyRenderer::husk);
-        registry.registerEntityRenderer(EntityType.GIANT, state, ZomponyRenderer::giant);
-        registry.registerEntityRenderer(EntityType.DROWNED, state, ZomponyRenderer::drowned);
+        registry.registerEntityRenderer(EntityTypes.ZOMBIE, state, ZomponyRenderer::zombie);
+        registry.registerEntityRenderer(EntityTypes.HUSK, state, ZomponyRenderer::husk);
+        registry.registerEntityRenderer(EntityTypes.GIANT, state, ZomponyRenderer::giant);
+        registry.registerEntityRenderer(EntityTypes.DROWNED, state, ZomponyRenderer::drowned);
     });
     public static final MobPonifyCategory PIGLIN = register("pigzombies", (state, registry) -> {
-        registry.registerEntityRenderer(EntityType.PIGLIN, state, PonyPiglinRenderer::piglin);
-        registry.registerEntityRenderer(EntityType.PIGLIN_BRUTE, state, PonyPiglinRenderer::brute);
-        registry.registerEntityRenderer(EntityType.ZOMBIFIED_PIGLIN, state, PonyPiglinRenderer::zombified);
-        registry.registerEntityRenderer(EntityType.PIG, _ -> state.option().get() && !PonyConfig.getInstance().noFun.get(), PonyPigRenderer::new);
+        registry.registerEntityRenderer(EntityTypes.PIGLIN, state, PonyPiglinRenderer::piglin);
+        registry.registerEntityRenderer(EntityTypes.PIGLIN_BRUTE, state, PonyPiglinRenderer::brute);
+        registry.registerEntityRenderer(EntityTypes.ZOMBIFIED_PIGLIN, state, PonyPiglinRenderer::zombified);
+        registry.registerEntityRenderer(EntityTypes.PIG, _ -> state.option().get() && !PonyConfig.getInstance().noFun.get(), PonyPigRenderer::new);
     });
     public static final MobPonifyCategory SKELETON = register("skeletons", (state, registry) -> {
-        registry.registerEntityRenderer(EntityType.SKELETON, state, SkeleponyRenderer::skeleton);
-        registry.registerEntityRenderer(EntityType.STRAY, state, SkeleponyRenderer::stray);
-        registry.registerEntityRenderer(EntityType.BOGGED, state, SkeleponyRenderer::bogged);
-        registry.registerEntityRenderer(EntityType.PARCHED, state, SkeleponyRenderer::parched);
-        registry.registerEntityRenderer(EntityType.WITHER_SKELETON, state, SkeleponyRenderer::wither);
+        registry.registerEntityRenderer(EntityTypes.SKELETON, state, SkeleponyRenderer::skeleton);
+        registry.registerEntityRenderer(EntityTypes.STRAY, state, SkeleponyRenderer::stray);
+        registry.registerEntityRenderer(EntityTypes.BOGGED, state, SkeleponyRenderer::bogged);
+        registry.registerEntityRenderer(EntityTypes.PARCHED, state, SkeleponyRenderer::parched);
+        registry.registerEntityRenderer(EntityTypes.WITHER_SKELETON, state, SkeleponyRenderer::wither);
     });
     public static final MobPonifyCategory GUARDIAN = register("guardians", (state, registry) -> {
-        registry.registerEntityRenderer(EntityType.GUARDIAN, state, SeaponyRenderer::guardian);
-        registry.registerEntityRenderer(EntityType.ELDER_GUARDIAN, state, SeaponyRenderer::elder);
+        registry.registerEntityRenderer(EntityTypes.GUARDIAN, state, SeaponyRenderer::guardian);
+        registry.registerEntityRenderer(EntityTypes.ELDER_GUARDIAN, state, SeaponyRenderer::elder);
     });
     public static final MobPonifyCategory ENDERMAN = register("endermen", (state, registry) -> {
-        registry.registerEntityRenderer(EntityType.ENDERMAN, state, EnderStallionRenderer::new);
+        registry.registerEntityRenderer(EntityTypes.ENDERMAN, state, EnderStallionRenderer::new);
     });
     public static final MobPonifyCategory INANIMATE = register("inanimates", (state, registry) -> {
-       registry.registerEntityRenderer(EntityType.ARMOR_STAND, e -> state.option().get() && PonyStandRenderer.isPonyStand(e), PonyStandRenderer::new);
+       registry.registerEntityRenderer(EntityTypes.ARMOR_STAND, e -> state.option().get() && PonyStandRenderer.isPonyStand(e), PonyStandRenderer::new);
     });
     public static final MobPonifyCategory STRIDER = register("striders", (state, registry) -> {
-        registry.registerEntityRenderer(EntityType.STRIDER, state, StriderRenderer::new);
+        registry.registerEntityRenderer(EntityTypes.STRIDER, state, StriderRenderer::new);
     });
     public static final MobPonifyCategory ALLAY = register("allays", (state, registry) -> {
-        registry.registerEntityRenderer(EntityType.ALLAY, state, AllayRenderer::new);
+        registry.registerEntityRenderer(EntityTypes.ALLAY, state, AllayRenderer::new);
     });
     public static final MobPonifyCategory COPPER_GOLEMS = register("copper_golems", (state, registry) -> {
-        registry.registerEntityRenderer(EntityType.COPPER_GOLEM, state, CopperPonyRenderer::new);
-        registry.registerBlockRenderer(BlockEntityType.COPPER_GOLEM_STATUE, _ -> state.option().get(), CopperPonyBlockEntityRenderer::new);
+        registry.registerEntityRenderer(EntityTypes.COPPER_GOLEM, state, CopperPonyRenderer::new);
+        registry.registerBlockRenderer(BlockEntityTypes.COPPER_GOLEM_STATUE, _ -> state.option().get(), CopperPonyBlockEntityRenderer::new);
     });
     public static final MobPonifyCategory MANNEQUINE = register("mannequines", (_, _) -> {
 

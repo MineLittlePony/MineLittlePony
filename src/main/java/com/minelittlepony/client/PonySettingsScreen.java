@@ -94,7 +94,7 @@ public class PonySettingsScreen extends GameGui {
                 .setTextFormat(sender -> Component.translatable(PONY_LEVEL + "." + sender.getValue().name().toLowerCase()))
                 .setTooltipFormat(sender -> Tooltip.of(PONY_LEVEL + "." + sender.getValue().name().toLowerCase() + ".tooltip", 200)));
 
-        boolean allowCameraChange = minecraft.player == null || minecraft.player.isCreative() || minecraft.player.isSpectator() || minecraft.isSingleplayer();
+        boolean allowCameraChange = minecraft.player == null || minecraft.player.isCreative() || minecraft.player.isSpectator() || minecraft.isLocalServer();
 
         if (hiddenOptions && allowCameraChange) {
             content.addButton(new Label(LEFT, row += 30)).getStyle().setText("minelp.debug.scale");

@@ -149,7 +149,7 @@ public class PonyRenderState extends AvatarRenderState implements PonyModel.Attr
         // Prevent head from rendering for ourselves if we are sleeping in first person mode
         headVisible = entity != Minecraft.getInstance().getCameraEntity()
                 || !Minecraft.getInstance().options.getCameraType().isFirstPerson()
-                || Minecraft.getInstance().gameRenderer.getMainCamera().position().distanceToSqr(entity.getEyePosition(ageInTicks - (int)ageInTicks)) > 1
+                || Minecraft.getInstance().gameRenderer.mainCamera().position().distanceToSqr(entity.getEyePosition(ageInTicks - (int)ageInTicks)) > 1
                 || RenderPass.getCurrent() != RenderPass.WORLD
                 || IrisApiCompat.isOnShadowPass();
 

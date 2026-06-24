@@ -44,7 +44,7 @@ class GuiSkinsMineLP extends GuiSkins {
     protected void initServerPreviewButtons(Bounds area) {
         if (!(parent instanceof PonySettingsScreen)) {
             addButton(new Button(area.right() - 20, area.bottom() + 5, 20, 20))
-                .onClick(_ -> minecraft.setScreen(new PonySettingsScreen(this)))
+                .onClick(_ -> minecraft.gui.setScreen(new PonySettingsScreen(this)))
                 .getStyle()
                     .setIcon(new TextureSprite()
                             .setPosition(2, 2)

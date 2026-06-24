@@ -25,9 +25,9 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.component.ResolvableProfile;
 
+import java.time.Duration;
 import java.util.*;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
 
 public class PonyManagerImpl implements PonyManager, ResourceManagerReloadListener {
     public static final Identifier ID = MineLittlePony.id("background_ponies");
@@ -35,7 +35,7 @@ public class PonyManagerImpl implements PonyManager, ResourceManagerReloadListen
     private final PonyConfig config;
 
     private final LoadingCache<Key, Pony> poniesCache = CacheBuilder.newBuilder()
-            .expireAfterAccess(30, TimeUnit.SECONDS)
+            .expireAfterAccess(Duration.ofSeconds(30))
             .build(CacheLoader.from(key -> new Pony(key.texture(), PonyDataLoader.parse(key.texture(), key.defaulted()))));
     private final WeakHashMap<UUID, Pony> playerPonies = new WeakHashMap<>();
 

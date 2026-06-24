@@ -4,7 +4,6 @@ import net.minecraft.client.renderer.PlayerSkinRenderCache;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.special.*;
 import net.minecraft.resources.Identifier;
-import net.minecraft.util.Tuple;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.component.ResolvableProfile;
 import net.minecraft.world.level.block.SkullBlock;
@@ -14,11 +13,12 @@ import org.joml.Vector3fc;
 
 import com.minelittlepony.client.render.CopperPonyBlockEntityRenderer;
 import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.datafixers.util.Pair;
 
 import java.util.Optional;
 import java.util.function.Consumer;
 
-public class PonyHeadModelRenderer<T> implements SpecialModelRenderer<Tuple<PonySkullRenderer.Data<?>, T>> {
+public class PonyHeadModelRenderer<T> implements SpecialModelRenderer<Pair<PonySkullRenderer.Data<?>, T>> {
     private final SpecialModelRenderer<T> renderer;
 
     private final SkullBlock.Type kind;
@@ -46,10 +46,10 @@ public class PonyHeadModelRenderer<T> implements SpecialModelRenderer<Tuple<Pony
     }
 
     @Override
-    public Tuple<PonySkullRenderer.Data<?>, T> extractArgument(ItemStack stack) {
+    public Pair<PonySkullRenderer.Data<?>, T> extractArgument(ItemStack stack) {
         @Nullable
         T humanData = renderer.extractArgument(stack);
-        return new Tuple<>(
+        return new Pair<>(
                 PonySkullRenderer.INSTANCE.getSkullState(kind, unwrapProfile(humanData), textureOverride.orElse(null), animationTicks),
                 humanData
         );
@@ -60,9 +60,9 @@ public class PonyHeadModelRenderer<T> implements SpecialModelRenderer<Tuple<Pony
     }
 
     @Override
-    public void submit(Tuple<PonySkullRenderer.Data<?>, T> data, PoseStack matrices, SubmitNodeCollector frame, int light, int overlay, boolean glint, int outline) {
-        if (data.getA() == null || !data.getA().submit(matrices, frame, light, outline, null)) {
-            renderer.submit(data.getB(), matrices, frame, light, overlay, glint, outline);
+    public void submit(Pair<PonySkullRenderer.Data<?>, T> data, PoseStack matrices, SubmitNodeCollector frame, int light, int overlay, boolean glint, int outline) {
+        if (data.getFirst() == null || !data.getFirst().submit(matrices, frame, light, outline, null)) {
+            renderer.submit(data.getSecond(), matrices, frame, light, overlay, glint, outline);
         }
     }
 

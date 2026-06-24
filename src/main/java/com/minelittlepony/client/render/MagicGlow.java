@@ -10,6 +10,8 @@ import net.minecraft.util.*;
 
 import org.jetbrains.annotations.Nullable;
 
+import com.mojang.blaze3d.GpuFormat;
+import com.mojang.blaze3d.PrimitiveTopology;
 import com.mojang.blaze3d.pipeline.*;
 import com.mojang.blaze3d.platform.CompareOp;
 import com.mojang.blaze3d.platform.NativeImage;
@@ -33,11 +35,12 @@ public interface MagicGlow {
                 .withLocation("pipeline/magic_glow")
                 .withVertexShader(MineLittlePony.id("core/magic"))
                 .withFragmentShader(MineLittlePony.id("core/magic"))
-                .withSampler("Sampler0")
-                .withColorTargetState(new ColorTargetState(Optional.of(BlendFunction.LIGHTNING), ColorTargetState.WRITE_COLOR))
+                .withBindGroupLayout(BindGroupLayouts.SAMPLER0)
+                .withColorTargetState(new ColorTargetState(Optional.of(BlendFunction.LIGHTNING), GpuFormat.RGBA8_UNORM, ColorTargetState.WRITE_COLOR))
                 .withCull(false) /*added*/
                 .withDepthStencilState(new DepthStencilState(CompareOp.LESS_THAN_OR_EQUAL, false)) /*added*/
-                .withVertexFormat(DefaultVertexFormat.ENTITY, VertexFormat.Mode.QUADS)
+                .withVertexBinding(0, DefaultVertexFormat.ENTITY)
+                .withPrimitiveTopology(PrimitiveTopology.QUADS)
                 .build()
         );
     Identifier NO_TEXTURE_ID = MineLittlePony.id("magic_solid");

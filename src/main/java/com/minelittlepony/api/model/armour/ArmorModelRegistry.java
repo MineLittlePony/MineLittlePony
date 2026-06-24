@@ -23,7 +23,7 @@ public interface ArmorModelRegistry {
                 .filter(id -> !id.getNamespace().equals(Identifier.DEFAULT_NAMESPACE))
                 .flatMap(id -> REGISTRY.computeIfAbsent(id.withPath(p -> ResourceUtil.format("armor/%s_%s.json", layerName(layerType), p)),
                         i -> Optional.of(Mson.getInstance().registerModel(i, PonyArmourModel::new))))
-                .filter(key -> key.getModelData().isPresent())
+                .filter(ModelKey::isBound)
                 .orElse(variant.getDefaultModel(layerType)));
     }
 

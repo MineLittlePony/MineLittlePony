@@ -20,8 +20,8 @@ import com.minelittlepony.client.render.entity.state.PonyRenderState;
 import com.minelittlepony.common.util.Untyped;
 import com.mojang.blaze3d.vertex.PoseStack;
 
+import java.time.Duration;
 import java.util.*;
-import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 public class GearFeature<
@@ -36,7 +36,7 @@ public class GearFeature<
     ).collect(Collectors.toList());
 
     private final LoadingCache<Long, List<Entry>> randomisedGearCache = CacheBuilder.newBuilder()
-            .expireAfterAccess(3, TimeUnit.MINUTES)
+            .expireAfterAccess(Duration.ofMinutes(3))
             .build(CacheLoader.from(id -> {
                 List<Entry> randomizedOrder = new ArrayList<>();
                 List<Entry> pool = new ArrayList<>(gears);

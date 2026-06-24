@@ -11,8 +11,8 @@ import com.google.common.cache.*;
 import com.minelittlepony.api.config.PonyDisplayTags;
 import com.minelittlepony.api.pony.meta.*;
 
+import java.time.Duration;
 import java.util.*;
-import java.util.concurrent.TimeUnit;
 import java.util.function.BiPredicate;
 import java.util.function.Function;
 
@@ -22,7 +22,7 @@ public class PonyCommandTagsStore {
     public static final PonyCommandTagsStore INSTANCE = new PonyCommandTagsStore();
 
     private final LoadingCache<Component, PonyDisplayTags> cache = CacheBuilder.newBuilder()
-            .expireAfterAccess(30, TimeUnit.SECONDS)
+            .expireAfterAccess(Duration.ofSeconds(30))
             .build(CacheLoader.from(text -> {
                 return new PonyDisplayTags(
                         hasHiddenValue(text, PonyDisplayTags.ALWAYS_PONIFY),

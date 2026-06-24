@@ -49,7 +49,7 @@ public final class ModelKeyImpl<M extends Model<?>> implements ModelKey<M>, Loca
     public <V extends M> V createModel(Factory<V> factory) {
         Preconditions.checkNotNull(factory, "Factory should not be null");
 
-        return getModelData().map(content -> {
+        return getOrLoadModelData().map(content -> {
 
             ModelContext ctx = getModelContext(content);
 
@@ -74,7 +74,7 @@ public final class ModelKeyImpl<M extends Model<?>> implements ModelKey<M>, Loca
 
     @Override
     public Optional<ModelPart> createTree() {
-        return getModelData().map(this::getModelContext).map(ModelContext::toTree);
+        return getOrLoadModelData().map(this::getModelContext).map(ModelContext::toTree);
     }
 
     private ModelContext getModelContext(FileContent<?> content) {
@@ -84,9 +84,15 @@ public final class ModelKeyImpl<M extends Model<?>> implements ModelKey<M>, Loca
         return content.createContext(null, null, content.locals().bake());
     }
 
+    @Deprecated
     @Override
     public Optional<FileContent<?>> getModelData() {
-        return key.getModelData();
+        return key.getOrLoadModelData();
+    }
+
+    @Override
+    public boolean isBound() {
+        return key.isBound();
     }
 
     @Override

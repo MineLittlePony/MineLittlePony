@@ -1,7 +1,7 @@
 package com.minelittlepony.api.pony;
 
+import java.time.Duration;
 import java.util.*;
-import java.util.concurrent.TimeUnit;
 
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.MinecraftServer;
@@ -23,7 +23,7 @@ public class SkinsProxy {
     private static final SkinsProxy DEFAULT = INSTANCE;
 
     private final LoadingCache<GameProfile, GameProfile> profileCache = CacheBuilder.newBuilder()
-            .expireAfterAccess(30, TimeUnit.SECONDS)
+            .expireAfterAccess(Duration.ofSeconds(30))
             .build(CacheLoader.from(profile -> {
                 var result = MineLittlePonyServer.getServer().services().sessionService().fetchProfile(profile.id(), false);
                 return result == null ? profile : result.profile();

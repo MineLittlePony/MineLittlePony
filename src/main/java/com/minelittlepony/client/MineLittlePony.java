@@ -114,19 +114,20 @@ public class MineLittlePony implements ClientModInitializer {
     }
 
     private void onTick(Minecraft client) {
-        if (configChanged.getAndSet(false) && client.screen instanceof PonySettingsScreen screen) {
-            screen.init(screen.width, screen.height);
+        Screen currentScreen = client.gui.screen();
+        if (configChanged.getAndSet(false) && currentScreen instanceof PonySettingsScreen) {
+            currentScreen.init(currentScreen.width, currentScreen.height);
         }
 
-        boolean inGame = client.level != null && client.player != null && client.screen == null;
-        boolean mainMenu = client.screen instanceof TitleScreen;
+        boolean inGame = client.level != null && client.player != null && currentScreen == null;
+        boolean mainMenu = currentScreen instanceof TitleScreen;
 
         if (!inGame && mainMenu) {
             KeyMapping.setAll();
         }
 
         if ((mainMenu || inGame) && keyBinding.isDown()) {
-            client.setScreen(new PonySettingsScreen(client.screen));
+            client.gui.setScreen(new PonySettingsScreen(client.gui.screen()));
         }
     }
 
@@ -140,7 +141,7 @@ public class MineLittlePony implements ClientModInitializer {
             if (show) {
                 int y = hasHdSkins ? 75 : 50;
                 Button button = buttons.addButton(new Button(screen.width - 50, screen.height - y, 20, 20))
-                    .onClick(_ -> Minecraft.getInstance().setScreen(new PonySettingsScreen(screen)));
+                    .onClick(_ -> Minecraft.getInstance().gui.setScreen(new PonySettingsScreen(screen)));
                 button.getStyle()
                         .setIcon(new TextureSprite()
                                 .setPosition(2, 2)

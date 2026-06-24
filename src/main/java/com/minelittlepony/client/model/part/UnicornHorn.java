@@ -37,7 +37,7 @@ public class UnicornHorn<T extends PonyRenderState> implements SubModel<T> {
             model.transformAccessory(state, BodyPart.HEAD, matrices);
             frame.submitModelPart(glow, matrices, MagicGlow.getRenderLayer(),
                     LightCoordsUtil.FULL_BRIGHT,
-                    OverlayTexture.NO_OVERLAY, null, false, false, ARGB.color(1F, tint),
+                    OverlayTexture.NO_OVERLAY, null, ARGB.color(1F, tint),
                     null, 0);
             matrices.popPose();
         }
