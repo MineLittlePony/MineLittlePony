@@ -31,7 +31,7 @@ public class VariatedTextureSupplier implements ResourceManagerReloadListener {
     }
 
     public static final class SkinList {
-        private SkinSet textures;
+        private SkinSet textures = SkinSet.EMPTY;
         private Map<String, SkinSet> names;
 
         private final Identifier id;
@@ -71,6 +71,8 @@ public class VariatedTextureSupplier implements ResourceManagerReloadListener {
         }
 
         private record SkinSet(int size, Optional<Identifier> first, Identifier[] options) {
+            static final SkinSet EMPTY = new SkinSet(0, Optional.empty(), new Identifier[0]);
+
             private SkinSet(Identifier[] options) {
                 this(options.length, options.length > 0 ? Optional.of(options[0]) : Optional.empty(), options);
             }
