@@ -1,6 +1,7 @@
 package com.minelittlepony.client.compat.hdskins;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.item.ItemModelResolver;
 import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.resources.Identifier;
@@ -14,6 +15,7 @@ import org.jetbrains.annotations.Nullable;
 import com.minelittlepony.api.events.PonyRenderStatePrepareCallback;
 import com.minelittlepony.api.model.*;
 import com.minelittlepony.api.pony.*;
+import com.minelittlepony.api.pony.meta.Race;
 import com.minelittlepony.api.pony.meta.Wearable;
 import com.minelittlepony.api.state.PreviewRenderState;
 import com.minelittlepony.client.render.entity.state.PlayerPonyRenderState;
@@ -31,7 +33,7 @@ public class PonyBodyWidget extends PlayerBodyWidget<PonyBodyWidget.State> {
     private final Map<HumanoidArm, ItemStack> handStacks = new HashMap<>();
 
     public PonyBodyWidget(PlayerSkins<?> skins) {
-        super(skins, new State());
+        super(skins, new State(skins));
     }
 
     @Override
@@ -54,76 +56,77 @@ public class PonyBodyWidget extends PlayerBodyWidget<PonyBodyWidget.State> {
     }
 
     @Override
+    public void tick() {
+        super.tick();
+        if (skins.getPosture().getActiveSkinType() == MineLPHDSkins.seaponySkinType || skins.getPosture().getActiveSkinType() == MineLPHDSkins.nirikSkinType) {
+            playerState.skin = new net.minecraft.world.entity.player.PlayerSkin(
+                    skins.get(skins.getPosture().getActiveSkinType()).getAsset(),
+                    playerState.skin.cape(),
+                    playerState.skin.elytra(),
+                    playerState.skin.model(), playerState.skin.secure()
+            );
+        }
+    }
+
+    @Override
     public void updateState(float xPosition, float yPosition, float mouseX, float mouseY, float tickDelta) {
         super.updateState(xPosition, yPosition, mouseX, mouseY, tickDelta);
 
-        boolean sneaking = playerState.isCrouching;
-        Pony pony = Pony.getManager().getPony(skins.get(SkinType.SKIN).getId());
+        SkinType bodySkinType = SkinType.SKIN;
+        if ((skins.getPosture().getActiveSkinType() == MineLPHDSkins.seaponySkinType && skins.get(MineLPHDSkins.seaponySkinType).isReady())
+            || (skins.getPosture().getActiveSkinType() == MineLPHDSkins.nirikSkinType && skins.get(MineLPHDSkins.nirikSkinType).isReady())) {
+            bodySkinType = skins.getPosture().getActiveSkinType();
+        }
 
-        playerState.attributes.updateLivingState(null, pony, ModelAttributes.Mode.OTHER);
-        playerState.attributes.isSitting = playerState.isPassenger;
-        playerState.attributes.isCrouching = playerState.isCrouching = sneaking;
-        playerState.sleepingInBed = playerState.hasPose(Pose.SLEEPING);
-        playerState.attributes.isSleeping = playerState.sleepingInBed;
-        playerState.attributes.isLyingDown = playerState.sleepingInBed;
-        playerState.attributes.isRiptide = playerState.isAutoSpinAttack;
-        playerState.attributes.isSwimming = playerState.isVisuallySwimming || playerState.attributes.isRiptide;
-        playerState.attributes.checkRainboom(null, null, playerState.ageInTicks);
-        playerState.attributes.motionLerp = 1;
         playerState.updateState(Minecraft.getInstance().getItemModelResolver(),
                 equipment, handStacks,
-                pony, ModelAttributes.Mode.OTHER
+                Pony.getManager().getPony(skins.get(bodySkinType).getId()), ModelAttributes.Mode.OTHER
         );
-        playerState.smallArms = VanillaModels.isSlim(skins.getSkinVariant());
-        playerState.form = getForm();
-
-        playerState.wearabledTextures.clear();
-        for (Wearable wearable : Wearable.REGISTRY.values()) {
-            if (playerState.isWearing(wearable)) {
-                getSkin(SkinType.REGISTRY.getValue(wearable.getId())).ifPresent(skin -> {
-                    playerState.wearabledTextures.put(wearable, skin);
-                });
-            }
-        }
-
-        playerState.isPreviewModel = true;
-        playerState.stateIncomplete = true;
-    }
-
-    private Optional<Identifier> getSkin(SkinType type) {
-        PlayerSkin skin = skins.get(type);
-
-        if (skin.isReady() || skins.getProvidedSkinTypes().contains(type.getId())) {
-            return Optional.of(skin.getId());
-        }
-
-        PlayerSkin main = skins.get(SkinType.SKIN);
-        Wearable wearable = Wearable.REGISTRY.getOrDefault(type.getId(), Wearable.NONE);
-        PonyData metadata = Pony.getManager().getPony(main.getId()).metadata();
-        if (wearable != Wearable.NONE && metadata.gear().matches(wearable)) {
-
-            if (wearable.isSaddlebags() && metadata.race().supportsLegacySaddlebags()) {
-                return Optional.of(main.getId());
-            }
-
-            return Optional.of(wearable.getDefaultTexture());
-        }
-
-        return Optional.empty();
-    }
-
-    private Identifier getForm() {
-        if (skins.getPosture().getActiveSkinType() == MineLPHDSkins.seaponySkinType) {
-            return PonyForm.SEAPONY;
-        }
-        if (skins.getPosture().getActiveSkinType() == MineLPHDSkins.nirikSkinType) {
-            return PonyForm.NIRIK;
-        }
-        return PonyForm.DEFAULT;
     }
 
     static class State extends PlayerPonyRenderState implements PreviewRenderState {
+        private final PlayerSkins<?> skins;
         public boolean stateIncomplete;
+
+        public State(PlayerSkins<?> skins) {
+            this.skins = skins;
+        }
+
+        public void updateState(ItemModelResolver resolver,
+                Map<EquipmentSlot, ItemStack> equipment,
+                Map<HumanoidArm, ItemStack> armStacks,
+                Pony pony, ModelAttributes.Mode mode) {
+            boolean sneaking = isCrouching;
+            attributes.updateLivingState(null, pony, ModelAttributes.Mode.OTHER);
+            attributes.isSitting = isPassenger;
+            attributes.isCrouching = isCrouching = sneaking;
+            sleepingInBed = hasPose(Pose.SLEEPING);
+            attributes.isSleeping = sleepingInBed;
+            attributes.isLyingDown = sleepingInBed;
+            attributes.isRiptide = isAutoSpinAttack;
+            attributes.isSwimming = isVisuallySwimming || attributes.isRiptide;
+            attributes.checkRainboom(null, null, ageInTicks);
+            attributes.motionLerp = 1;
+            super.updateState(resolver, equipment, armStacks, pony, mode);
+            smallArms = VanillaModels.isSlim(skins.getSkinVariant());
+            form = getForm();
+            if (form == PonyForm.SEAPONY) {
+                race = Race.SEAPONY;
+                pose = Pose.STANDING;
+                isCrouching = false;
+                attributes.isCrouching = false;
+            }
+            wearabledTextures.clear();
+            for (Wearable wearable : Wearable.REGISTRY.values()) {
+                if (wearable != Wearable.NONE) {
+                    getGearSkin(wearable, pony).ifPresent(skin -> {
+                        wearabledTextures.put(wearable, skin);
+                    });
+                }
+            }
+            isPreviewModel = true;
+            stateIncomplete = true;
+        }
 
         @Override
         public void completeStateUpdate(Models<?> models) {
@@ -132,5 +135,40 @@ public class PonyBodyWidget extends PlayerBodyWidget<PonyBodyWidget.State> {
                 PonyRenderStatePrepareCallback.EVENT.invoker().onPonyRenderStatePrepared(this, models.body(), ModelAttributes.Mode.OTHER);
             }
         }
+
+        @Override
+        public boolean isWearing(Wearable wearable) {
+            return wearabledTextures.containsKey(wearable);
+        }
+
+        private Identifier getForm() {
+            if (skins.getPosture().getActiveSkinType() == MineLPHDSkins.seaponySkinType) {
+                return PonyForm.SEAPONY;
+            }
+            if (skins.getPosture().getActiveSkinType() == MineLPHDSkins.nirikSkinType) {
+                return PonyForm.NIRIK;
+            }
+            return PonyForm.DEFAULT;
+        }
+
+        private Optional<Identifier> getGearSkin(Wearable wearable, Pony pony) {
+            SkinType type = SkinType.REGISTRY.getValue(wearable.getId());
+            PlayerSkin skin = skins.get(type);
+
+            if (skin.isReady() || skins.getProvidedSkinTypes().contains(type.getId())) {
+                return Optional.of(skin.getId());
+            }
+
+            if (pony.metadata().gear().matches(wearable)) {
+                if (wearable.isSaddlebags() && pony.metadata().race().supportsLegacySaddlebags()) {
+                    return Optional.of(pony.texture());
+                }
+
+                return Optional.of(wearable.getDefaultTexture());
+            }
+
+            return Optional.empty();
+        }
+
     }
 }
