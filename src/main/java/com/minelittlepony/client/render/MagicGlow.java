@@ -10,16 +10,13 @@ import net.minecraft.util.*;
 
 import org.jetbrains.annotations.Nullable;
 
-import com.mojang.blaze3d.GpuFormat;
 import com.mojang.blaze3d.PrimitiveTopology;
 import com.mojang.blaze3d.pipeline.*;
 import com.mojang.blaze3d.platform.CompareOp;
 import com.mojang.blaze3d.platform.NativeImage;
-import com.mojang.blaze3d.textures.GpuSampler;
 import com.mojang.blaze3d.vertex.*;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.function.*;
 
 import com.google.common.base.Suppliers;
@@ -29,41 +26,34 @@ import com.minelittlepony.client.render.command.MagicOverlayOrderedRenderCommand
 import com.minelittlepony.client.render.command.MagicOverlayRenderCommandQueue;
 import com.minelittlepony.common.util.render.RenderLayerUtil;
 
-public interface MagicGlow {
-    RenderPipeline /*ENTITY_EYES*/ ENTITY_MAGIC_GLOW_PIPELINE = RenderPipelines.register(
+public final class MagicGlow {
+    public static final RenderPipeline /*EYES*/ ENTITY_MAGIC_GLOW_PIPELINE = RenderPipelines.register(
             RenderPipeline.builder(RenderPipelines.MATRICES_FOG_SNIPPET)
                 .withLocation("pipeline/magic_glow")
                 .withVertexShader(MineLittlePony.id("core/magic"))
                 .withFragmentShader(MineLittlePony.id("core/magic"))
                 .withBindGroupLayout(BindGroupLayouts.SAMPLER0)
-                .withColorTargetState(new ColorTargetState(Optional.of(BlendFunction.LIGHTNING), GpuFormat.RGBA8_UNORM, ColorTargetState.WRITE_COLOR))
+                .withColorTargetState(new ColorTargetState(BlendFunction.LIGHTNING)) /*changed from TRANSLUCENT */
                 .withCull(false) /*added*/
-                .withDepthStencilState(new DepthStencilState(CompareOp.LESS_THAN_OR_EQUAL, false)) /*added*/
                 .withVertexBinding(0, DefaultVertexFormat.ENTITY)
                 .withPrimitiveTopology(PrimitiveTopology.QUADS)
+                .withDepthStencilState(new DepthStencilState(CompareOp.GREATER_THAN_OR_EQUAL, false))
                 .build()
         );
-    Identifier NO_TEXTURE_ID = MineLittlePony.id("magic_solid");
-    Supplier<DynamicTexture> EMPTY_TEXTURE = Suppliers.memoize(() -> {
+    private static final Identifier NO_TEXTURE_ID = MineLittlePony.id("magic_solid");
+    private static final Supplier<Identifier> EMPTY_TEXTURE = Suppliers.memoize(() -> {
         NativeImage image = new NativeImage(1, 1, false);
         image.setPixel(0, 0, CommonColors.WHITE);
         var texture = new DynamicTexture(() -> "Solid Color", image);
         texture.upload();
-        return texture;
+        Minecraft.getInstance().getTextureManager().register(NO_TEXTURE_ID, texture);
+        return NO_TEXTURE_ID;
     });
 
 
-    BiFunction<Boolean, Identifier, RenderType> TEXTURED = Util.memoize((shaders, texture) -> {
-        @Nullable
-        Supplier<GpuSampler> sampler = null;
-        if (texture == null) {
-            AbstractTexture resource = EMPTY_TEXTURE.get();
-            Minecraft.getInstance().getTextureManager().register(NO_TEXTURE_ID, resource);
-            sampler = resource::getSampler;
-            texture = NO_TEXTURE_ID;
-        }
+    private static final BiFunction<Boolean, Identifier, RenderType> TEXTURED = Util.memoize((shaders, texture) -> {
         return RenderType.create("mlp_magic_glow_textured", RenderSetup.builder(shaders ? RenderPipelines.EYES : ENTITY_MAGIC_GLOW_PIPELINE)
-            .withTexture("Sampler0", texture, sampler)
+            .withTexture("Sampler0", texture)
             .setLayeringTransform(LayeringTransform.VIEW_OFFSET_Z_LAYERING)
             .setOutputTarget(OutputTarget.MAIN_TARGET)
             .setOutline(OutlineProperty.NONE)
@@ -72,10 +62,17 @@ public interface MagicGlow {
     });
 
     public static RenderType getRenderLayer() {
-        return getTextured(null);
+        return getTextured(getDefaultTexture());
     }
 
-    public static RenderType getTextured(Identifier texture) {
+    public static Identifier getDefaultTexture() {
+        return EMPTY_TEXTURE.get();
+    }
+
+    public static RenderType getTextured(@Nullable Identifier texture) {
+        if (texture == null) {
+            texture = getDefaultTexture();
+        }
         return TEXTURED.apply(IrisApiCompat.areShadersEnabled(), texture);
     }
 
