@@ -14,7 +14,7 @@ public enum Wearable implements TValue<Wearable> {
     NONE              (0x00, null),
     CROWN             (0x16, Pony.id("textures/models/crown.png")),
     MUFFIN            (0x32, Pony.id("textures/models/muffin.png")),
-    HAT               (0x64, Identifier.withDefaultNamespace("textures/entity/witch.png")),
+    HAT               (0x64, Identifier.withDefaultNamespace("textures/entity/witch/witch.png")),
     ANTLERS           (0x96, Pony.id("textures/models/antlers.png")),
     SADDLE_BAGS_LEFT  (0xC6, Pony.id("textures/models/saddlebags.png")),
     SADDLE_BAGS_RIGHT (0xC7, Pony.id("textures/models/saddlebags.png")),
