@@ -26,11 +26,13 @@ class PonifiedDualCarouselWidget extends DualCarouselWidget<PonyBodyWidget.State
 
     @Override
     public Identifier getDefaultSkin(SkinType type, String modelVariant) {
-        if (type == MineLPHDSkins.seaponySkinType) {
-            return NativeImageFilters.GREYSCALE.load(SeaponyRenderer.SEAPONY, SeaponyRenderer.SEAPONY, getExclusion());
-        }
-        if (type == MineLPHDSkins.nirikSkinType) {
-            return super.getDefaultSkin(SkinType.SKIN, modelVariant);
+        if (type == SkinType.SKIN) {
+            if (getActiveSkinType() == MineLPHDSkins.seaponySkinType) {
+                return NativeImageFilters.GREYSCALE.load(SeaponyRenderer.SEAPONY, SeaponyRenderer.SEAPONY, getExclusion());
+            }
+            if (getActiveSkinType() == MineLPHDSkins.nirikSkinType) {
+                return super.getDefaultSkin(SkinType.SKIN, modelVariant);
+            }
         }
 
         Wearable wearable = MineLPHDSkins.WEARABLE_TYPES.getOrDefault(type, Wearable.NONE);
