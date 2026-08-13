@@ -40,10 +40,10 @@ public interface QuadrupedLegPosing {
             ModelPart backLeftLeg, ModelPart backRightLeg,
             float animationSpeed
     ) {
-        float legLeft = (MathUtil.Angles._90_DEG + Mth.sin((state.walkAnimationSpeed / 3) + Mth.TWO_PI / 3) / 2) * animationSpeed;
+        float legLeft = (MathUtil.Angles._90_DEG + Mth.sin((state.walkAnimationPos / 3) + Mth.TWO_PI / 3) / 2) * animationSpeed;
 
-        float left = (MathUtil.Angles._90_DEG + Mth.sin((state.walkAnimationSpeed / 3) + Mth.TWO_PI) / 2) * animationSpeed;
-        float right = (MathUtil.Angles._90_DEG + Mth.sin(state.walkAnimationSpeed / 3) / 2) * animationSpeed;
+        float left = (MathUtil.Angles._90_DEG + Mth.sin((state.walkAnimationPos / 3) + Mth.TWO_PI) / 2) * animationSpeed;
+        float right = (MathUtil.Angles._90_DEG + Mth.sin(state.walkAnimationPos / 3) / 2) * animationSpeed;
 
         frontLeftLeg.setRotation(-left, -left / 2, left / 2);
         frontRightLeg.setRotation(-right, right / 2, -right / 2);
