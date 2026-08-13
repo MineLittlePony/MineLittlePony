@@ -14,6 +14,8 @@ import com.minelittlepony.common.util.GamePaths;
 import com.mojang.blaze3d.platform.InputConstants;
 
 import java.nio.file.Path;
+import java.util.Comparator;
+import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import net.fabricmc.api.ClientModInitializer;
@@ -23,10 +25,13 @@ import net.fabricmc.fabric.api.resource.v1.ResourceLoader;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.components.AbstractButton;
+import net.minecraft.client.gui.components.FriendsButton;
 import net.minecraft.client.gui.components.debug.*;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.TitleScreen;
 import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.core.Vec3i;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.packs.PackType;
 
@@ -139,8 +144,9 @@ public class MineLittlePony implements ClientModInitializer {
             ));
 
             if (show) {
-                int y = hasHdSkins ? 75 : 50;
-                Button button = buttons.addButton(new Button(screen.width - 50, screen.height - y, 20, 20))
+                Vec3i buttonPosition = getEndOfListPlacement(screen).orElseGet(() -> getDefaultLocation(screen));
+
+                Button button = buttons.addButton(new Button(buttonPosition.getX(), buttonPosition.getY(), 20, 20))
                     .onClick(_ -> Minecraft.getInstance().gui.setScreen(new PonySettingsScreen(screen)));
                 button.getStyle()
                         .setIcon(new TextureSprite()
@@ -149,9 +155,39 @@ public class MineLittlePony implements ClientModInitializer {
                                 .setTextureSize(16, 16)
                                 .setSize(16, 16))
                         .setTooltip("minelp.options.title", 0, 10);
-                button.setY(screen.height - y); // ModMenu
+                if (buttonPosition.getZ() > 0) {
+                    button.setX(buttonPosition.getX());
+                    button.setY(buttonPosition.getY());
+                }
             }
         }
+    }
+
+    private Optional<Vec3i> getEndOfListPlacement(Screen screen) {
+        return screen.children().stream()
+                .filter(child -> child instanceof FriendsButton).map(FriendsButton.class::cast)
+                .findFirst()
+                .map(friendsButton -> {
+            var friendButtons = screen.children().stream()
+                    .filter(i -> i instanceof AbstractButton sib
+                            && sib.getWidth() == friendsButton.getWidth()
+                            && sib.getHeight() == friendsButton.getHeight()
+                            && sib.getY() == friendsButton.getY())
+                    .map(AbstractButton.class::cast)
+                    .map(button -> {
+                        button.setX(button.getX() - 10);
+                        return button;
+                    })
+                    .sorted(Comparator.comparing(AbstractButton::getX))
+                    .toList();
+
+            return new Vec3i(friendButtons.getLast().getRight() + 5, friendsButton.getY(), 0);
+        });
+    }
+
+    private Vec3i getDefaultLocation(Screen screen) {
+        int y = hasHdSkins ? 75 : 50;
+        return new Vec3i(screen.width - 50, screen.height - y, 99);
     }
 
     public PonyManagerImpl getManager() {
