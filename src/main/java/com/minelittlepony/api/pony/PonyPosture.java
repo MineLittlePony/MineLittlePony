@@ -81,11 +81,11 @@ public final class PonyPosture {
     }
 
     public static boolean isRidingAPony(LivingEntity entity) {
-        return isSitting(entity) && getMountPony(entity).map(Pony::race).orElse(Race.HUMAN) != Race.HUMAN;
+        return isSitting(entity) && !getMountPony(entity).map(Pony::race).orElse(Race.HUMAN).isHuman();
     }
 
     public static boolean hasSeaponyForm(LivingEntity entity) {
-        return hasForm(entity, Race.SEAPONY, DefaultPonySkinHelper.SEAPONY_SKIN_TYPE_ID, PonyForm.SEAPONY);
+        return getRace(entity) == Race.SEAPONY || hasSkinVariant(entity, DefaultPonySkinHelper.SEAPONY_SKIN_TYPE_ID);
     }
 
     public static boolean isSeaponyFormActive(LivingEntity entity) {
@@ -93,18 +93,24 @@ public final class PonyPosture {
     }
 
     public static boolean hasNirikForm(LivingEntity entity) {
-        return hasForm(entity, Race.KIRIN, DefaultPonySkinHelper.NIRIK_SKIN_TYPE_ID, PonyForm.NIRIK);
+        return getRace(entity) == Race.KIRIN && hasSkinVariant(entity, DefaultPonySkinHelper.NIRIK_SKIN_TYPE_ID);
     }
 
     public static boolean isNirikFormActive(LivingEntity entity) {
         return false;
     }
 
-    public static boolean hasForm(LivingEntity entity, Race race, Identifier skinId, Identifier ponyform) {
+    public static boolean hasRaceOrForm(LivingEntity entity, Race race, Identifier skinId, Identifier ponyform) {
         return Pony.getManager().getPony(entity).filter(pony -> {
-            return (pony.race() == race
-                    && (entity instanceof Player player && SkinsProxy.getInstance().getSkin(skinId, player).isPresent())
-            );
+            return pony.race() == race || hasSkinVariant(entity, skinId);
         }).isPresent();
+    }
+
+    public static boolean hasSkinVariant(LivingEntity entity, Identifier skinId) {
+        return entity instanceof Player player && SkinsProxy.getInstance().getSkin(skinId, player).isPresent();
+    }
+
+    public static Race getRace(LivingEntity entity) {
+        return Pony.getManager().getPony(entity).map(Pony::race).orElse(Race.HUMAN);
     }
 }
