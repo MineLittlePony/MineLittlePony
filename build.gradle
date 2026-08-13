@@ -55,7 +55,7 @@ dependencies {
     minecraft "com.mojang:minecraft:${project.minecraft_version}"
     api "net.fabricmc:fabric-loader:${project.loader_version}"
 
-    //implementation "com.ptsmods:devlogin:3.4.1"
+    implementation "com.ptsmods:devlogin:3.5.1:fabric"
 
     api fabricApi.module("fabric-api-base", project.fabric_version)
     api fabricApi.module("fabric-lifecycle-events-v1", project.fabric_version)

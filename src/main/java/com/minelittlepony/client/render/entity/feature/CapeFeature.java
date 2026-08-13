@@ -59,8 +59,9 @@ public class CapeFeature extends AbstractPonyFeature<PlayerPonyRenderState, Clie
                     } else {
                         matrices.translate(0, 0.44F, 0);
                     }
-                    lookupModel(state).body().transformAccessory((PlayerPonyRenderState)state, BodyPart.BACK, matrices);
-                    matrices.mulPose(Axis.XP.rotationDegrees(85 - model.body.xRot * Mth.DEG_TO_RAD));
+                    var model = lookupModel(state);
+                    model.body().transformAccessory((PlayerPonyRenderState)state, BodyPart.BACK, matrices);
+                    matrices.mulPose(Axis.XP.rotationDegrees(85 - model.body().body.xRot * Mth.RAD_TO_DEG));
                     if (state.isBaby) {
                         matrices.scale(1.1F, 1.1F, 1.1F);
                     }
