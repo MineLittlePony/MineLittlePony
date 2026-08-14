@@ -198,7 +198,6 @@ public class PlayerPonyRenderer<Player extends Avatar & ClientAvatarEntity>
     }
 
     protected void renderArm(PoseStack stack, SubmitNodeCollector queue, int light, Identifier skinTexture, boolean sleeveVisible, HumanoidArm side) {
-
         LocalPlayer player = Minecraft.getInstance().player;
 
         var renderer = MineLittlePony.getInstance().getRenderDispatcher().getPonyRenderer(player);
@@ -206,6 +205,11 @@ public class PlayerPonyRenderer<Player extends Avatar & ClientAvatarEntity>
             return;
         }
         PonyRenderState state = renderer.createRenderState(player, Minecraft.getInstance().getDeltaTracker().getGameTimeDeltaPartialTick(false));
+
+        // Enforce pony level
+        if (state.skin.body().texturePath().equals(skinTexture)) {
+            skinTexture = state.pony.texture();
+        }
 
         if (PonyConfig.getInstance().fpsmagic.get() && state.hasMagicGlow() && (
                 player.getItemInHand(InteractionHand.MAIN_HAND).has(DataComponents.MAP_ID)
