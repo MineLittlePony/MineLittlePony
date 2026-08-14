@@ -35,7 +35,7 @@ reckon {
 }
 
 outlet {
-    allowSnapshotsForProject = true
+    allowSnapshotsForProject = 'true'.equals(project.minecraft_version_allow_snapshot)
     mcVersionRange = project.minecraft_version_range
 }
 
