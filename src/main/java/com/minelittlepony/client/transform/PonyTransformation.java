@@ -42,18 +42,22 @@ public enum PonyTransformation implements TransformedModel.BodyType {
                     stack.translate(0, 0, -0.045F);
                     if (attributes.isCrouching) stack.translate(0, -0.095F, 0.17F);
                 case HEAD:
-                    stack.translate(0, 0.07F, 0);
+                    stack.translate(0, 0.05F, 0);
+                    if (attributes.isLyingDown) stack.translate(0, -0.1F, 0);
                     break;
                 case BODY:
-                    stack.translate(0, 0, -0.05F);
+                    stack.translate(0, -0.05F, -0.05F);
                     if (attributes.isCrouching) stack.translate(0, -0.07F, 0.04F);
+                    if (attributes.isLyingDown) stack.translate(0, -0.08F, 0);
+                    break;
+                case TAIL:
+                    stack.translate(0, -0.05F, 0);
+                    if (attributes.isCrouching) stack.translate(0, -0.07F, 0);
                     if (attributes.isLyingDown) stack.translate(0, -0.1F, 0);
                     break;
                 case BACK:
-                    stack.translate(0, -0.08F, 0);
-                    if (attributes.isCrouching) stack.translate(0, -0.07F, 0.04F);
-                    if (attributes.isLyingDown) stack.translate(0, -0.1F, 0);
-                    if (attributes.isSleeping) stack.translate(0, 0.25F, 0);
+                    if (attributes.isCrouching) stack.translate(0, -0.18F, 0.04F);
+                    if (attributes.isSitting) stack.translate(0, -0.1F, -0.1F);
                     break;
                 case LEGS:
                     if (!attributes.isLyingDown) stack.translate(0, 0.01F, 0);

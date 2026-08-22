@@ -16,9 +16,9 @@
 					]
 				},
 				"snout": {
-				  "data": "minelittlepony:components/snout",
-				  "implementation": "com.minelittlepony.client.model.part.PonySnout"
-			  },
+					"data": "minelittlepony:components/snout",
+					"implementation": "com.minelittlepony.client.model.part.PonySnout"
+				},
 				"ears": {
 					"locals": {
 						"ear_pronouncement": 0.9,
@@ -28,53 +28,61 @@
 					"implementation": "com.minelittlepony.client.model.part.PonyEars"
 				},
 				"horn": {
-					"locals": {
-						"incline": 19,
-						"scale": 0.5
-					},
 					"data": "minelittlepony:components/horn",
-					"implementation": "com.minelittlepony.client.model.part.UnicornHorn"
+					"implementation": "com.minelittlepony.client.model.part.UnicornHorn",
+					"locals": {
+						"incline": -10,
+						"scale_width": 0.25,
+						"scale_height": 1,
+						"y": 0.8,
+						"z": -4.5
+					}
 				},
-        "hat": {
-          "texture": { "u": 32, "v": 0 },
-          "dilate": ["#head_elongation", "#head_elongation", 0],
-          "cubes": [
-            { "from": [-4, -6, -6], "size": [ 8,  8,  8], "dilate": 0.5 }
-          ]
-        }
+				"hat": {
+					"texture": { "u": 32, "v": 0 },
+					"dilate": ["#head_elongation", "#head_elongation", 0],
+					"cubes": [
+						{ "from": [-4, -6, -6], "size": [8, 8, 8], "dilate": 0.5 }
+					]
+				}
 			}
 		},
-    "neck": {
-      "type": "mson:planar",
-      "dilate": [ -0.3, "#neck_dilate_y", "#neck_dilate_z" ],
-      "texture": { "u": 0, "v": 16 },
-      "rotate": [9, 0, 0],
-      "north": [-2, 1.199998, -2.8, 4, 4],
-      "south": [-2, 1.199998,  1.2, 4, 4],
-      "east":  [ 2, 1.199998, -2.8, 4, 4],
-      "west":  [-2, 1.199998, -2.8, 4, 4],
-      "children": {
-        "mane": {
-          "type": "mson:planar",
-          "pivot": [0, -2.9, 1.5],
-          "dilate": [ -0.8, 2, 0 ],
-          "texture": { "u": 32, "v": 0 },
-          "rotate": [0, 0, 0],
-          "north": [-2, 1.199998, -2.8, 4, 4],
-          "south": [-2, 1.199998,  1.2, 4, 4],
-          "east":  [ 2, 1.199998, -2.8, 4, 4],
-          "west":  [-2, 1.199998, -2.8, 4, 4]
-        },
-        "beard": {
-          "texture": { "u": 16, "v": 16 },
-          "pivot": [-4, 2, -2],
-          "rotate": [-20, 0, 0],
-          "cubes": [
-            { "from": [0, 0, 0], "size": [ 8,  8,  4], "dilate": [0.5, -0.5, 0] }
-          ]
-        }
-      }
-    },
+		"neck": {
+			"type": "mson:planar",
+			"dilate": [ 0, "#neck_dilate_y", "#neck_dilate_z" ],
+			"texture": { "u": 0, "v": 16 },
+			"rotate": [-5, 0, 0],
+			"north": [-2, 1.199998, -2.75, 4, 4],
+			"south": [-2, 1.199998,	1.25, 4, 4, 52, 32],
+			"east":	[ 2, 1.199998, -2.75, 4, 4, 52, 16],
+			"west":	[-2, 1.199998, -2.75, 4, 4, 60, 48],
+			"children": {
+				"mane": {
+					"type": "mson:planar",
+					"visible": false,
+					"pivot": [0, -2.9, 1.5],
+					"dilate": [ -0.8, 2, 0 ],
+					"texture": { "u": 32, "v": 0 },
+					"rotate": [0, 0, 0],
+					"north": [-2, 1.199998, -3.8, 4, 4],
+					"south": [-2, 1.199998,	0.2, 52, 32],
+					"east":	[ 2, 1.199998, -3.8, 52, 16],
+					"west":	[-2, 1.199998, -3.8, 60, 48]
+				},
+				"beard": {
+					"texture": { "u": 17, "v": 16 },
+					"rotate": [-27.5, 0, 0],
+					"type": "mson:planar",
+					"dilate": [0.1, 0.5, 0.4],
+					"pivot": [0, 4, -2.7],
+					"top": [-4, 0, 0, 8, 3, 20, 16],
+					"north": [-4, 0, 0, 8, 6, 20, 19],
+					"east": [-4, 0, 0, 3, 6, 17, 20],
+					"west": [4, 0, 0, 3, 6, 28, 20],
+					"down": [-4, 6, 0, 8, 3, 20, 25]
+				}
+			}
+		},
 		"tail": {
 			"implementation": "com.minelittlepony.client.model.part.LionTail",
 			"data": "minelittlepony:components/lion_tail"
