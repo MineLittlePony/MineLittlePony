@@ -151,6 +151,8 @@ public abstract class AbstractPonyModel<T extends PonyRenderState> extends Clien
     protected void ponySleep() {
         rightArm.xRot = -MathUtil.Angles._90_DEG;
         leftArm.xRot = -MathUtil.Angles._90_DEG;
+        rightArm.y += 2;
+        leftArm.y = rightArm.y;
 
         rightLeg.xRot = MathUtil.Angles._90_DEG;
         leftLeg.xRot = MathUtil.Angles._90_DEG;
