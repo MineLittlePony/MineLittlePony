@@ -21,6 +21,7 @@ public interface TriggerPixel<T> {
     TriggerPixel<Integer> GLOW = ofColor(0, 1);
     TriggerPixel<Flags<Wearable>> WEARABLES = ofFlags(1, 1, Wearable.EMPTY_FLAGS, Wearable.values());
     TriggerPixel<Integer> PRIORITY = ofColor(2, 2);
+    TriggerPixel<HornLength> HORN = ofOptions(3, 1, HornLength.FULL, HornLength.values());
 
     static <T extends TValue<T>> TriggerPixel<T> ofOptions(int x, int y, T def, T[] options) {
         MAX_COORDS.x = Math.max(MAX_COORDS.x, x);
@@ -70,8 +71,8 @@ public interface TriggerPixel<T> {
 
     static <T extends TValue<T>> Int2ObjectOpenHashMap<T> buildLookup(T[] options) {
         Int2ObjectOpenHashMap<T> lookup = new Int2ObjectOpenHashMap<>();
-        for (int i = 0; i < options.length; i++) {
-            lookup.put(options[i].colorCode(), options[i]);
+        for (T option : options) {
+            lookup.put(option.colorCode(), option);
         }
         return lookup;
     }
