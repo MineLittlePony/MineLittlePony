@@ -20,7 +20,7 @@ public class PonyTail implements SubModel<PonyRenderState>, MsonModel {
     private static final float TAIL_RIDING_Z = 13;
     private static final float TAIL_SNEAKING_Z = 15;
 
-    private static final Pivot HORSEY_TAIL_PIVOT = new Pivot(0, 6, -6);
+    private static final Pivot HORSEY_TAIL_PIVOT = new Pivot(0, 3, 4);
 
     private ModelPart tail;
     private AbstractPonyModel<?> model;
