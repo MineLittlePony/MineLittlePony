@@ -1,5 +1,4 @@
 {
-	"texture": {"w": 64, "h": 64},
 	"locals": {
 		"segment_index": 0,
 		"segment_y": [["#segment_index", "*", 4], "+", 2.063],
@@ -7,14 +6,15 @@
 	},
 	"data": {
 		"segment": {
+			"texture": {"w": 64, "h": 64},
 			"type": "mson:planar",
-			"pivot": [0, "#segment_y", 0],
-			"up":   [-2, 0, 1, 4, 4, 32, 0, true, false],
-			"east": [ 2, 0, 1, 4, 4, 36, "#tex_x"],
-			"west": [-2, 0, 1, 4, 4, 36, "#tex_x"],
-			"south":[-2, 0, 5, 4, 4, 32, "#tex_x"],
-			"north":[-2, 0, 1, 4, 4, 32, "#tex_x"],
-			"down": [-2, 4, 1, 4, 4, 32, 0]
+			"pivot": [-2, "#segment_y", 0],
+			"up":   [0, -4, 0, 4, 4, 32, 0, true, false],
+			"east": [0, -4, 0, 4, 4, 36, "#tex_x"],
+			"west": [4, -4, 0, 4, 4, 36, "#tex_x", true, false],
+			"south":[0, -4, 4, 4, 4, 32, "#tex_x"],
+			"north":[0, -4, 0, 4, 4, 32, "#tex_x"],
+			"down": [0, 0, 0, 4, 4, 32, 0]
 		}
 	}
 }

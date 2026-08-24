@@ -20,7 +20,7 @@ public enum PonyTransformation implements TransformedModel.BodyType {
         public void transform(ModelAttributes attributes, BodyPart part, PoseStack stack) {
             switch (part) {
                 case NECK:
-                    if (attributes.isCrouching) stack.translate(-0.03F, 0.03F, 0.13F);
+                    if (attributes.isCrouching) stack.translate(0, 0.03F, 0.13F);
                     break;
                 case HEAD:
                     if (attributes.isLyingDown) stack.translate(0, -0.05F, 0);
@@ -116,7 +116,7 @@ public enum PonyTransformation implements TransformedModel.BodyType {
         public void transform(ModelAttributes attributes, BodyPart part, PoseStack stack) {
             switch (part) {
                 case NECK:
-                    if (attributes.isCrouching) stack.translate(-0.03F, -0.091F, 0.09F);
+                    if (attributes.isCrouching) stack.translate(0, -0.091F, 0.09F);
                 case HEAD:
                     stack.translate(0, 0, -0.06F);
                     if (attributes.isSleeping) stack.translate(0, 0.2F, 0);
@@ -240,7 +240,7 @@ public enum PonyTransformation implements TransformedModel.BodyType {
             switch (part) {
                 case NECK:
                     stack.translate(0, -0.1F, 0);
-                    if (attributes.isCrouching) stack.translate(-0.04F, 1.3F * -0.05F, 0.15F);
+                    if (attributes.isCrouching) stack.translate(0, 1.3F * -0.05F, 0.15F);
                     if (attributes.isSwimming) stack.translate(0, 1.3F * -0.1F, 0);
                     break;
                 case HEAD:

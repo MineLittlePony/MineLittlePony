@@ -16,7 +16,6 @@ import java.util.List;
 import java.util.stream.IntStream;
 
 public class PonyTail implements SubModel<PonyRenderState>, MsonModel {
-    private static final float TAIL_Z = 14;
     private static final float TAIL_RIDING_Y = 3;
     private static final float TAIL_RIDING_Z = 13;
     private static final float TAIL_SNEAKING_Z = 15;
@@ -45,6 +44,7 @@ public class PonyTail implements SubModel<PonyRenderState>, MsonModel {
 
     @Override
     public void setAngles(PonyModel<PonyRenderState> model, PonyRenderState state) {
+        tail.resetPose();
         boolean rainboom = state.attributes.isSwimming || state.attributes.isGoingFast;
         tail.zRot = rainboom ? 0 : Mth.cos(state.walkAnimationPos * 0.8F) * 0.2f * state.walkAnimationSpeed;
         tail.yRot = state.wobbleAmount * 5;
@@ -61,19 +61,13 @@ public class PonyTail implements SubModel<PonyRenderState>, MsonModel {
             tail.y = TAIL_RIDING_Y;
             tail.xRot = Mth.PI / 5;
         } else {
-            tail.setPos(0, 0, TAIL_Z);
             if (rainboom) {
                 tail.xRot = MathUtil.Angles._90_DEG + Mth.sin(state.walkAnimationSpeed) / 10;
+                tail.y += 2;
+                tail.z += 2;
             } else {
-                tail.xRot = state.walkAnimationSpeed / 2;
-
                 swingX(state.ageInTicks);
             }
-        }
-
-        if (rainboom) {
-            tail.y += 6;
-            tail.z++;
         }
 
         for (int i = 0; i < segments.size(); i++) {

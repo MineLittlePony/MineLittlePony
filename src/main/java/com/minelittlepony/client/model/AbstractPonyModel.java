@@ -34,7 +34,7 @@ public abstract class AbstractPonyModel<T extends PonyRenderState> extends Clien
 
     public static final Pivot HEAD_SNEAKING = new Pivot(0, 6, -2);
     public static final Pivot BODY_SNEAKING = new Pivot(0, 7, -4);
-    public static final Pivot BODY_RIDING = new Pivot(0, 1, 4);
+    public static final Pivot BODY_RIDING = new Pivot(0, 0, 4);
     public static final Pivot FONT_LEGS_SLEEPING = new Pivot(0, -2, 2);
     public static final Pivot BACK_LEGS_SLEEPING = new Pivot(0, -2, -2);
 
@@ -124,9 +124,9 @@ public abstract class AbstractPonyModel<T extends PonyRenderState> extends Clien
         }
 
         if (state.attributes.isChibi) {
-            head.xScale += 0.5;
-            head.zScale += 0.5;
-            head.yScale += 0.5;
+            head.xScale += 0.5F;
+            head.zScale += 0.5F;
+            head.yScale += 0.5F;
             float bobScale = state.getAttributes().getMainInterpolator().interpolate("head_bob", state.walkAnimationSpeed, 120) * 0.4F;
             head.zRot += Mth.sin(state.ageInTicks / 2F) * bobScale;
             head.yRot += Mth.sin(state.ageInTicks / 3F) * bobScale;
@@ -165,18 +165,20 @@ public abstract class AbstractPonyModel<T extends PonyRenderState> extends Clien
 
     protected void ponySit() {
         adjustBodyComponents(BODY_RIDING_PITCH, BODY_RIDING);
-        neck.setPos(0, 0, 0);
-        head.setPos(0, 0, 0);
+        //neck.setPos(0, 0, 0);
+        //head.setPos(0, 0, 0);
+        head.y -= 1;
+        neck.y -= 1;
 
         leftLeg.z--;
-        leftLeg.y = 17;
+        leftLeg.y += 3;
         leftLeg.xRot = body.xRot - MathUtil.QUARTER_PIE;
-        leftLeg.yRot = -Mth.PI / 7;
+        leftLeg.yRot = -(Mth.PI / 7);
 
         rightLeg.z--;
-        rightLeg.y = 17;
+        rightLeg.y += 3;
         rightLeg.xRot = body.xRot - MathUtil.QUARTER_PIE;
-        rightLeg.zRot =  Mth.PI / 7;
+        rightLeg.yRot = Mth.PI / 7;
 
         leftArm.zRot = -Mth.PI * 0.06f;
         leftArm.xRot += body.xRot;
@@ -185,6 +187,8 @@ public abstract class AbstractPonyModel<T extends PonyRenderState> extends Clien
 
         leftArm.z -= 3;
         rightArm.z -= 3;
+        leftArm.y -= 2;
+        rightArm.y -= 2;
     }
 
     /**
@@ -211,9 +215,9 @@ public abstract class AbstractPonyModel<T extends PonyRenderState> extends Clien
             rightLeg.z += 2;
             leftLeg.y -= 4;
             leftLeg.z += 2;
-            rightArm.y -= 4;
+            rightArm.y -= 2;
             rightArm.z -= 2;
-            leftArm.y -= 4;
+            leftArm.y -= 2;
             leftArm.z -= 2;
         }
 
@@ -254,7 +258,6 @@ public abstract class AbstractPonyModel<T extends PonyRenderState> extends Clien
                         if (poser != null) {
                             poser.alignArmForSwing(state, this);
                         }
-                        break;
                     }
                 }
             }
