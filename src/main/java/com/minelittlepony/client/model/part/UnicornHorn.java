@@ -1,5 +1,6 @@
 package com.minelittlepony.client.model.part;
 
+import com.minelittlepony.api.pony.meta.Race;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.texture.OverlayTexture;
@@ -18,16 +19,24 @@ public class UnicornHorn<T extends PonyRenderState> implements SubModel<T> {
     private final ModelPart horn;
     private final ModelPart glow;
 
+    private final ModelPart changelingAntlers;
+    //private final ModelPart changelingAntlersGlow;
+    //TO DO: make a custom glow for changeling antlers that doesn't look like GARBAGE!!!
+
     private int tint;
 
     public UnicornHorn(ModelPart tree) {
         horn = tree.getChild("bone");
         glow = tree.getChild("corona");
+
+        changelingAntlers = tree.getChild("changeling_antlers");
+        //changelingAntlersGlow = tree.getChild("changeling_antlers_corona");
     }
 
     @Override
     public void accept(PoseStack matrices, VertexConsumer vertices, int overlay, int light, int color) {
         horn.render(matrices, vertices, overlay, light, color);
+        changelingAntlers.render(matrices, vertices, overlay, light, color);
     }
 
     @Override
@@ -39,6 +48,12 @@ public class UnicornHorn<T extends PonyRenderState> implements SubModel<T> {
                     LightCoordsUtil.FULL_BRIGHT,
                     OverlayTexture.NO_OVERLAY, null, ARGB.color(1F, tint),
                     null, 0);
+            //if (state.attributes.metadata.changelingAntlers() != 0 && state.getRace() == Race.CHANGEDLING) {
+            //    frame.submitModelPart(changelingAntlersGlow, matrices, MagicGlow.getRenderLayer(),
+            //            LightCoordsUtil.FULL_BRIGHT,
+            //            OverlayTexture.NO_OVERLAY, null, ARGB.color(1F, tint),
+            //            null, 0);
+            //}
             matrices.popPose();
         }
     }
@@ -47,9 +62,17 @@ public class UnicornHorn<T extends PonyRenderState> implements SubModel<T> {
     public void setAngles(PonyModel<T> model, T state) {
         horn.resetPose();
         glow.resetPose();
+        changelingAntlers.resetPose();
+        //changelingAntlersGlow.resetPose();
         tint = !state.isSpectator && state.hasMagicGlow() && state.headVisible && state.hornGlowVisible ? state.glowColor : 0;
         horn.visible = !state.isSpectator && state.race.hasHorn() && state.headVisible;
         glow.visible = tint != 0;
+        if (state.attributes.metadata.changelingAntlers() != 0 && state.getRace() == Race.CHANGEDLING) {
+            changelingAntlers.visible = horn.visible;
+            //changelingAntlersGlow.visible = glow.visible;
+        } else {
+            changelingAntlers.visible = false;
+        }
         // setting horn length
         if (horn.visible) {
             horn.getChild("stub").visible = false;
@@ -81,10 +104,11 @@ public class UnicornHorn<T extends PonyRenderState> implements SubModel<T> {
         }
         state.transformation.transform(state.attributes, BodyPart.HORN, horn);
         state.transformation.transform(state.attributes, BodyPart.HORN, glow);
+        state.transformation.transform(state.attributes, BodyPart.HORN, changelingAntlers);
+        //state.transformation.transform(state.attributes, BodyPart.HORN, changelingAntlersGlow);
     }
 
     public void setHidden() {
-        horn.visible = false;
-        glow.visible = false;
+        horn.visible = glow.visible = changelingAntlers.visible = false;
     }
 }

@@ -46,8 +46,8 @@ public class PonyTail implements SubModel<PonyRenderState>, MsonModel {
     public void setAngles(PonyModel<PonyRenderState> model, PonyRenderState state) {
         tail.resetPose();
         boolean rainboom = state.attributes.isSwimming || state.attributes.isGoingFast;
-        tail.zRot = rainboom ? 0 : Mth.cos(state.walkAnimationPos * 0.8F) * 0.2f * state.walkAnimationSpeed;
-        tail.yRot = state.wobbleAmount * 5;
+        tail.zRot += rainboom ? 0 : Mth.cos(state.walkAnimationPos * 0.8F) * 0.2f * state.walkAnimationSpeed;
+        tail.yRot += state.wobbleAmount * 5;
 
         tail.visible = !state.isSpectator;
         tailStop = state.attributes.metadata.tailLength().ordinal();
@@ -55,17 +55,18 @@ public class PonyTail implements SubModel<PonyRenderState>, MsonModel {
 
         if (state.attributes.isCrouching && !rainboom) {
             tail.setPos(0, 0, TAIL_SNEAKING_Z);
-            tail.xRot = -model.getBodyPart(BodyPart.BODY).xRot + 0.1F;
+            tail.xRot -= model.getBodyPart(BodyPart.BODY).xRot + 0.1F;
         } else if (state.attributes.isSitting) {
             tail.z = TAIL_RIDING_Z;
             tail.y = TAIL_RIDING_Y;
-            tail.xRot = Mth.PI / 5;
+            tail.xRot += Mth.PI / 5;
         } else {
             if (rainboom) {
-                tail.xRot = MathUtil.Angles._90_DEG + Mth.sin(state.walkAnimationSpeed) / 10;
+                tail.xRot += MathUtil.Angles._90_DEG + Mth.sin(state.walkAnimationSpeed) / 10;
                 tail.y += 2;
                 tail.z += 2;
             } else {
+                tail.xRot += state.walkAnimationSpeed / 2;
                 swingX(state.ageInTicks);
             }
         }

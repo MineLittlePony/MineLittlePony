@@ -21,7 +21,8 @@ public interface TriggerPixel<T> {
     TriggerPixel<Integer> GLOW = ofColor(0, 1);
     TriggerPixel<Flags<Wearable>> WEARABLES = ofFlags(1, 1, Wearable.EMPTY_FLAGS, Wearable.values());
     TriggerPixel<Integer> PRIORITY = ofColor(2, 2);
-    TriggerPixel<HornLength> HORN = ofOptions(3, 1, HornLength.FULL, HornLength.values());
+    TriggerPixel<HornLength> HORN_LENGTH = ofOptions(3, 1, HornLength.FULL, HornLength.values());
+    TriggerPixel<Integer> CHANGELING_ANTLERS = ofColor(3, 2);
 
     static <T extends TValue<T>> TriggerPixel<T> ofOptions(int x, int y, T def, T[] options) {
         MAX_COORDS.x = Math.max(MAX_COORDS.x, x);

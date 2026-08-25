@@ -355,18 +355,13 @@ public abstract class AbstractPonyModel<T extends PonyRenderState> extends Clien
             originZ += 0.5F;
         }
 
-        if (part != BodyPart.WINGS) {
-            if (state.attributes.isSleeping || state.attributes.isRiptide) {
-                stack.mulPose(Axis.YP.rotationDegrees(180));
-                stack.mulPose(Axis.XP.rotationDegrees(-90));
-            }
-        }
-
         stack.translate(0, originY, originZ);
         float scaleFactor = state.attributes.size.scaleFactor();
 
         if (part != BodyPart.WINGS) {
             if (state.attributes.isSleeping || state.attributes.isRiptide) {
+                stack.mulPose(Axis.YP.rotationDegrees(180));
+                stack.mulPose(Axis.XP.rotationDegrees(-90));
                 stack.translate(0, -0.75F, -0.35F);
                 if (state instanceof PlayerPonyRenderState) {
                     stack.translate(0, 0.15F / scaleFactor, 0.4F);

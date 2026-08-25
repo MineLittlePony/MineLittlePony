@@ -1,46 +1,29 @@
 {
 	"data": {
 		"left_wing": {
+			"texture": {"w": 64, "h": 64},
 			"implementation": "com.minelittlepony.client.model.part.PonyWings$Wing",
 			"data": {
 				"folded": "#extended",
 				"extended": {
-					"texture": {"u": 56, "v": 19, "w": 64, "h": 64},
-					"pivot": [2.49, 5.28, 4],
-					"rotate": [30, 0, 0],
-					"children": {
-						"primary": {
-							"type": "mson:planar",
-							"east": [-0.5, 0, -7, 8, 16, 56, 16]
-						},
-						"secondary": {
-							"type": "mson:planar",
-							"rotate": [-1, 0.3, -10],
-							"east": [1, 0, -5, 8, 16, 56, 32]
-						}
-					}
+					"pivot": [3.5, 6.2, 1.5],
+					"rotate": [15, 0, 25],
+					"type": "mson:planar",
+					"west": [0.5, 1.5, 0, 8, 16, 56, 16, false, true]
 				}
 			}
 		},
 		"right_wing": {
+			"texture": {"w": 64, "h": 64},
 			"implementation": "com.minelittlepony.client.model.part.PonyWings$Wing",
 			"data": {
 				"folded": "#extended",
 				"extended": {
-					"texture": {"u": 56, "v": 19, "w": 64, "h": 64},
-					"pivot": [-2.49, 5.28, 4],
-					"rotate": [30, 0, 0],
-					"children": {
-						"primary": {
-							"type": "mson:planar",
-							"west": [0.5, 0, -7, 8, 16, 56, 16, true, false]
-						},
-						"secondary": {
-							"type": "mson:planar",
-							"rotate": [-1, -0.3, 10],
-							"west": [-1, 0, -5, 8, 16, 56, 32, true, false]
-						}
-					}
+					"mirrored": true,
+					"pivot": [-3.5, 6.2, 1.5],
+					"rotate": [15, 0, 25],
+					"type": "mson:planar",
+					"west": [-0.5, 1.5, 0, 8, 16, 56, 32, false, true]
 				}
 			}
 		},

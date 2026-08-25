@@ -3,6 +3,7 @@ package com.minelittlepony.client.model.part;
 import com.minelittlepony.api.model.BodyPart;
 import com.minelittlepony.api.model.PonyModel;
 import com.minelittlepony.api.model.SubModel;
+import com.minelittlepony.api.pony.meta.Race;
 import com.minelittlepony.client.render.entity.state.PonyRenderState;
 
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -11,7 +12,7 @@ import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.util.Mth;
 
 public class BasicTail implements SubModel<PonyRenderState> {
-    private ModelPart tail;
+    private final ModelPart tail;
 
     public BasicTail(ModelPart tree) {
         tail = tree.getChild("tail");
@@ -22,20 +23,23 @@ public class BasicTail implements SubModel<PonyRenderState> {
         tail.resetPose();
         tail.visible = !state.isSpectator;
 
-        tail.yRot = state.wobbleAmount * 5;
+        tail.yRot += state.wobbleAmount * 5;
 
-        tail.zRot = Mth.cos(state.walkAnimationPos * 0.8F) * 0.2f * state.walkAnimationSpeed;
+        tail.zRot += Mth.cos(state.walkAnimationPos * 0.8F) * 0.2f * state.walkAnimationSpeed;
 
         if (state.attributes.isCrouching) {
-            tail.xRot = model.getBodyPart(BodyPart.BODY).xRot - 0.1F;
+            tail.xRot += model.getBodyPart(BodyPart.BODY).xRot - 0.1F;
             tail.y += 0.4F;
             tail.z -= 4.8F;
+            if (state.getRace() == Race.CHANGEDLING) {
+                tail.z += 1;
+            }
         } else if (state.attributes.isSitting) {
-            tail.xRot = Mth.PI / 5;
+            tail.xRot += Mth.PI / 5;
             tail.y += 10.7F;
             tail.z -= 0.4F;
         } else {
-            tail.xRot = state.walkAnimationSpeed / 2;
+            tail.xRot += state.walkAnimationSpeed / 2;
             swingX(state.ageInTicks);
         }
     }

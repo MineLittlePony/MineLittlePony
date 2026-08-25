@@ -18,10 +18,10 @@
 				"snout": {
 				  "data": "minelittlepony:components/snout",
 				  "implementation": "com.minelittlepony.client.model.part.PonySnout"
-			  },
+				},
 				"ears": {
 					"locals": {
-						"ear_pronouncement": 0.9,
+						"ear_pronouncement": 1,
 						"ear_spread": 3
 					},
 					"data": "minelittlepony:components/ears",
@@ -54,9 +54,9 @@
 			"rotate": [-5, 0, 0],
 			"up": [-2, 1.2, -2.75, 4, 4, 18, 2],
 			"north": [-2, 1.2, -2.75, 4, 4],
-			"south": [-2, 1.2,	1.25, 4, 4],
-			"east":	[ 2, 1.2, -2.75, 4, 4],
-			"west":	[-2, 1.2, -2.75, 4, 4],
+			"south": [-2, 1.2,	1.25, 4, 4, 60, 48],
+			"east":	[ 2, 1.2, -2.75, 4, 4, 52, 16],
+			"west":	[-2, 1.2, -2.75, 4, 4, 52, 32],
 			"children": {
 				"mane": {
 					"type": "mson:planar",

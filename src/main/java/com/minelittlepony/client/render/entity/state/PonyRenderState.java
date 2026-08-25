@@ -85,7 +85,7 @@ public class PonyRenderState extends AvatarRenderState implements PonyModel.Attr
         submergedInWater = false;
         wobbleAmount = attackTime <= 0 ? 0 : Mth.sin(Mth.sqrt(attackTime) * Mth.TWO_PI) * 0.04F;
         if (hasMagicGlow()) {
-            wobbleAmount *= 0.5;
+            wobbleAmount *= 0.5F;
         }
         if (attributes.isSitting) {
             pose = Pose.SITTING;
@@ -113,7 +113,11 @@ public class PonyRenderState extends AvatarRenderState implements PonyModel.Attr
         leftHeldItem.updateItemRenderState(this, resolver, armStacks.getOrDefault(HumanoidArm.LEFT, ItemStack.EMPTY), ItemDisplayContext.THIRD_PERSON_LEFT_HAND, null);
     }
 
-    public void updateState(ItemModelResolver resolver, @Nullable LivingEntity entity, Models<?> models, Pony pony, ModelAttributes.Mode mode) {
+    public void updateState(ItemModelResolver resolver,
+            @Nullable LivingEntity entity,
+            Models<?> models,
+            Pony pony,
+            ModelAttributes.Mode mode) {
         headEquipment = entity.getItemBySlot(EquipmentSlot.HEAD);
         this.pony = pony;
         if (entity != null) {
@@ -141,7 +145,7 @@ public class PonyRenderState extends AvatarRenderState implements PonyModel.Attr
         wobbleAmount = attackTime <= 0 ? 0 : Mth.sin(Mth.sqrt(attackTime) * Mth.TWO_PI) * 0.04F;
         swimAmount = 0;
         if (hasMagicGlow()) {
-            wobbleAmount *= 0.5;
+            wobbleAmount *= 0.5F;
         }
         if (attributes.isSitting) {
             pose = Pose.SITTING;
