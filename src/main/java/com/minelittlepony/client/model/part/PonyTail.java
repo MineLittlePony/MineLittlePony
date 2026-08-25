@@ -17,8 +17,6 @@ import java.util.stream.IntStream;
 
 public class PonyTail implements SubModel<PonyRenderState>, MsonModel {
     private static final float TAIL_RIDING_Y = 3;
-    private static final float TAIL_RIDING_Z = 13;
-    private static final float TAIL_SNEAKING_Z = 15;
 
     private static final Pivot HORSEY_TAIL_PIVOT = new Pivot(0, 3, 4);
 
@@ -53,11 +51,8 @@ public class PonyTail implements SubModel<PonyRenderState>, MsonModel {
         tailStop = state.attributes.metadata.tailLength().ordinal();
         shape = state.attributes.metadata.tailShape();
 
-        if (state.attributes.isCrouching && !rainboom) {
-            tail.setPos(0, 0, TAIL_SNEAKING_Z);
-            tail.xRot -= model.getBodyPart(BodyPart.BODY).xRot + 0.1F;
-        } else if (state.attributes.isSitting) {
-            tail.z = TAIL_RIDING_Z;
+        if (state.attributes.isSitting) {
+            tail.z -= 1;
             tail.y = TAIL_RIDING_Y;
             tail.xRot += Mth.PI / 5;
         } else {
@@ -66,6 +61,10 @@ public class PonyTail implements SubModel<PonyRenderState>, MsonModel {
                 tail.y += 2;
                 tail.z += 2;
             } else {
+                if (state.attributes.isCrouching) {
+                    tail.z += 0.5F;
+                    tail.xRot -= model.getBodyPart(BodyPart.BODY).xRot - 0.2F;
+                }
                 tail.xRot += state.walkAnimationSpeed / 2;
                 swingX(state.ageInTicks);
             }
