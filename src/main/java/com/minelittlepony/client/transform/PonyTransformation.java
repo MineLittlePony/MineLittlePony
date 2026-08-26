@@ -39,24 +39,25 @@ public enum PonyTransformation implements TransformedModel.BodyType {
         public void transform(ModelAttributes attributes, BodyPart part, PoseStack stack) {
             switch (part) {
                 case NECK:
-                    if (attributes.isCrouching) stack.translate(0, -0.095F, 0.17F);
+                    stack.translate(0, -0.05F, 0);
+                    if (attributes.isCrouching) stack.translate(0, -0.095F, 0.13F);
                 case HEAD:
-                    stack.translate(0, 0.05F, 0);
-                    if (attributes.isLyingDown) stack.translate(0, -0.1F, 0);
+                    if (attributes.isLyingDown) stack.translate(0, -0.05F, 0);
+                    if (attributes.isCrouching) stack.translate(0, 0.1F, 0);
                     break;
                 case BODY:
-                    stack.translate(0, -0.05F, -0.05F);
-                    if (attributes.isCrouching) stack.translate(0, -0.07F, 0.04F);
-                    if (attributes.isLyingDown) stack.translate(0, -0.08F, 0);
+                    stack.translate(0, -0.1F, -0.05F);
+                    if (attributes.isCrouching) stack.translate(0, -0.05F, 0);
+                    if (attributes.isLyingDown) stack.translate(0, -0.03F, 0);
                     break;
                 case TAIL:
-                    stack.translate(0, -0.05F, 0);
-                    if (attributes.isCrouching) stack.translate(0, -0.07F, 0);
-                    if (attributes.isLyingDown) stack.translate(0, -0.1F, 0);
+                    stack.translate(0, -0.1F, 0);
+                    if (attributes.isCrouching) stack.translate(0, -0.05F, 0);
+                    if (attributes.isLyingDown) stack.translate(0, -0.15F, 0);
                     break;
                 case BACK:
-                    if (attributes.isCrouching) stack.translate(0, -0.18F, 0.04F);
-                    if (attributes.isSitting) stack.translate(0, -0.1F, -0.1F);
+                    if (attributes.isCrouching) stack.translate(0, -0.16F, 0.04F);
+                    if (attributes.isSitting) stack.translate(0, -0.15F, -0.1F);
                     break;
                 case LEGS:
                     if (!attributes.isLyingDown) stack.translate(0, 0.01F, 0);
@@ -68,8 +69,7 @@ public enum PonyTransformation implements TransformedModel.BodyType {
         @Override
         public void transform(ModelAttributes attributes, BodyPart bodyPart, ModelPart part) {
             part.offsetScale(switch (bodyPart) {
-                case HEAD -> new Vector3f(0.02F);
-                case NECK -> new Vector3f(0.3F, 0, 0.1F);
+                case NECK -> new Vector3f(0.3F, 0, 0.15F);
                 case BODY -> new Vector3f(0.4F, 0.3F, 0.1F);
                 case LEGS -> new Vector3f(0.1F, 0, 0.1F);
                 default -> ZERO;
