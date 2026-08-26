@@ -39,7 +39,6 @@ public enum PonyTransformation implements TransformedModel.BodyType {
         public void transform(ModelAttributes attributes, BodyPart part, PoseStack stack) {
             switch (part) {
                 case NECK:
-                    stack.translate(0, 0, -0.045F);
                     if (attributes.isCrouching) stack.translate(0, -0.095F, 0.17F);
                 case HEAD:
                     stack.translate(0, 0.05F, 0);

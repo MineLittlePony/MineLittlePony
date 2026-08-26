@@ -159,7 +159,7 @@
 			"data": {
 				"tail": {
 					"texture": {"w": 64, "h": 64},
-					"pivot": [0, 5.5, 13.5],
+					"pivot": [0, 5.5, 13],
 					"type": "mson:planar",
 					"east": [0, -1, 0, 8, 6, 32, 0, false, false],
 					"rotate": [0, 0, 0]
