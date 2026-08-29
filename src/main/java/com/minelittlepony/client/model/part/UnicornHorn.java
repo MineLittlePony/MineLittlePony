@@ -21,7 +21,7 @@ public class UnicornHorn<T extends PonyRenderState> implements SubModel<T> {
 
     private final ModelPart changelingAntlers;
     //private final ModelPart changelingAntlersGlow;
-    //TO DO: make a custom glow for changeling antlers that doesn't look like GARBAGE!!!
+    //TODO: make a custom glow for changeling antlers that doesn't look like GARBAGE!!!
 
     private int tint;
 
