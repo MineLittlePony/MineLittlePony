@@ -16,8 +16,8 @@
 					]
 				},
 				"snout": {
-				  "data": "minelittlepony:components/snout",
-				  "implementation": "com.minelittlepony.client.model.part.PonySnout"
+					"data": "minelittlepony:components/snout",
+					"implementation": "com.minelittlepony.client.model.part.PonySnout"
 				},
 				"ears": {
 					"locals": {
@@ -77,10 +77,21 @@
 					"dilate": [0.05, 0.5, 0.4],
 					"pivot": [0, 4, -2.7],
 					"up": [-4, 0, 0, 8, 3, 20, 16],
-					"north": [-4, 0, 0, 8, 6, 20, 19],
+					"north": [-4, 0, 0, 8, 6, 20, 20],
 					"east": [-4.025, 0, 0, 3, 6, 17, 20],
 					"west": [4.025, 0, 0, 3, 6, 28, 20],
-					"down": [-4, 6, 0, 8, 3, 20, 25]
+					"down": [-4, 6, 0, 8, 3, 20, 25],
+					"children": {
+						"beard_jacket": {
+							"type": "mson:planar",
+							"dilate": [0.3, 0.75, 0.65],
+							"up": [-4, 0, 0, 8, 3, 20, 32],
+							"north": [-4, 0, 0, 8, 6, 20, 36],
+							"east": [-4.7, 0, 0, 3, 6, 17, 36],
+							"west": [4.7, 0, 0, 3, 6, 28, 36],
+							"down": [-4, 6, 0, 8, 3, 20, 41]
+						}
+					}
 				}
 			}
 		},
