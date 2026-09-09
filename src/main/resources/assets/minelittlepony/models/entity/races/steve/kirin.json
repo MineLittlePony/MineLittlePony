@@ -211,7 +211,7 @@
 		},
 		"tail": {
 			"implementation": "com.minelittlepony.client.model.part.BasicTail",
-			"data": "minelittlepony:components/tail_kirin"
+			"data": "minelittlepony:components/kirin_tail"
 		}
 	}
 }

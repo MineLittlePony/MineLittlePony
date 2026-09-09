@@ -170,7 +170,7 @@
 			"locals": {
 				"walking_rotation_speed": 0.05
 			},
-			"data": "minelittlepony:components/reformed_wings"
+			"data": "minelittlepony:components/reformed_changeling_wings"
 		},
 		"tail": {
 			"implementation": "com.minelittlepony.client.model.part.BasicTail",
