@@ -18,9 +18,9 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 public class UnicornHorn<T extends PonyRenderState> implements SubModel<T> {
     private final ModelPart horn;
     private final ModelPart glow;
+    private final ModelPart[] hornLength;
 
     private final ModelPart changelingAntlers;
-    //private final ModelPart changelingAntlersGlow;
     //TODO: make a custom glow for changeling antlers that doesn't look like GARBAGE!!!
 
     private int tint;
@@ -28,15 +28,23 @@ public class UnicornHorn<T extends PonyRenderState> implements SubModel<T> {
     public UnicornHorn(ModelPart tree) {
         horn = tree.getChild("bone");
         glow = tree.getChild("corona");
+        // the following values correspond to what's set in HornLength.java
+        hornLength = new ModelPart[5];
+        hornLength[0] = horn.getChild("stub");
+        hornLength[1] = horn.getChild("foal");
+        hornLength[2] = horn.getChild("short");
+        hornLength[3] = horn.getChild("full");
+        hornLength[4] = horn.getChild("long");
 
         changelingAntlers = tree.getChild("changeling_antlers");
-        //changelingAntlersGlow = tree.getChild("changeling_antlers_corona");
     }
 
     @Override
     public void accept(PoseStack matrices, VertexConsumer vertices, int overlay, int light, int color) {
         horn.render(matrices, vertices, overlay, light, color);
-        changelingAntlers.render(matrices, vertices, overlay, light, color);
+        if (changelingAntlers != null) {
+            changelingAntlers.render(matrices, vertices, overlay, light, color);
+        }
     }
 
     @Override
@@ -48,12 +56,6 @@ public class UnicornHorn<T extends PonyRenderState> implements SubModel<T> {
                     LightCoordsUtil.FULL_BRIGHT,
                     OverlayTexture.NO_OVERLAY, null, ARGB.color(1F, tint),
                     null, 0);
-            //if (state.attributes.metadata.changelingAntlers() != 0 && state.getRace() == Race.CHANGEDLING) {
-            //    frame.submitModelPart(changelingAntlersGlow, matrices, MagicGlow.getRenderLayer(),
-            //            LightCoordsUtil.FULL_BRIGHT,
-            //            OverlayTexture.NO_OVERLAY, null, ARGB.color(1F, tint),
-            //            null, 0);
-            //}
             matrices.popPose();
         }
     }
@@ -62,53 +64,32 @@ public class UnicornHorn<T extends PonyRenderState> implements SubModel<T> {
     public void setAngles(PonyModel<T> model, T state) {
         horn.resetPose();
         glow.resetPose();
-        changelingAntlers.resetPose();
-        //changelingAntlersGlow.resetPose();
         tint = !state.isSpectator && state.hasMagicGlow() && state.headVisible && state.hornGlowVisible ? state.glowColor : 0;
         horn.visible = !state.isSpectator && state.race.hasHorn() && state.headVisible;
         glow.visible = tint != 0;
-        if (state.attributes.metadata.changelingAntlers() != 0 && state.getRace() == Race.CHANGEDLING) {
-            changelingAntlers.visible = horn.visible;
-            //changelingAntlersGlow.visible = glow.visible;
-        } else {
-            changelingAntlers.visible = false;
-        }
         // setting horn length
         if (horn.visible) {
-            horn.getChild("stub").visible = false;
-            horn.getChild("foal").visible = false;
-            horn.getChild("short").visible = false;
-            horn.getChild("full").visible = false;
-            horn.getChild("long").visible = false;
-            switch (state.attributes.metadata.hornLength()) {
-                case STUB:
-                    horn.getChild("stub").visible = true;
-                    glow.yScale = 0.25F;
-                    break;
-                case FOAL:
-                    horn.getChild("foal").visible = true;
-                    glow.yScale = 0.5F;
-                    break;
-                case SHORT:
-                    horn.getChild("short").visible = true;
-                    glow.yScale = 0.75F;
-                    break;
-                case LONG:
-                    horn.getChild("long").visible = true;
-                    glow.yScale = 1.25F;
-                    break;
-                default:
-                    horn.getChild("full").visible = true;
-                    break;
+            for (ModelPart modelPart : hornLength) {
+                modelPart.visible = false;
+            }
+            hornLength[state.attributes.metadata.hornLength().getValue()].visible = true;
+            glow.yScale = state.attributes.metadata.hornLength().getGlowSize();
+        }
+        if (changelingAntlers != null) {
+            changelingAntlers.resetPose();
+            state.transformation.transform(state.attributes, BodyPart.HORN, changelingAntlers); // if the horn part is meant to exist
+            if (state.attributes.metadata.changelingAntlers() != 0) {
+                changelingAntlers.visible = horn.visible;
             }
         }
         state.transformation.transform(state.attributes, BodyPart.HORN, horn);
         state.transformation.transform(state.attributes, BodyPart.HORN, glow);
-        state.transformation.transform(state.attributes, BodyPart.HORN, changelingAntlers);
-        //state.transformation.transform(state.attributes, BodyPart.HORN, changelingAntlersGlow);
     }
 
     public void setHidden() {
-        horn.visible = glow.visible = changelingAntlers.visible = false;
+        horn.visible = glow.visible = false;
+        if (changelingAntlers != null) {
+            changelingAntlers.visible = false;
+        }
     }
 }

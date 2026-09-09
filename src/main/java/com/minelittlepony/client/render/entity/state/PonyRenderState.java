@@ -66,10 +66,7 @@ public class PonyRenderState extends AvatarRenderState implements PonyModel.Attr
 
     public PonyPosture posture = PonyPosture.STANDING;
 
-    public void updateState(ItemModelResolver resolver,
-            Map<EquipmentSlot, ItemStack> equipment,
-            Map<HumanoidArm, ItemStack> armStacks,
-            Pony pony, ModelAttributes.Mode mode) {
+    public void updateState(ItemModelResolver resolver, Map<EquipmentSlot, ItemStack> equipment, Map<HumanoidArm, ItemStack> armStacks, Pony pony, ModelAttributes.Mode mode) {
         headEquipment = equipment.getOrDefault(EquipmentSlot.HEAD, ItemStack.EMPTY);
         this.pony = pony;
         isBaby = attributes.size == SizePreset.FOAL;

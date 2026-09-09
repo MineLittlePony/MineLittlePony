@@ -27,7 +27,7 @@
 					"implementation": "com.minelittlepony.client.model.part.PonyEars"
 				},
 				"horn": {
-					"data": "minelittlepony:components/horn",
+					"data": "minelittlepony:components/reformed_changeling_horn",
 					"implementation": "com.minelittlepony.client.model.part.UnicornHorn"
 				},
 				"hat": {
