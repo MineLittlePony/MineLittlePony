@@ -6,11 +6,11 @@
 			"cubes": [
 				{"from": [-4, 4, -2], "size": [8, 8, 16]}
 			],
-      "children": {
-        "jacket": {
-          "visible": false
-        }
-      }
+			"children": {
+				"jacket": {
+					"visible": false
+				}
+			}
 		},
 		"right_leg": {
 			"pivot": ["#arm_rotation_x_neg", "#arm_rotation_y", "#arm_rotation_z_neg"],
@@ -21,11 +21,11 @@
 					"size": [ "#arm_width",  "#arm_length",  "#arm_depth" ]
 				}
 			],
-      "children": {
-        "right_pants": {
-          "visible": false
-        }
-      }
+			"children": {
+				"right_pants": {
+					"visible": false
+				}
+			}
 		},
 		"left_leg": {
 			"pivot": ["#arm_rotation_x", "#arm_rotation_y", "#arm_rotation_z_neg"],
@@ -37,11 +37,11 @@
 					"size": [ "#arm_width",  "#arm_length",  "#arm_depth" ]
 				}
 			],
-      "children": {
-        "left_pants": {
-          "visible": false
-        }
-      }
+			"children": {
+				"left_pants": {
+					"visible": false
+				}
+			}
 		}
 	}
 }

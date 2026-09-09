@@ -2,39 +2,39 @@
 	"parent": "minelittlepony:races/steve/alicorn",
 	"data": {
 		"head": {
-      "pivot": [ 0, "#head_pivot_y", 0 ],
-      "dilate": ["#head_elongation", "#head_elongation", 0],
+			"pivot": [ 0, "#head_pivot_y", 0 ],
+			"dilate": ["#head_elongation", "#head_elongation", 0],
 			"cubes": [
 				{ "from": [-4, -6, -6], "size": [ 8,  8,  8] }
 			],
 			"children": {
-        "nose": {
-          "dilate": [-1, 0, -1],
-          "visible": false,
-          "cubes": [
-            { "from": [-4, -6, -13], "size": [ 8,  8,  8] }
-          ]
-        },
+				"nose": {
+					"visible": false,
+					"dilate": [-1, 0, -1],
+					"cubes": [
+						{ "from": [-4, -6, -13], "size": [8, 8, 8] }
+					]
+				},
 				"snout": {
-				  "data": "minelittlepony:components/snout",
-				  "implementation": "com.minelittlepony.client.model.part.PonySnout"
-			  },
+					"data": "minelittlepony:components/snout",
+					"implementation": "com.minelittlepony.client.model.part.PonySnout"
+				},
 				"ears": {
 					"texture": {"w": 64, "h": 64 },
 					"implementation": "com.minelittlepony.client.model.part.PonyEars",
 					"data": "minelittlepony:components/fins"
 				},
 				"horn": {
-				  "data": "minelittlepony:components/horn",
-				  "implementation": "com.minelittlepony.client.model.part.UnicornHorn"
-			  },
-        "hat": {
-          "texture": { "u": 32, "v": 0 },
-          "dilate": ["#head_elongation", "#head_elongation", 0],
-          "cubes": [
-            { "from": [-4, -6, -6], "size": [ 8,  8,  8], "dilate": 0.5 }
-          ]
-        },
+					"data": "minelittlepony:components/horn",
+					"implementation": "com.minelittlepony.client.model.part.UnicornHorn"
+				},
+				"hat": {
+					"texture": { "u": 32, "v": 0 },
+					"dilate": ["#head_elongation", "#head_elongation", 0],
+					"cubes": [
+						{ "from": [-4, -6, -6], "size": [ 8,  8,  8], "dilate": 0.5 }
+					]
+				},
 				"right_antler": {
 					"pivot": [-2, -6, -2],
 					"rotate": [0, 0, 120],
@@ -77,10 +77,10 @@
 		},
 		"wings": {
 			"implementation": "com.minelittlepony.client.model.part.PonyWings",
-      "locals": {
-        "wing_scale": 1.3,
-        "walking_rotation_speed": 0.05
-      },
+			"locals": {
+				"wing_scale": 1.3,
+				"walking_rotation_speed": 0.05
+			},
 			"data": {
 				"left_wing": {
 					"implementation": "com.minelittlepony.client.model.part.PonyWings$Wing",
