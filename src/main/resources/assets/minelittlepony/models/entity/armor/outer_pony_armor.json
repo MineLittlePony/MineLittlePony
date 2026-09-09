@@ -1,7 +1,7 @@
 {
-	"parent": "minelittlepony:armor/inner_pony_armor",
-	"dilate": 0.4,
-	 "data": {
+  "parent": "minelittlepony:armor/inner_pony_armor",
+  "dilate": 0.4,
+  "data": {
     "body": {
       "texture": {"u": 16, "v": 8},
       "dilate": 0.41,
