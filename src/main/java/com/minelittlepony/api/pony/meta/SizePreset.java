@@ -12,7 +12,7 @@ import com.minelittlepony.api.config.PonyConfig;
 public enum SizePreset implements Size {
     TALL    (0x534b76, 0.45f, 1.1F,  1.15F, 1.15F),
     BULKY   (0xce3254, 0.5f,  1,     1.05F, 1.05F),
-    LANKY   (0x3254ce, 0.45F, 0.85F, 0.9F,  0.9F),
+    LANKY   (0x3254ce, 0.45F, 0.85F, 0.87F,  0.9F),
     NORMAL  (0x000000, 0.4f,  0.8F,  0.75F,  0.8F),
     STOCKY  (0xb2e7dd, 0.45F, 0.8F,  0.75F,  0.8F),
     SQUAT   (0xa3d2c7, 0.4F,  0.7F,  0.67F, 0.67F),

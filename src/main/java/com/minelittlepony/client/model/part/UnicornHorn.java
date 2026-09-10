@@ -36,7 +36,11 @@ public class UnicornHorn<T extends PonyRenderState> implements SubModel<T> {
         hornLength[3] = horn.getChild("full");
         hornLength[4] = horn.getChild("long");
 
-        changelingAntlers = tree.getChild("changeling_antlers");
+        if (tree.hasChild("changeling_antlers")) {
+            changelingAntlers = tree.getChild("changeling_antlers");
+        } else {
+            changelingAntlers = null;
+        }
     }
 
     @Override
