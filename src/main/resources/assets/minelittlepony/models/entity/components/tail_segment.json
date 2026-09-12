@@ -1,20 +1,20 @@
 {
-	"texture": {"w": 64, "h": 64},
 	"locals": {
 		"segment_index": 0,
-		"segment_y": [["#segment_index", "*", 4], "+", 1.063],
+		"segment_y": [["#segment_index", "*", 4], "+", 2.063],
 		"tex_x": [["#segment_index", "%", 2], "*", 4]
 	},
 	"data": {
 		"segment": {
+			"texture": {"w": 64, "h": 64},
 			"type": "mson:planar",
-			"pivot": [0, "#segment_y", 0],
-			"up":   [-2, 0, 2, 4, 4, 32, 0, true, false],
-			"east": [ 2, 0, 2, 4, 4, 36, "#tex_x"],
-			"west": [-2, 0, 2, 4, 4, 36, "#tex_x"],
-			"south":[-2, 0, 6, 4, 4, 32, "#tex_x"],
-			"north":[-2, 0, 2, 4, 4, 32, "#tex_x"],
-			"down": [-2, 4, 2, 4, 4, 32, 0]
+			"pivot": [-2, "#segment_y", 0],
+			"up":   [0, -4, 0, 4, 4, 32, 0, true, false],
+			"east": [0, -4, 0, 4, 4, 36, "#tex_x"],
+			"west": [4, -4, 0, 4, 4, 36, "#tex_x", true, false],
+			"south":[0, -4, 4, 4, 4, 32, "#tex_x"],
+			"north":[0, -4, 0, 4, 4, 32, "#tex_x"],
+			"down": [0, 0, 0, 4, 4, 32, 0]
 		}
 	}
 }

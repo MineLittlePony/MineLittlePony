@@ -9,35 +9,35 @@
 			],
 			"children": {
 				"nose": {
-					"dilate": [-1, 0, -1],
 					"visible": false,
+					"dilate": [-1, 0, -1],
 					"cubes": [
-						{ "from": [-4, -6, -13], "size": [ 8,  8,  8] }
+						{ "from": [-4, -6, -13], "size": [8, 8, 8] }
 					]
 				},
 				"snout": {
-				  "data": "minelittlepony:components/snout",
-				  "implementation": "com.minelittlepony.client.model.part.PonySnout"
-			  },
+					"data": "minelittlepony:components/snout",
+					"implementation": "com.minelittlepony.client.model.part.PonySnout"
+				},
 				"ears": {
-				  "data": "minelittlepony:components/bat_ears",
-				  "implementation": "com.minelittlepony.client.model.part.PonyEars",
-          "locals": {
-            "ear_shortening": "#global_ear_shortening"
-          }
-			  },
-        "hat": {
-          "texture": { "u": 32, "v": 0 },
-          "dilate": ["#head_elongation", "#head_elongation", 0],
-          "cubes": [
-            { "from": [-4, -6, -6], "size": [ 8,  8,  8], "dilate": 0.5 }
-          ]
-        }
+					"data": "minelittlepony:components/bat_ears",
+					"implementation": "com.minelittlepony.client.model.part.PonyEars",
+					"locals": {
+						"ear_shortening": "#global_ear_shortening"
+					}
+				},
+				"hat": {
+					"texture": { "u": 32, "v": 0 },
+					"dilate": ["#head_elongation", "#head_elongation", 0],
+					"cubes": [
+						{ "from": [-4, -6, -6], "size": [ 8,  8,  8], "dilate": 0.5 }
+					]
+				}
 			}
 		},
 		"wings": {
-		  "data": "minelittlepony:components/bat_wings",
-		  "implementation": "com.minelittlepony.client.model.part.PonyWings"
-	  }
+			"data": "minelittlepony:components/bat_wings",
+			"implementation": "com.minelittlepony.client.model.part.PonyWings"
+		}
 	}
 }

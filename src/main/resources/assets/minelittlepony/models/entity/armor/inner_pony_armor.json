@@ -4,7 +4,7 @@
 		"body": {
 			"texture": {"u": 16, "v": 8},
 			"cubes": [
-				{"from": [-4, 4, -2], "size": [8, 8, 16]}
+				{"from": [-4, 4, -3], "size": [8, 8, 16]}
 			],
 			"children": {
 				"jacket": {

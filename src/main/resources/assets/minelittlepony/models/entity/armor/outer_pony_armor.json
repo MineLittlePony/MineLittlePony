@@ -6,7 +6,7 @@
       "texture": {"u": 16, "v": 8},
       "dilate": 0.41,
       "cubes": [
-        {"from": [-4, 4, -2], "size": [8, 8, 16]}
+        {"from": [-4, 4, -3], "size": [8, 8, 16]}
       ],
       "children": {
         "jacket": {

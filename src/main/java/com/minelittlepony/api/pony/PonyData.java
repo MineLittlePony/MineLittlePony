@@ -67,12 +67,22 @@ public record PonyData (
          */
         int priority,
         /**
+         *  Gets the length of the pony's horn (if they have a horn)
+         */
+        HornLength hornLength,
+        /**
+         * Determines if the texture slot for a reformed changeling's antlers has been filled by
+         * checking one pixel slot that's almost always filled. Returns 0 if not filled.
+         */
+        int changelingAntlers,
+        /**
          * Gets the trigger pixel values as they appeared in the underlying image.
          */
         Map<String, TValue<?>> attributes
     ) implements Comparable<PonyData> {
     public static final int DEFAULT_MAGIC_COLOR = 0x4444aa;
-    private static final Function<Race, PonyData> OF_RACE = Util.memoize(race -> new PonyData(race, TailLength.FULL, TailShape.STRAIGHT, Gender.MARE, SizePreset.NORMAL, DEFAULT_MAGIC_COLOR, true, 0, Wearable.EMPTY_FLAGS));
+    public static final int NO_ANTLERS = 0;
+    private static final Function<Race, PonyData> OF_RACE = Util.memoize(race -> new PonyData(race, TailLength.FULL, TailShape.STRAIGHT, Gender.MARE, SizePreset.NORMAL, DEFAULT_MAGIC_COLOR, true, 0, HornLength.FULL, NO_ANTLERS, Wearable.EMPTY_FLAGS));
     public static final PonyData NULL = OF_RACE.apply(Race.HUMAN);
 
     public static final Codec<PonyData> CODEC = RecordCodecBuilder.create(i -> i.group(
@@ -84,6 +94,8 @@ public record PonyData (
         Codec.INT.fieldOf("glowColor").forGetter(PonyData::glowColor),
         Codec.BOOL.optionalFieldOf("noSkin", false).forGetter(PonyData::noSkin),
         Codec.INT.optionalFieldOf("priority", 0).forGetter(PonyData::priority),
+        HornLength.CODECS.codec().fieldOf("hornLength").forGetter(PonyData::hornLength),
+        Codec.INT.fieldOf("changelingAntlers").forGetter(PonyData::changelingAntlers),
         Wearable.FLAGS_CODEC.fieldOf("gear").forGetter(PonyData::gear)
     ).apply(i, PonyData::new));
     public static final StreamCodec<FriendlyByteBuf, PonyData> STREAM_CODEC = StreamCodec.composite(
@@ -95,6 +107,8 @@ public record PonyData (
         ByteBufCodecs.INT, PonyData::glowColor,
         ByteBufCodecs.BOOL, PonyData::noSkin,
         ByteBufCodecs.INT, PonyData::priority,
+        HornLength.CODECS.streamCodec(), PonyData::hornLength,
+        ByteBufCodecs.INT, PonyData::changelingAntlers,
         Flags.streamCodec(Wearable.NONE, Wearable::values), PonyData::gear,
         PonyData::new
     );
@@ -113,12 +127,14 @@ public record PonyData (
             TriggerPixel.GLOW.read(image),
             noSkin,
             TriggerPixel.PRIORITY.read(image),
+            TriggerPixel.HORN_LENGTH.read(image),
+            TriggerPixel.CHANGELING_ANTLERS.read(image),
             TriggerPixel.WEARABLES.read(image)
         );
     }
 
-    public PonyData(Race race, TailLength tailLength, TailShape tailShape, Gender gender, Size size, int glowColor, boolean noSkin, int priority, Flags<Wearable> wearables) {
-        this(race, tailLength, tailShape, gender, size, glowColor, wearables, noSkin, priority, Util.make(new TreeMap<>(), map -> {
+    public PonyData(Race race, TailLength tailLength, TailShape tailShape, Gender gender, Size size, int glowColor, boolean noSkin, int priority, HornLength hornLength, int changelingAntlers, Flags<Wearable> wearables) {
+        this(race, tailLength, tailShape, gender, size, glowColor, wearables, noSkin, priority, hornLength, changelingAntlers, Util.make(new TreeMap<>(), map -> {
                 map.put("race", race);
                 map.put("tailLength", tailLength);
                 map.put("tailShape", tailShape);
@@ -126,6 +142,8 @@ public record PonyData (
                 map.put("size", size);
                 map.put("magic", new TValue.Numeric(glowColor));
                 map.put("priority", new TValue.Numeric(priority));
+                map.put("horn", hornLength);
+                map.put("changelingAntlers", new TValue.Numeric(changelingAntlers));
                 map.put("gear", wearables);
             })
         );
@@ -140,6 +158,8 @@ public record PonyData (
                 .compare(size().ordinal(), o.size().ordinal())
                 .compare(glowColor(), o.glowColor())
                 .compare(0, gear().compareTo(o.gear()))
+                .compare(hornLength(), o.hornLength())
+                .compare(changelingAntlers(), o.changelingAntlers())
                 .result();
     }
 }

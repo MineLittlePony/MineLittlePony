@@ -8,26 +8,36 @@ import net.minecraft.util.*;
 import com.minelittlepony.api.model.*;
 import com.minelittlepony.client.render.MagicGlow;
 import com.minelittlepony.client.render.entity.state.PonyRenderState;
+import com.minelittlepony.api.model.PonyModel;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 
-
 public class UnicornHorn<T extends PonyRenderState> implements SubModel<T> {
+    protected final ModelPart horn;
+    protected final ModelPart glow;
+    protected final ModelPart[] hornLength;
 
-    private final ModelPart horn;
-    private final ModelPart glow;
+    //TODO: make a custom glow for changeling antlers that doesn't look like GARBAGE!!!
 
-    private int tint;
+    protected int tint;
 
     public UnicornHorn(ModelPart tree) {
         horn = tree.getChild("bone");
         glow = tree.getChild("corona");
+        // the following values correspond to what's set in HornLength.java
+        hornLength = new ModelPart[] {
+            horn.getChild("stub"),
+            horn.getChild("foal"),
+            horn.getChild("short"),
+            horn.getChild("full"),
+            horn.getChild("long")
+        };
     }
 
     @Override
-    public void accept(PoseStack stack, VertexConsumer vertices, int overlay, int light, int color) {
-        horn.render(stack, vertices, overlay, light, color);
+    public void accept(PoseStack matrices, VertexConsumer vertices, int overlay, int light, int color) {
+        horn.render(matrices, vertices, overlay, light, color);
     }
 
     @Override
@@ -50,12 +60,19 @@ public class UnicornHorn<T extends PonyRenderState> implements SubModel<T> {
         tint = !state.isSpectator && state.hasMagicGlow() && state.headVisible && state.hornGlowVisible ? state.glowColor : 0;
         horn.visible = !state.isSpectator && state.race.hasHorn() && state.headVisible;
         glow.visible = tint != 0;
+        // setting horn length
+        if (horn.visible) {
+            for (ModelPart modelPart : hornLength) {
+                modelPart.visible = false;
+            }
+            hornLength[state.attributes.metadata.hornLength().getValue()].visible = true;
+            glow.yScale = state.attributes.metadata.hornLength().getGlowSize();
+        }
         state.transformation.transform(state.attributes, BodyPart.HORN, horn);
         state.transformation.transform(state.attributes, BodyPart.HORN, glow);
     }
 
     public void setHidden() {
-        horn.visible = false;
-        glow.visible = false;
+        horn.visible = glow.visible = false;
     }
 }

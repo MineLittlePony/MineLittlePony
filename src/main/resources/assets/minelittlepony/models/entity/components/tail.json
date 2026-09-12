@@ -1,11 +1,10 @@
 {
-	"texture": {"w": 64, "h": 64},
 	"locals": {
 		"segments": 4
 	},
 	"data": {
 		"tail": {
-			"pivot": [0, 0, 14],
+			"pivot": [0, 3.5, 15],
 			"children": {
 				"segment_0": {
 					"locals": { "segment_index": 0 },

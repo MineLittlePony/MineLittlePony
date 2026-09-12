@@ -1,5 +1,7 @@
 package com.minelittlepony.client.model.part;
 
+import com.minelittlepony.api.pony.meta.Race;
+import com.minelittlepony.util.MathUtil;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.util.Mth;
 
@@ -37,6 +39,15 @@ public class PonyEars implements SubModel<PonyRenderState>, MsonModel {
             right.x = 1;
             left.y = right.y = 1;
             left.z = right.z = 1.5F;
+        } else if (state.attributes.metadata.changelingAntlers() != 0 && state.getRace() == Race.CHANGEDLING) {
+            float changelingAntlerMoveX = 5;
+            float changelingAntlerAngle = MathUtil.Angles._90_DEG;
+
+            left.x -= changelingAntlerMoveX;
+            right.x += changelingAntlerMoveX;
+            left.y = right.y += 4;
+            left.zRot -= changelingAntlerAngle;
+            right.zRot += changelingAntlerAngle;
         }
 
         float limbSpeed = Mth.clamp(state.walkAnimationSpeed, 0, 1);
