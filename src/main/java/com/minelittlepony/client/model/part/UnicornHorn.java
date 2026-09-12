@@ -1,6 +1,5 @@
 package com.minelittlepony.client.model.part;
 
-import com.minelittlepony.api.pony.meta.Race;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.texture.OverlayTexture;
@@ -14,41 +13,31 @@ import com.minelittlepony.api.model.PonyModel;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 
-
 public class UnicornHorn<T extends PonyRenderState> implements SubModel<T> {
-    private final ModelPart horn;
-    private final ModelPart glow;
-    private final ModelPart[] hornLength;
+    protected final ModelPart horn;
+    protected final ModelPart glow;
+    protected final ModelPart[] hornLength;
 
-    private final ModelPart changelingAntlers;
     //TODO: make a custom glow for changeling antlers that doesn't look like GARBAGE!!!
 
-    private int tint;
+    protected int tint;
 
     public UnicornHorn(ModelPart tree) {
         horn = tree.getChild("bone");
         glow = tree.getChild("corona");
         // the following values correspond to what's set in HornLength.java
-        hornLength = new ModelPart[5];
-        hornLength[0] = horn.getChild("stub");
-        hornLength[1] = horn.getChild("foal");
-        hornLength[2] = horn.getChild("short");
-        hornLength[3] = horn.getChild("full");
-        hornLength[4] = horn.getChild("long");
-
-        if (tree.hasChild("changeling_antlers")) {
-            changelingAntlers = tree.getChild("changeling_antlers");
-        } else {
-            changelingAntlers = null;
-        }
+        hornLength = new ModelPart[] {
+            horn.getChild("stub"),
+            horn.getChild("foal"),
+            horn.getChild("short"),
+            horn.getChild("full"),
+            horn.getChild("long")
+        };
     }
 
     @Override
     public void accept(PoseStack matrices, VertexConsumer vertices, int overlay, int light, int color) {
         horn.render(matrices, vertices, overlay, light, color);
-        if (changelingAntlers != null) {
-            changelingAntlers.render(matrices, vertices, overlay, light, color);
-        }
     }
 
     @Override
@@ -79,21 +68,11 @@ public class UnicornHorn<T extends PonyRenderState> implements SubModel<T> {
             hornLength[state.attributes.metadata.hornLength().getValue()].visible = true;
             glow.yScale = state.attributes.metadata.hornLength().getGlowSize();
         }
-        if (changelingAntlers != null) {
-            changelingAntlers.resetPose();
-            state.transformation.transform(state.attributes, BodyPart.HORN, changelingAntlers); // if the horn part is meant to exist
-            if (state.attributes.metadata.changelingAntlers() != 0) {
-                changelingAntlers.visible = horn.visible;
-            }
-        }
         state.transformation.transform(state.attributes, BodyPart.HORN, horn);
         state.transformation.transform(state.attributes, BodyPart.HORN, glow);
     }
 
     public void setHidden() {
         horn.visible = glow.visible = false;
-        if (changelingAntlers != null) {
-            changelingAntlers.visible = false;
-        }
     }
 }
