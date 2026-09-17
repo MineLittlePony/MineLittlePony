@@ -145,7 +145,7 @@
 						}
 					}
 				},
-				"elytras": {
+				"bug_open_elytra": {
 					"visible": false,
 					"pivot": [0, -6.05, 3.5],
 					"children": {
@@ -166,7 +166,7 @@
 			}
 		},
 		"wings": {
-			"implementation": "com.minelittlepony.client.model.part.PonyWings",
+			"implementation": "com.minelittlepony.client.model.part.ReformedChangelingWings",
 			"locals": {
 				"walking_rotation_speed": 0.05
 			},

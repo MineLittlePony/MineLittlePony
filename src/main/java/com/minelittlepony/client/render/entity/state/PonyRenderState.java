@@ -66,7 +66,11 @@ public class PonyRenderState extends AvatarRenderState implements PonyModel.Attr
 
     public PonyPosture posture = PonyPosture.STANDING;
 
-    public void updateState(ItemModelResolver resolver, Map<EquipmentSlot, ItemStack> equipment, Map<HumanoidArm, ItemStack> armStacks, Pony pony, ModelAttributes.Mode mode) {
+    public void updateState(ItemModelResolver resolver,
+            Map<EquipmentSlot, ItemStack> equipment,
+            Map<HumanoidArm,
+            ItemStack> armStacks,
+            Pony pony, ModelAttributes.Mode mode) {
         headEquipment = equipment.getOrDefault(EquipmentSlot.HEAD, ItemStack.EMPTY);
         this.pony = pony;
         isBaby = attributes.size == SizePreset.FOAL;
@@ -110,11 +114,7 @@ public class PonyRenderState extends AvatarRenderState implements PonyModel.Attr
         leftHeldItem.updateItemRenderState(this, resolver, armStacks.getOrDefault(HumanoidArm.LEFT, ItemStack.EMPTY), ItemDisplayContext.THIRD_PERSON_LEFT_HAND, null);
     }
 
-    public void updateState(ItemModelResolver resolver,
-            @Nullable LivingEntity entity,
-            Models<?> models,
-            Pony pony,
-            ModelAttributes.Mode mode) {
+    public void updateState(ItemModelResolver resolver, @Nullable LivingEntity entity, Models<?> models, Pony pony, ModelAttributes.Mode mode) {
         headEquipment = entity.getItemBySlot(EquipmentSlot.HEAD);
         this.pony = pony;
         if (entity != null) {

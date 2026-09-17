@@ -41,7 +41,7 @@ public class EarthPonyModel<T extends PonyRenderState> extends AbstractPonyModel
         mane.visible = state.attributes.isHorsey;
         nose.visible = state.attributes.isHorsey;
         if (!state.race.hasBugWings()) { // since most models are built off of the earth pony, figured to have this check here
-            tailStub.visible = !state.attributes.isHorsey;
+            tailStub.visible = !state.race.hasBugWings() && !state.attributes.isHorsey;
         }
     }
 }

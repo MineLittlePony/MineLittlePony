@@ -71,18 +71,16 @@ public record PonyData (
          */
         HornLength hornLength,
         /**
-         * Determines if the texture slot for a reformed changeling's antlers has been filled by
-         * checking one pixel slot that's almost always filled. Returns 0 if not filled.
+         * Determines whether to render the antlers for a reformed changeling if filled at all.
          */
-        int changelingAntlers,
+        boolean changelingAntlers,
         /**
          * Gets the trigger pixel values as they appeared in the underlying image.
          */
         Map<String, TValue<?>> attributes
     ) implements Comparable<PonyData> {
     public static final int DEFAULT_MAGIC_COLOR = 0x4444aa;
-    public static final int NO_ANTLERS = 0;
-    private static final Function<Race, PonyData> OF_RACE = Util.memoize(race -> new PonyData(race, TailLength.FULL, TailShape.STRAIGHT, Gender.MARE, SizePreset.NORMAL, DEFAULT_MAGIC_COLOR, true, 0, HornLength.FULL, NO_ANTLERS, Wearable.EMPTY_FLAGS));
+    private static final Function<Race, PonyData> OF_RACE = Util.memoize(race -> new PonyData(race, TailLength.FULL, TailShape.STRAIGHT, Gender.MARE, SizePreset.NORMAL, DEFAULT_MAGIC_COLOR, true, 0, HornLength.FULL, false, Wearable.EMPTY_FLAGS));
     public static final PonyData NULL = OF_RACE.apply(Race.HUMAN);
 
     public static final Codec<PonyData> CODEC = RecordCodecBuilder.create(i -> i.group(
@@ -95,7 +93,7 @@ public record PonyData (
         Codec.BOOL.optionalFieldOf("noSkin", false).forGetter(PonyData::noSkin),
         Codec.INT.optionalFieldOf("priority", 0).forGetter(PonyData::priority),
         HornLength.CODECS.codec().fieldOf("hornLength").forGetter(PonyData::hornLength),
-        Codec.INT.fieldOf("changelingAntlers").forGetter(PonyData::changelingAntlers),
+        Codec.BOOL.optionalFieldOf("changelingAntlers", false).forGetter(PonyData::changelingAntlers),
         Wearable.FLAGS_CODEC.fieldOf("gear").forGetter(PonyData::gear)
     ).apply(i, PonyData::new));
     public static final StreamCodec<FriendlyByteBuf, PonyData> STREAM_CODEC = StreamCodec.composite(
@@ -108,7 +106,7 @@ public record PonyData (
         ByteBufCodecs.BOOL, PonyData::noSkin,
         ByteBufCodecs.INT, PonyData::priority,
         HornLength.CODECS.streamCodec(), PonyData::hornLength,
-        ByteBufCodecs.INT, PonyData::changelingAntlers,
+        ByteBufCodecs.BOOL, PonyData::changelingAntlers,
         Flags.streamCodec(Wearable.NONE, Wearable::values), PonyData::gear,
         PonyData::new
     );
@@ -133,7 +131,7 @@ public record PonyData (
         );
     }
 
-    public PonyData(Race race, TailLength tailLength, TailShape tailShape, Gender gender, Size size, int glowColor, boolean noSkin, int priority, HornLength hornLength, int changelingAntlers, Flags<Wearable> wearables) {
+    public PonyData(Race race, TailLength tailLength, TailShape tailShape, Gender gender, Size size, int glowColor, boolean noSkin, int priority, HornLength hornLength, boolean changelingAntlers, Flags<Wearable> wearables) {
         this(race, tailLength, tailShape, gender, size, glowColor, wearables, noSkin, priority, hornLength, changelingAntlers, Util.make(new TreeMap<>(), map -> {
                 map.put("race", race);
                 map.put("tailLength", tailLength);
@@ -143,7 +141,6 @@ public record PonyData (
                 map.put("magic", new TValue.Numeric(glowColor));
                 map.put("priority", new TValue.Numeric(priority));
                 map.put("horn", hornLength);
-                map.put("changelingAntlers", new TValue.Numeric(changelingAntlers));
                 map.put("gear", wearables);
             })
         );
@@ -159,7 +156,7 @@ public record PonyData (
                 .compare(glowColor(), o.glowColor())
                 .compare(0, gear().compareTo(o.gear()))
                 .compare(hornLength(), o.hornLength())
-                .compare(changelingAntlers(), o.changelingAntlers())
+                .compareFalseFirst(changelingAntlers(), o.changelingAntlers())
                 .result();
     }
 }

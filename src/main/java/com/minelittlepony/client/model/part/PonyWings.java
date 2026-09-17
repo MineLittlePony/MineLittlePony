@@ -15,7 +15,7 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 public class PonyWings<S extends PonyRenderState> implements SubModel<S>, MsonModel {
 
     private S state;
-    private ModelWithWings<S> pegasus;
+    protected ModelWithWings<S> pegasus;
 
     protected Wing<S> leftWing;
     protected Wing<S> rightWing;
@@ -85,9 +85,6 @@ public class PonyWings<S extends PonyRenderState> implements SubModel<S>, MsonMo
             }
         } else {
             flapAngle = MathUtil.Angles._270_DEG - 0.9F + (float)Math.sin(state.ageInTicks * 0.1F) / 15F;
-        }
-        if (pegasus.getBodyPart(BodyPart.BODY).hasChild("elytras")) {
-            pegasus.getBodyPart(BodyPart.BODY).getChild("elytras").visible = extended;
         }
 
         if (!state.attributes.isFlying) {
@@ -183,7 +180,7 @@ public class PonyWings<S extends PonyRenderState> implements SubModel<S>, MsonMo
             folded.visible = !open;
             folded.yRot = swing * walkingRotationSpeed;
             extended.zRot = roll;
-            if (state.race.hasBugWings() && !model.getBodyPart(BodyPart.BODY).hasChild("elytras")) {
+            if (state.race.hasBugWings() && !model.getBodyPart(BodyPart.BODY).hasChild("bug_open_elytra")) {
                 extended.yRot = folded.yRot;
                 folded.zRot = roll;
             }

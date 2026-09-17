@@ -39,7 +39,7 @@ public class PonyEars implements SubModel<PonyRenderState>, MsonModel {
             right.x = 1;
             left.y = right.y = 1;
             left.z = right.z = 1.5F;
-        } else if (state.attributes.metadata.changelingAntlers() != 0 && state.getRace() == Race.CHANGEDLING) {
+        } else if (state.attributes.metadata.changelingAntlers() && state.getRace() == Race.CHANGEDLING) {
             float changelingAntlerMoveX = 5;
             float changelingAntlerAngle = MathUtil.Angles._90_DEG;
 

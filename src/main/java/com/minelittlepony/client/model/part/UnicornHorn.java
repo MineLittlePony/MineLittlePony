@@ -73,6 +73,7 @@ public class UnicornHorn<T extends PonyRenderState> implements SubModel<T> {
     }
 
     public void setHidden() {
-        horn.visible = glow.visible = false;
+        horn.visible = false;
+        glow.visible = false;
     }
 }

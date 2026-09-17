@@ -22,7 +22,7 @@ public interface TriggerPixel<T> {
     TriggerPixel<Flags<Wearable>> WEARABLES = ofFlags(1, 1, Wearable.EMPTY_FLAGS, Wearable.values());
     TriggerPixel<Integer> PRIORITY = ofColor(2, 2);
     TriggerPixel<HornLength> HORN_LENGTH = ofOptions(3, 1, HornLength.FULL, HornLength.values());
-    TriggerPixel<Integer> CHANGELING_ANTLERS = ofColor(3, 2);
+    TriggerPixel<Boolean> CHANGELING_ANTLERS = ofBool(3, 2, false);
 
     static <T extends TValue<T>> TriggerPixel<T> ofOptions(int x, int y, T def, T[] options) {
         MAX_COORDS.x = Math.max(MAX_COORDS.x, x);
@@ -35,6 +35,18 @@ public interface TriggerPixel<T> {
                 return (T)def;
             }
             return lookup.getOrDefault(color & 0x00FFFFFF, def);
+        };
+    }
+
+    static TriggerPixel<Boolean> ofBool(int x, int y, boolean def) {
+        MAX_COORDS.x = Math.max(MAX_COORDS.x, x);
+        MAX_COORDS.y = Math.max(MAX_COORDS.y, y);
+        return image -> {
+            int color = image.getColor(x, y);
+            if (ARGB.alpha(color) < 255) {
+                return def;
+            }
+            return color != 0;
         };
     }
 

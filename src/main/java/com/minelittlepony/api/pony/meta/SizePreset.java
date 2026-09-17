@@ -17,7 +17,7 @@ public enum SizePreset implements Size {
     STOCKY  (0xb2e7dd, 0.45F, 0.8F, 0.75F,  0.8F),
     SQUAT   (0xa3d2c7, 0.4F,  0.7F, 0.67F,  0.67F),
     YEARLING(0x53beff, 0.4F,  0.6F, 0.605F, 0.65F),
-    FOAL    (0xffbe53, 0.25f, 0.6F, 0.5F,   0.5F),
+    FOAL    (0xffbe53, 0.25f, 0.6F, 0.5F,   0.65F),
     UNSET   (0x000000, 1,     1,    1,      1);
 
     public static final EnumCodec<SizePreset> CODEC = TValue.enumCodec(SizePreset::values);

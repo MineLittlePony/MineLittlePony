@@ -36,8 +36,11 @@ public class BasicTail implements SubModel<PonyRenderState> {
             }
         } else if (state.attributes.isSitting) {
             tail.xRot += Mth.PI / 5;
-            tail.y += 10.7F;
+            tail.y += 9.75F;
             tail.z -= 0.4F;
+            if (state.getRace() == Race.CHANGEDLING) {
+                tail.y -= 4F;
+            }
         } else {
             tail.xRot += state.walkAnimationSpeed / 2;
             swingX(state.ageInTicks);

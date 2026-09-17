@@ -33,12 +33,12 @@ public class ReformedChangelingHorn<T extends PonyRenderState> extends UnicornHo
         }
     }
 
-        @Override
+    @Override
     public void setAngles(PonyModel model, PonyRenderState state) {
         super.setAngles(model, state);
         antlers.resetPose();
         state.transformation.transform(state.attributes, BodyPart.HORN, antlers);
-        if (state.attributes.metadata.changelingAntlers() != 0) { // if the antlers trigger pixel is filled
+        if (state.attributes.metadata.changelingAntlers()) { // if the antlers trigger pixel is filled
             antlers.visible = horn.visible;
         }
     }
