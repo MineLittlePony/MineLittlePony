@@ -15,7 +15,7 @@ public enum SizePreset implements Size {
     LANKY   (0x3254ce, 0.45F, 0.85F,0.87F,  0.9F),
     NORMAL  (0x000000, 0.4f,  0.8F, 0.75F,  0.8F),
     STOCKY  (0xb2e7dd, 0.45F, 0.8F, 0.75F,  0.8F),
-    SQUAT   (0xa3d2c7, 0.4F,  0.7F, 0.67F,  0.67F),
+    SQUAT   (0xa3d2c7, 0.4F,  0.7F, 0.625F,  0.7F),
     YEARLING(0x53beff, 0.4F,  0.6F, 0.605F, 0.65F),
     FOAL    (0xffbe53, 0.25f, 0.6F, 0.5F,   0.65F),
     UNSET   (0x000000, 1,     1,    1,      1);
