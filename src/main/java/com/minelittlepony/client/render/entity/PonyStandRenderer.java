@@ -10,7 +10,6 @@ import net.minecraft.client.renderer.item.ItemModelResolver;
 import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.core.Rotations;
-import net.minecraft.data.AtlasIds;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
@@ -53,7 +52,7 @@ public class PonyStandRenderer extends LivingEntityRenderer<ArmorStand, PonyStan
     public PonyStandRenderer(EntityRendererProvider.Context context) {
         super(context, ModelType.ARMOUR_STAND.createModel(), 0);
         itemModelManager = context.getItemModelResolver();
-        addLayer(new PonifiedFeature<>(this, new ArmourFeature<>(this.context, context.getEquipmentAssets(), context.getAtlas(AtlasIds.ARMOR_TRIMS))));
+        addLayer(new PonifiedFeature<>(this, new ArmourFeature<>(this.context, context.getEquipmentAssets())));
         addLayer(new PonifiedFeature<>(this, new HeldItemFeature<>(this.context)));
         addLayer(new PonifiedFeature<>(this, new ElytraFeature<>(this.context, context.getEquipmentRenderer())));
         addLayer(new PonifiedFeature<>(this, new SkullFeature<>(this.context, context.getPlayerSkinRenderCache(), context.getModelSet(), CustomHeadLayer.Transforms.DEFAULT, false)));
@@ -106,9 +105,9 @@ public class PonyStandRenderer extends LivingEntityRenderer<ArmorStand, PonyStan
 
         context.manager.setupTransforms(state.ponyState, matrices, bodyRot, entityScale);
 
-        matrices.mulPose(Axis.YP.rotationDegrees(180 - bodyRot));
+        matrices.rotateDegrees(Axis.YP, 180 - bodyRot);
         if (state.wiggle < 5) {
-            matrices.mulPose(Axis.YP.rotationDegrees(Mth.sin(state.wiggle / 1.5F * (float) Math.PI) * 3.0F));
+            matrices.rotateDegrees(Axis.YP, Mth.sin(state.wiggle / 1.5F * (float) Math.PI) * 3.0F);
         }
         matrices.translate(0, 0, state.scale * -4/16F);
     }

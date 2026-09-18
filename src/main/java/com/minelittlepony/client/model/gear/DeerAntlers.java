@@ -46,10 +46,10 @@ public class DeerAntlers<T extends HumanoidRenderState & PonyModel.AttributedHol
     @Override
     public void setupAnim(GearRenderState<T> state) {
         super.setupAnim(state);
-        float pi = Mth.PI * (float) Math.pow(state.limbAngle, 16);
+        float pi = Mth.PI * (float) Math.pow(state.limbDistance, 16);
 
-        float mve = state.limbDistance * 0.6662f;
-        float srt = state.limbAngle / 10;
+        float mve = state.limbAngle * 0.6662f;
+        float srt = state.limbDistance / 10;
 
         float bodySwing = Mth.cos(mve + pi) * srt;
 

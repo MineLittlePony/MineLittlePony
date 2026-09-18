@@ -65,8 +65,8 @@ public class PonyWings<S extends PonyRenderState> implements SubModel<S>, MsonMo
 
         this.visible = !state.isSpectator && state.race.hasWings();
 
-        if (state.attackTime > 0) {
-            flap = Mth.sin(Mth.sqrt(state.attackTime) * Mth.TWO_PI);
+        if (state.swingAnimation > 0) {
+            flap = Mth.sin(Mth.sqrt(state.swingAnimation) * Mth.TWO_PI);
         } else {
             float pi = Mth.PI * (float) Math.pow(state.walkAnimationSpeed, 16);
 

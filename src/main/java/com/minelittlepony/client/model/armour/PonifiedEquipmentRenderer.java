@@ -1,5 +1,6 @@
 package com.minelittlepony.client.model.armour;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.Model;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.entity.layers.EquipmentLayerRenderer;
@@ -7,6 +8,7 @@ import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.texture.*;
 import net.minecraft.client.resources.model.EquipmentAssetManager;
 import net.minecraft.client.resources.model.EquipmentClientInfo;
+import net.minecraft.client.resources.palette.PalettedTextureManager;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
@@ -38,24 +40,59 @@ public class PonifiedEquipmentRenderer extends EquipmentLayerRenderer {
 
     private final EquipmentAssetManager modelLoader;
 
-    private final TextureAtlas armorTrimsAtlas;
+    private final PalettedTextureManager palettedTextures;
     private final Function<LayerTextureKey, Identifier> layerTextures;
+    private final Function<TrimSpriteKey, PalettedTextureManager.Handle> trimTextures;
     private final BiFunction<EquipmentClientInfo.LayerType, Identifier, Identifier> ponifier = Util.memoize((type, texture) -> {
         return ResourceUtil.verifyTexture(texture.withPath(p -> p.replace(type.getSerializedName(), "ponified_" + type.getSerializedName()))).orElse(texture);
     });
 
-    public PonifiedEquipmentRenderer(EquipmentAssetManager modelLoader, TextureAtlas armorTrimsAtlas) {
-        super(modelLoader, armorTrimsAtlas);
+    public PonifiedEquipmentRenderer(EquipmentAssetManager modelLoader) {
+        super(modelLoader, Minecraft.getInstance().getPalettedTextureManager());
         this.modelLoader = modelLoader;
-        this.armorTrimsAtlas = armorTrimsAtlas;
+        this.palettedTextures = Minecraft.getInstance().getPalettedTextureManager();
         layerTextures = Util.memoize(key -> key.layer.getTextureLocation(key.layerType));
+        trimTextures = Util.memoize(key -> key.getOrPrepareTexture(palettedTextures));
     }
 
     record LayerTextureKey(EquipmentClientInfo.LayerType layerType, EquipmentClientInfo.Layer layer) {}
 
-    record TrimSpriteKey(ArmorTrim trim, EquipmentClientInfo.LayerType layerType, ResourceKey<EquipmentAsset> equipmentAssetId) {
-        public Identifier getTexture() {
-            return trim.layerAssetId(layerType.trimAssetPrefix(), equipmentAssetId);
+    record TrimSpriteKey(ArmorTrim trim, EquipmentClientInfo.LayerType layerType, ResourceKey<EquipmentAsset> equipmentAssetId, EquipmentClientInfo equipmentInfo) {
+        private PalettedTextureManager.Handle getOrPrepareTexture(final PalettedTextureManager palettedTextures) {
+            Identifier textureId = trim.pattern().value().assetId();
+            @Nullable
+            Identifier paletteId = trim.material().value().paletteId();
+
+            for (EquipmentClientInfo.TrimOverride override : equipmentInfo.trimOverrides()) {
+                if (override.predicate().matches(trim)) {
+                    textureId = override.textureId().orElse(textureId);
+                    paletteId = override.paletteId().orElse(null);
+                    break;
+                }
+            }
+
+            Identifier baseTexture = textureId.withPath(path -> layerType.trimAssetPrefix() + "/" + path);
+            return paletteId == null ? createTextureWithNoPalette(baseTexture) : palettedTextures.getOrPrepare(baseTexture, paletteId);
+        }
+
+        private static PalettedTextureManager.Handle createTextureWithNoPalette(final Identifier texture) {
+            final Identifier textureLocation = texture.withPath(path -> "textures/" + path + ".png");
+            return new PalettedTextureManager.Handle() {
+                @Override
+                public Identifier textureLocation() {
+                    return textureLocation;
+                }
+
+                @Override
+                public float getU(final float offset) {
+                    return offset;
+                }
+
+                @Override
+                public float getV(final float offset) {
+                    return offset;
+                }
+            };
         }
     }
 
@@ -74,8 +111,8 @@ public class PonifiedEquipmentRenderer extends EquipmentLayerRenderer {
             int initialOrder
         ) {
         EquipmentSlot slot = layerType == EquipmentClientInfo.LayerType.WINGS ? EquipmentSlot.CHEST : EquipmentSlot.BODY;
-
-        List<EquipmentClientInfo.Layer> layers = modelLoader.get(assetKey).getLayers(layerType);
+        EquipmentClientInfo equipmentInfo = modelLoader.get(assetKey);
+        List<EquipmentClientInfo.Layer> layers = equipmentInfo.getLayers(layerType);
         if (!layers.isEmpty()) {
             ArmourRendererPlugin plugin = ArmourRendererPlugin.INSTANCE.get();
 
@@ -92,15 +129,9 @@ public class PonifiedEquipmentRenderer extends EquipmentLayerRenderer {
                         color = ARGB.color(alpha, color);
                         Identifier partTexture = ponifier.apply(layerType, layer.usePlayerTexture() && texture != null ? texture : layerTextures.apply(new LayerTextureKey(layerType, layer)));
                         @Nullable
-                        RenderType armorRenderLayer = plugin.getArmourLayer(slot, partTexture, layerType);
+                        RenderType armorRenderLayer = hasGlint ? plugin.getGlintLayer(slot, partTexture, layerType) : plugin.getArmourLayer(slot, partTexture, layerType);
                         if (armorRenderLayer != null) {
-                            queue.order(order++).submitModel(model, state, matrices, armorRenderLayer, light, OverlayTexture.NO_OVERLAY, color, null, outlineColor, null);
-                            if (hasGlint) {
-                                RenderType glintRenderLayer = plugin.getGlintLayer(slot, layerType);
-                                if (glintRenderLayer != null) {
-                                    queue.order(order++).submitModel(model, state, matrices, glintRenderLayer, light, OverlayTexture.NO_OVERLAY, color, null, outlineColor, null);
-                                }
-                            }
+                            queue.order(order++).submitModel(model, state, matrices, armorRenderLayer, light, OverlayTexture.NO_OVERLAY, color, null, outlineColor);
                             hasGlint = false;
                         }
                     }
@@ -110,11 +141,11 @@ public class PonifiedEquipmentRenderer extends EquipmentLayerRenderer {
                 if (armorTrim != null) {
                     float trimAlpha = plugin.getTrimAlpha(slot, armorTrim, layerType);
                     if (trimAlpha > 0) {
+                        var handle = trimTextures.apply(new TrimSpriteKey(armorTrim, layerType, assetKey, equipmentInfo));
                         @Nullable
-                        RenderType trimLayer = plugin.getTrimLayer(slot, armorTrim, layerType, assetKey);
+                        RenderType trimLayer = plugin.getTrimLayer(slot, armorTrim, layerType, handle.textureLocation(), assetKey);
                         if (trimLayer != null) {
-                            TextureAtlasSprite sprite = armorTrimsAtlas.getSprite(armorTrim.layerAssetId(layerType.trimAssetPrefix(), assetKey));
-                            queue.order(order++).submitModel(model, state, matrices, trimLayer, light, OverlayTexture.NO_OVERLAY, ARGB.white(trimAlpha), sprite, outlineColor, null);
+                            queue.order(order++).submitModel(model, state, matrices, trimLayer, light, OverlayTexture.NO_OVERLAY, ARGB.white(trimAlpha), handle, outlineColor);
                         }
                     }
                 }
@@ -156,7 +187,8 @@ public class PonifiedEquipmentRenderer extends EquipmentLayerRenderer {
         if (!shouldRender(equipmentSlot, layerType)) {
             return;
         }
-        List<EquipmentClientInfo.Layer> layers = modelLoader.get(assetId).getLayers(layerType);
+        EquipmentClientInfo equipmentInfo = modelLoader.get(assetId);
+        List<EquipmentClientInfo.Layer> layers = equipmentInfo.getLayers(layerType);
         if (!layers.isEmpty()) {
             var armorState = new State<S>(state, equipmentSlot, layerType);
             Set<PieceModel<S>> drawnModels = new HashSet<>();
@@ -174,18 +206,12 @@ public class PonifiedEquipmentRenderer extends EquipmentLayerRenderer {
                         ArmourTexture armorTexture = plugin.getTextureLookup().getTexture(stack, layerType, layer);
                         Identifier partTexture = ponifier.apply(layerType, layer.usePlayerTexture() && texture != null ? texture : layerTextures.apply(new LayerTextureKey(layerType, layer)));
                         @Nullable
-                        RenderType armorRenderLayer = plugin.getArmourLayer(equipmentSlot, partTexture, layerType);
+                        RenderType armorRenderLayer = hasGlint ? plugin.getGlintLayer(equipmentSlot, partTexture, layerType) : plugin.getArmourLayer(equipmentSlot, partTexture, layerType);
                         if (armorRenderLayer != null) {
                             ArmourVariant variant = layer.usePlayerTexture() ? ArmourVariant.LEGACY : armorTexture.variant();
                             PieceModel<S> model = new PieceModel<S>((AbstractPonyModel<S>)models.getArmourModel(stack, layerType, variant));
 
-                            queue.order(order++).submitModel(model, armorState, matrices, armorRenderLayer, light, OverlayTexture.NO_OVERLAY, dyeColor, null, outlineColor, null);
-                            if (hasGlint) {
-                                RenderType glintRenderLayer = plugin.getGlintLayer(equipmentSlot, layerType);
-                                if (glintRenderLayer != null) {
-                                    queue.order(order++).submitModel(model, armorState, matrices, glintRenderLayer, light, OverlayTexture.NO_OVERLAY, dyeColor, null, outlineColor, null);
-                                }
-                            }
+                            queue.order(order++).submitModel(model, armorState, matrices, armorRenderLayer, light, OverlayTexture.NO_OVERLAY, dyeColor, null, outlineColor);
                             hasGlint = false;
                             drawnModels.add(model);
                         }
@@ -199,12 +225,12 @@ public class PonifiedEquipmentRenderer extends EquipmentLayerRenderer {
                 if (armorTrim != null) {
                     float trimAlpha = plugin.getTrimAlpha(equipmentSlot, armorTrim, layerType);
                     if (trimAlpha > 0) {
+                        var handle = trimTextures.apply(new TrimSpriteKey(armorTrim, layerType, assetId, equipmentInfo));
                         @Nullable
-                        RenderType trimLayer = plugin.getTrimLayer(equipmentSlot, armorTrim, layerType, assetId);
+                        RenderType trimLayer = plugin.getTrimLayer(equipmentSlot, armorTrim, layerType, handle.textureLocation(), assetId);
                         if (trimLayer != null) {
-                            TextureAtlasSprite sprite = armorTrimsAtlas.getSprite(armorTrim.layerAssetId(layerType.trimAssetPrefix(), assetId));
                             for (PieceModel<S> model : drawnModels) {
-                                queue.order(order++).submitModel(model, armorState, matrices, trimLayer, light, OverlayTexture.NO_OVERLAY, ARGB.white(trimAlpha), sprite, outlineColor, null);
+                                queue.order(order++).submitModel(model, armorState, matrices, trimLayer, light, OverlayTexture.NO_OVERLAY, ARGB.white(trimAlpha), handle, outlineColor);
                             }
                         }
                     }

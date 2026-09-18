@@ -1,10 +1,11 @@
 package com.minelittlepony.client.mixin;
 
-import net.minecraft.client.renderer.ItemInHandRenderer;
+import net.minecraft.client.renderer.FirstPersonHandsAndItemsRenderer;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.item.ItemStackRenderState;
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.item.ItemDisplayContext;
+import net.minecraft.client.renderer.state.level.FirstPersonHandsAndItemsRenderState;
+import net.minecraft.client.renderer.state.level.PlayerRenderState;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.item.ItemStack;
 
 import org.spongepowered.asm.mixin.Mixin;
@@ -18,21 +19,21 @@ import com.minelittlepony.client.render.LevitatingItemRenderer;
 import com.mojang.blaze3d.vertex.PoseStack;
 
 
-@Mixin(ItemInHandRenderer.class)
+@Mixin(FirstPersonHandsAndItemsRenderer.class)
 abstract class MixinHeldItemRenderer {
-    @WrapOperation(method = "renderItem(Lnet/minecraft/world/entity/LivingEntity;Lnet/minecraft/world/item/ItemStack;Lnet/minecraft/world/item/ItemDisplayContext;Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/SubmitNodeCollector;I)V",
+    @WrapOperation(method = "submitArmWithItem(Lnet/minecraft/client/renderer/state/level/PlayerRenderState;Lnet/minecraft/client/renderer/state/level/FirstPersonHandsAndItemsRenderState;FFLnet/minecraft/world/InteractionHand;FLnet/minecraft/world/item/ItemStack;FLcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/SubmitNodeCollector;I)V",
              at = @At(value = "INVOKE",
                       target = "net/minecraft/client/renderer/item/ItemStackRenderState.submit(Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/SubmitNodeCollector;III)V"))
     private void wrapRenderItem(
             ItemStackRenderState target, /*.render(*/ PoseStack matrices, SubmitNodeCollector frame, int light, int overlay, int outline, /*)*/ Operation<Void> operation,
-            LivingEntity entity, ItemStack stack, ItemDisplayContext renderMode) {
-        LevitatingItemRenderer.renderItem(entity, stack, renderMode, target, matrices, frame, light, overlay, outline, operation);
+            PlayerRenderState state, FirstPersonHandsAndItemsRenderState armState, float partialTicks, float rot, InteractionHand hand, float attack, ItemStack stack, float inverseArmHeight, PoseStack poseStack, SubmitNodeCollector submitNodeCollector) {
+        LevitatingItemRenderer.renderItem(state, armState, stack, hand, target, matrices, frame, light, overlay, outline, operation);
     }
 
-    @Inject(method = "renderMap(Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/SubmitNodeCollector;ILnet/minecraft/world/item/ItemStack;)V",
+    @Inject(method = "renderMap(Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/SubmitNodeCollector;ILnet/minecraft/world/item/ItemStack;ZLnet/minecraft/client/renderer/state/level/FirstPersonHandsAndItemsRenderState;)V",
             at = @At(value = "INVOKE",
                     target = "net/minecraft/client/renderer/SubmitNodeCollector.submitCustomGeometry(Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/rendertype/RenderType;Lnet/minecraft/client/renderer/SubmitNodeCollector$CustomGeometryRenderer;)V"))
-    private void onRenderMap(PoseStack matrices, SubmitNodeCollector frame, int light, ItemStack stack, CallbackInfo info) {
-        LevitatingItemRenderer.renderMap(matrices, frame, stack);
+    private void onRenderMap(PoseStack matrices, SubmitNodeCollector frame, int light, ItemStack stack, boolean mainHand, FirstPersonHandsAndItemsRenderState state, CallbackInfo info) {
+        LevitatingItemRenderer.renderMap(matrices, frame, stack, mainHand, state);
     }
 }

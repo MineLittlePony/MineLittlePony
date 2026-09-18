@@ -20,7 +20,7 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.monster.EnderMan;
+import net.minecraft.world.entity.monster.Enderman;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.level.block.state.BlockState;
 
@@ -28,7 +28,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Random;
 
-public class EnderStallionRenderer extends PonyRenderer<EnderMan, EnderStallionRenderer.State, EnderStallionModel> {
+public class EnderStallionRenderer extends PonyRenderer<Enderman, EnderStallionRenderer.State, EnderStallionModel> {
     public static final Identifier ENDERMAN = MineLittlePony.id("textures/entity/enderman/enderman_pony.png");
     private static final Identifier EYES = MineLittlePony.id("textures/entity/enderman/enderman_pony_eyes.png");
 
@@ -69,9 +69,9 @@ public class EnderStallionRenderer extends PonyRenderer<EnderMan, EnderStallionR
 
         @Override
         public void updateState(ItemModelResolver resolver, LivingEntity entity, Models<?> models, Pony pony, ModelAttributes.Mode mode) {
-            carriedBlock = entity instanceof EnderMan man ? man.getCarriedBlock() : null;
+            carriedBlock = entity instanceof Enderman man ? man.getCarriedBlock() : null;
             super.updateState(resolver, entity, models, pony, mode);
-            angry = entity instanceof EnderMan man && man.isAngry();
+            angry = entity instanceof Enderman man && man.isAngry();
             attributes.wingsSpread = isAttacking || hasRedOverlay;
             attributes.wingAngle = (isAttacking ? -0.6F : Mth.sin(ageInTicks)) + ModelWithWings.WINGS_HALF_SPREAD_ANGLE;
         }

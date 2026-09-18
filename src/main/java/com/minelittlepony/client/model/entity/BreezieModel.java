@@ -48,7 +48,7 @@ public class BreezieModel extends HumanoidModel<AllayRenderer.State> {
         rotateArm(leftArm, state.leftArmPose, 1);
         rotateArm(rightArm, state.rightArmPose, 1);
 
-        if (state.attackTime > 0) {
+        if (state.swingAnimation > 0) {
             swingArms(state, state.mainArm);
         }
 
@@ -83,7 +83,7 @@ public class BreezieModel extends HumanoidModel<AllayRenderer.State> {
     }
 
     protected void swingArms(AllayRenderer.State state, HumanoidArm mainHand) {
-        body.yRot = Mth.sin(Mth.sqrt(state.attackTime) * Mth.TWO_PI) * 0.2F;
+        body.yRot = Mth.sin(Mth.sqrt(state.swingAnimation) * Mth.TWO_PI) * 0.2F;
 
         if (mainHand == HumanoidArm.LEFT) {
             body.yRot *= -1;
@@ -101,15 +101,15 @@ public class BreezieModel extends HumanoidModel<AllayRenderer.State> {
         rightArm.x = -cos;
         rightArm.z = sin;
 
-        float swingAmount = 1 - (float)Math.pow(1 - state.attackTime, 4);
+        float swingAmount = 1 - (float)Math.pow(1 - state.swingAnimation, 4);
 
         float swingFactorX = Mth.sin(swingAmount * Mth.PI);
-        float swingX = Mth.sin(state.attackTime * Mth.PI) * (0.7F - head.xRot) * 0.75F;
+        float swingX = Mth.sin(state.swingAnimation * Mth.PI) * (0.7F - head.xRot) * 0.75F;
 
         ModelPart mainArm = getArm(mainHand);
         mainArm.xRot -= swingFactorX * 1.2F + swingX;
         mainArm.yRot += body.yRot * 2;
-        mainArm.zRot -= Mth.sin(state.attackTime * Mth.PI) * 0.4F;
+        mainArm.zRot -= Mth.sin(state.swingAnimation * Mth.PI) * 0.4F;
     }
 
     protected void rotateArm(ModelPart arm, ArmPose pose, float factor) {

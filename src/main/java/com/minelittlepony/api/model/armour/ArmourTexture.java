@@ -1,6 +1,6 @@
 package com.minelittlepony.api.model.armour;
 
-import net.minecraft.client.renderer.texture.TextureManager;
+import net.minecraft.client.renderer.texture.MissingTextureAtlasSprite;
 import net.minecraft.client.resources.model.EquipmentClientInfo;
 import net.minecraft.resources.Identifier;
 
@@ -15,11 +15,11 @@ public record ArmourTexture(EquipmentClientInfo.LayerType layerType, Identifier 
     private static final Interner<ArmourTexture> INTERNER = Interners.newWeakInterner();
 
     public boolean validate() {
-        return texture != TextureManager.INTENTIONAL_MISSING_TEXTURE && ResourceUtil.textureExists(texture);
+        return texture != MissingTextureAtlasSprite.getLocation() && ResourceUtil.textureExists(texture);
     }
 
     public static ArmourTexture unknown(EquipmentClientInfo.LayerType layerType) {
-        return legacy(layerType, TextureManager.INTENTIONAL_MISSING_TEXTURE);
+        return legacy(layerType, MissingTextureAtlasSprite.getLocation());
     }
 
     public static ArmourTexture legacy(EquipmentClientInfo.LayerType layerType, Identifier texture) {

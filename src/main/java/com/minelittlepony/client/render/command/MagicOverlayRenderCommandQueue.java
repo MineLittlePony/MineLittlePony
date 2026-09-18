@@ -17,11 +17,9 @@ import net.minecraft.client.renderer.item.ItemStackRenderState.FoilType;
 import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.client.renderer.state.level.QuadParticleRenderState;
-import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.client.renderer.texture.*;
 import net.minecraft.client.resources.model.SimpleModelWrapper;
-import net.minecraft.client.resources.model.geometry.BakedQuad;
-import net.minecraft.client.resources.model.geometry.QuadCollection;
+import net.minecraft.client.resources.model.geometry.*;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.*;
@@ -105,14 +103,14 @@ public class MagicOverlayRenderCommandQueue implements OrderedSubmitNodeCollecto
         return Arrays.stream(remappedQuads).filter(Objects::nonNull).flatMap(List::stream).toList();
     }
 
-    private void submitCustomPasses(PoseStack matrices, RenderType layer, PassedCustom custom, float scaleMultiple, @Nullable TextureAtlasSprite sprite) {
+    private void submitCustomPasses(PoseStack matrices, RenderType layer, PassedCustom custom, float scaleMultiple, @Nullable UvMapping uvMapping) {
         var l = layer = getFinalRenderType(layer);
         if (layer == null) {
             return;
         }
         PoseStack commandMatrix = new PoseStack();
         parent.submitCustomGeometry(matrices, layer, (entry, buffer) -> {
-            buffer = sprite == null ? buffer : sprite.wrap(buffer);
+            buffer = uvMapping == null ? buffer : uvMapping.wrap(buffer);
             commandMatrix.last().set(entry);
             var scaledBuffer = new ScaledVertexConsumer(buffer, l, color, commandMatrix);
             for (var pass : passes) {
@@ -143,28 +141,28 @@ public class MagicOverlayRenderCommandQueue implements OrderedSubmitNodeCollecto
     }
 
     @Override
-    public <S> void submitModel(Model<? super S> model, S state, PoseStack matrices, RenderType renderLayer, int light, int overlay, int tintedColor, @Nullable TextureAtlasSprite sprite, int outline, @Nullable CrumblingOverlay crumblingOverlay) {
-        renderLayer = getFinalRenderType(renderLayer);
-        if (renderLayer == null) {
+    public <S> void submitModel(Model<? super S> model, S state, PoseStack matrices, RenderType renderType, int light, int overlay, int tintedColor, @Nullable UvMapping uvMapping, int outlineColor) {
+        renderType = getFinalRenderType(renderType);
+        if (renderType == null) {
             return;
         }
 
-        parent.submitModel(new ScaledVertexModel<>(model, passes, renderLayer), state, matrices, renderLayer, light, overlay, color, sprite, 0, null);
+        parent.submitModel(new ScaledVertexModel<>(model, passes, renderType), state, matrices, renderType, light, overlay, color, uvMapping, 0);
     }
 
     @Override
-    public void submitItem(PoseStack matrices, ItemDisplayContext displayContext, int light, int overlay, int outline, int[] tintLayers, List<BakedQuad> quads, FoilType glintType) {
-        quads = scaleQuads(quads);
+    public void submitItem(PoseStack matrices, ItemDisplayContext displayContext, int light, int overlay, int outline, int[] tintLayers, ItemQuads quads, FoilType foilType) {
+        var quadList = scaleQuads(quads.all());
         if (!quads.isEmpty()) {
-            parent.submitItem(matrices, displayContext, LightCoordsUtil.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, 0, new int[] { color }, quads, FoilType.NONE);
+            parent.submitItem(matrices, displayContext, LightCoordsUtil.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, 0, new int[] { color }, ItemQuads.split(quadList), FoilType.NONE);
         }
     }
 
     @Override
-    public void submitModelPart(ModelPart part, PoseStack matrices, RenderType renderLayer, int light, int overlay, @Nullable TextureAtlasSprite sprite, int tintedColor, @Nullable CrumblingOverlay crumblingOverlay, int outlineColor) {
+    public void submitModelPart(ModelPart part, PoseStack matrices, RenderType renderLayer, int light, int overlay, @Nullable UvMapping uvMapping, int tintedColor, int outlineColor) {
         renderLayer = getFinalRenderType(renderLayer);
         if (renderLayer != null) {
-            submitCustomPasses(matrices, renderLayer, (transform, buffer) -> part.render(transform, buffer, LightCoordsUtil.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, color), 1, sprite);
+            submitCustomPasses(matrices, renderLayer, (transform, buffer) -> part.render(transform, buffer, LightCoordsUtil.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, color), 1, uvMapping);
         }
     }
 
@@ -177,7 +175,7 @@ public class MagicOverlayRenderCommandQueue implements OrderedSubmitNodeCollecto
     }
 
     @Override
-    public void submitBreakingBlockModel(PoseStack poseStack, List<BlockStateModelPart> parts, int progress) { }
+    public void submitBreakingBlockModel(PoseStack poseStack, List<BlockStateModelPart> parts, int progress, boolean isBlockTranslucent) { }
 
     @Override
     public void submitQuadParticleGroup(QuadParticleRenderState particles) { }
@@ -205,4 +203,10 @@ public class MagicOverlayRenderCommandQueue implements OrderedSubmitNodeCollecto
 
     @Override
     public void submitGizmoPrimitives(Group group, CameraRenderState camera, boolean onTop) { }
+
+    @Override
+    public void submitTextBackground(PoseStack poseStack, float x0, float y0, float x1, float y1, int color, DisplayMode displayMode, int lightCoords) { }
+
+    @Override
+    public <S> void submitCrumblingOverlay(Model<? super S> model, S state, PoseStack poseStack, RenderType renderType, int lightCoords, int overlayCoords, int tintedColor, CrumblingOverlay crumblingOverlay) { }
 }

@@ -34,8 +34,8 @@ public class PostureFlight extends PonyPosture {
 
     @Override
     public void transform(PonyRenderState state, PoseStack stack) {
-        stack.mulPose(Axis.XP.rotationDegrees(state.attributes.motionPitch));
-        stack.mulPose(Axis.ZP.rotationDegrees(state.attributes.motionRoll));
+        stack.rotateDegrees(Axis.XP, state.attributes.motionPitch);
+        stack.rotateDegrees(Axis.ZP, state.attributes.motionRoll);
         stack.translate(0, yOffset, 0);
     }
 }

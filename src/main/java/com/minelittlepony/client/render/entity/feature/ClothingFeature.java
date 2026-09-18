@@ -32,6 +32,6 @@ public class ClothingFeature<
     @Override
     public void submit(PoseStack matrices, SubmitNodeCollector frame, int light, S state, float yRot, float xRot) {
         model.setupAnim(state);
-        frame.order(1).submitModel(model, state, matrices, model.renderType(texture), light, OverlayTexture.NO_OVERLAY, CommonColors.WHITE, null, state.outlineColor, null);
+        frame.order(1).submitModel(model, state, matrices, model.renderType(texture), light, OverlayTexture.NO_OVERLAY, CommonColors.WHITE, null, state.outlineColor);
     }
 }

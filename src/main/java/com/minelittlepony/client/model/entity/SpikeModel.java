@@ -91,7 +91,7 @@ public class SpikeModel extends ClientPonyModel<CopperPonyRenderer.State> {
         getArm(arm).translateAndRotate(matrices);
         matrices.translate(0, -0.15F, 0);
         if (((CopperPonyRenderer.State)state).copperGolemState == CopperGolemState.IDLE) {
-            matrices.mulPose(Axis.YP.rotationDegrees(arm == HumanoidArm.RIGHT ? -90.0F : 90.0F));
+            matrices.rotateDegrees(Axis.YP, arm == HumanoidArm.RIGHT ? -90.0F : 90.0F);
             matrices.translate(0.0F, 0.0F, 0.125F);
         } else {
             matrices.scale(0.55F, 0.55F, 0.55F);
