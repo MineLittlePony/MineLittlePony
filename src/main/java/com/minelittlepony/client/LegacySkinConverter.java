@@ -17,12 +17,17 @@ class LegacySkinConverter implements SkinFilterCallback {
     public NativeImage processImage(NativeImage image, int initialWidth, int initialHeight) {
         if (SkinFilterCallback.isLegacyAspectRatio(initialWidth, initialHeight)) {
             // ( from ) ( offset )  (size) flipX flipY
+            // wings
             copy(image, 58, 16, 0, 16, 2, 2, true, false); // top
             copy(image, 60, 16, 0, 16, 2, 2, true, false); // bottom
             copy(image, 60, 18, -4, 16, 2, 14, true, false); // inside
             copy(image, 58, 18, 0, 16, 2, 14, true, false); // back
             copy(image, 56, 18, 4, 16, 2, 14, true, false); // outside
             copy(image, 62, 18, 0, 16, 2, 14, true, false); // front
+            // neck
+            copy(image, 0, 16, 52, 0, 4, 4, false, false); // right
+            copy(image, 0, 16, 52, 32, 4, 4, true, false); // back
+            copy(image, 0, 16, 60, 48, 4, 4, true, false); // left
         }
 
         return image;

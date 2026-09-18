@@ -1,0 +1,80 @@
+{
+	"data": {
+		"left_wing": {
+			"texture": {"w": 64, "h": 64},
+			"implementation": "com.minelittlepony.client.model.part.PonyWings$Wing",
+			"data": {
+				"folded": {
+					"pivot": [0, 3.7, 1],
+					"dilate": [0.125, 0, 0],
+					"type": "mson:planar",
+					"up": [0.125, 0, 4, 4, 8, 32, 0, true, false],
+					"children": {
+						"elytra_top_reversed": {
+							"type": "mson:planar",
+							"rotate": [0, 180, 0],
+							"up": [-4.125, 0, -4, 4, 4, 32, 0, true, false]
+						},
+						"elytra_side_rotated": {
+							"type": "mson:planar",
+							"rotate": [0, 0, -90],
+							"up": [0, 0, 4, 4, 8, 36, 0, true, false],
+							"pivot": [4.25, 4.125, 0]
+						},
+						"elytra_side_reversed": {
+							"type": "mson:planar",
+							"rotate": [0, 180, -90],
+							"up": [-4, 0, -4, 4, 4, 36, 0],
+							"pivot": [4.25, 4.125, 0]
+						}
+					}
+				},
+				"extended": {
+					"pivot": [3.5, 6.2, 1.5],
+					"rotate": [15, 0, 25],
+					"type": "mson:planar",
+					"west": [0.5, 1.5, 0, 8, 16, 56, 16, true, false]
+				}
+			}
+		},
+		"right_wing": {
+			"texture": {"w": 64, "h": 64},
+			"implementation": "com.minelittlepony.client.model.part.PonyWings$Wing",
+			"data": {
+				"folded": {
+					"pivot": [0, 3.7, 1],
+					"dilate": [0.125, 0, 0],
+					"type": "mson:planar",
+					"up": [-4.125, 0, 4, 4, 8, 32, 0],
+					"children": {
+						"elytra_top_reversed": {
+							"type": "mson:planar",
+							"rotate": [0, 180, 0],
+							"up": [0.125, 0, -4, 4, 4, 32, 0]
+						},
+						"elytra_side_rotated": {
+							"type": "mson:planar",
+							"rotate": [0, 0, -90],
+							"up": [0, 0, 4, 4, 8, 36, 0, true, false],
+							"pivot": [-4.25, 4.125, 0]
+						},
+						"elytra_side_reversed": {
+							"type": "mson:planar",
+							"rotate": [0, 180, -90],
+							"up": [-4, 0, -4, 4, 4, 36, 0],
+							"pivot": [-4.25, 4.125, 0]
+						}
+					}
+				},
+				"extended": {
+					"mirrored": true,
+					"pivot": [-3.5, 6.2, 1.5],
+					"rotate": [15, 0, 25],
+					"type": "mson:planar",
+					"west": [-0.5, 1.5, 0, 8, 16, 56, 16, true, false]
+				}
+			}
+		},
+		"legacy_right_wing": "#right_wing"
+	}
+}

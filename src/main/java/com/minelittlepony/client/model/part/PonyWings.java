@@ -15,7 +15,7 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 public class PonyWings<S extends PonyRenderState> implements SubModel<S>, MsonModel {
 
     private S state;
-    private ModelWithWings<S> pegasus;
+    protected ModelWithWings<S> pegasus;
 
     protected Wing<S> leftWing;
     protected Wing<S> rightWing;
@@ -25,7 +25,6 @@ public class PonyWings<S extends PonyRenderState> implements SubModel<S>, MsonMo
     private boolean visible;
 
     public PonyWings(ModelPart tree) {
-
     }
 
     @Override
@@ -53,7 +52,7 @@ public class PonyWings<S extends PonyRenderState> implements SubModel<S>, MsonMo
 
     public Wing<S> getRight(S state) {
         return (
-                state.getAttributes().isEmbedded(Wearable.SADDLE_BAGS_BOTH)
+               state.getAttributes().isEmbedded(Wearable.SADDLE_BAGS_BOTH)
             || state.getAttributes().isEmbedded(Wearable.SADDLE_BAGS_LEFT)
             || state.getAttributes().isEmbedded(Wearable.SADDLE_BAGS_RIGHT)
         ) ? legacyWing : rightWing;
@@ -77,8 +76,9 @@ public class PonyWings<S extends PonyRenderState> implements SubModel<S>, MsonMo
         }
 
         float flapAngle = MathUtil.Angles._270_DEG;
+        boolean extended = pegasus.wingsAreOpen(state);
 
-        if (pegasus.wingsAreOpen(state)) {
+        if (extended) {
             flapAngle = pegasus.getWingRotationFactor(state);
             if (!state.attributes.isCrouching && isBurdened(state)) {
                 flapAngle -= 1F;
@@ -90,8 +90,6 @@ public class PonyWings<S extends PonyRenderState> implements SubModel<S>, MsonMo
         if (!state.attributes.isFlying) {
             flapAngle = state.attributes.getMainInterpolator().interpolate("wingFlap", flapAngle, 10);
         }
-
-        boolean extended = pegasus.wingsAreOpen(state);
         boolean bags = !extended && state.isWearing(Wearable.SADDLE_BAGS_BOTH);
 
         var left = getLeft(state);
@@ -181,12 +179,9 @@ public class PonyWings<S extends PonyRenderState> implements SubModel<S>, MsonMo
             extended.visible = open;
             folded.visible = !open;
             folded.yRot = swing * walkingRotationSpeed;
-            if (state.race.hasBugWings()) {
-                extended.yRot = folded.yRot;
-            }
-
             extended.zRot = roll;
-            if (state.race.hasBugWings()) {
+            if (state.race.hasBugWings() && !model.getBodyPart(BodyPart.BODY).hasChild("bug_open_elytra")) {
+                extended.yRot = folded.yRot;
                 folded.zRot = roll;
             }
 
