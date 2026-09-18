@@ -34,7 +34,6 @@ import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.Direction;
 import net.minecraft.core.component.DataComponents;
-import net.minecraft.data.AtlasIds;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.*;
 import net.minecraft.world.InteractionHand;
@@ -43,8 +42,7 @@ import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 
 import org.jetbrains.annotations.Nullable;
-import org.joml.Quaternionf;
-import org.joml.Vector3f;
+import org.joml.*;
 
 public class PlayerPonyRenderer<Player extends Avatar & ClientAvatarEntity>
         extends AvatarRenderer<Player>
@@ -74,7 +72,7 @@ public class PlayerPonyRenderer<Player extends Avatar & ClientAvatarEntity>
                     || feature instanceof WingsLayer
                     || feature instanceof ParrotOnShoulderLayer;
         });
-        addPonyFeature(new ArmourFeature<>(this, context.getEquipmentAssets(), context.getAtlas(AtlasIds.ARMOR_TRIMS)));
+        addPonyFeature(new ArmourFeature<>(this, context.getEquipmentAssets()));
         addPonyFeature(new HeldItemFeature<>(this));
         addPonyFeature(new DJPon3Feature<>(this));
         addPonyFeature(new CapeFeature(this, context.getModelSet(), context.getEquipmentAssets()));
@@ -131,8 +129,8 @@ public class PlayerPonyRenderer<Player extends Avatar & ClientAvatarEntity>
     }
 
     @Override
-    protected AABB getBoundingBoxForCulling(Player entity) {
-        return manager.getBoundingBox(entity, entity.getBoundingBox());
+    protected AABB getBoundingBoxForCulling(Player entity, float partialTicks) {
+        return manager.getBoundingBox(entity, entity.getInterpolatedBoundingBox(partialTicks));
     }
 
     @Override
@@ -178,13 +176,14 @@ public class PlayerPonyRenderer<Player extends Avatar & ClientAvatarEntity>
         model.translateToHand(state, arm, matrices);
         ModelPart a = arm == HumanoidArm.LEFT ? model.leftArm : model.rightArm;
         Quaternionf rotation = new Quaternionf().rotationZYX(a.zRot, a.yRot, a.xRot);
-        matrices.mulPose(rotation);
+        var rotateMatrix = new Matrix4f();
+        matrices.mulPose(rotation.get(rotateMatrix));
         matrices.translate(0, -0.2F, -0.7F);
-        matrices.mulPose(rotation.conjugate());
+        matrices.mulPose(rotation.conjugate().get(rotateMatrix));
         model.body.translateAndRotate(matrices);
 
-        matrices.mulPose(Axis.XP.rotationDegrees(-90));
-        matrices.mulPose(Axis.YP.rotationDegrees(180));
+        matrices.rotateDegrees(Axis.XP, -90);
+        matrices.rotateDegrees(Axis.YP, 180);
         boolean left = arm == HumanoidArm.LEFT;
         matrices.translate((left ? -1 : 1) / 16F, 0.125F, -0.625F);
         var vec = matrices.last().pose().transformPosition(new Vector3f());

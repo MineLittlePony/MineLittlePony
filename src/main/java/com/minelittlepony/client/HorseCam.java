@@ -99,7 +99,7 @@ public class HorseCam {
     public static @Nullable Vec3 getRaycastPos(Entity entity, Vec3 start, float pitch, float tickProgress) {
         BlockHitResult hit = entity.level().clip(new ClipContext(
                 start,
-                start.add(entity.calculateViewVector(pitch, entity.getYRot(tickProgress)).scale(16)),
+                start.add(Entity.calculateViewVector(pitch, entity.getYRot(tickProgress)).scale(16)),
                 ClipContext.Block.OUTLINE, ClipContext.Fluid.NONE, entity)
         );
         return hit == null ? null : hit.getLocation();

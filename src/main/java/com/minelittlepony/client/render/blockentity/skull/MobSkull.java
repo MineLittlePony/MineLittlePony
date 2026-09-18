@@ -58,6 +58,10 @@ public class MobSkull<S extends PonyRenderState> implements Skull<PonyHeadModel.
         state.ponyState.attributes.size = state.pony.size();
         state.ponyState.attributes.metadata = state.pony.metadata();
         state.ponyState.headVisible = true;
-        queue.order(0).submitModel(ponyHead.get(), state, stack, layer, state.light, OverlayTexture.NO_OVERLAY, ARGB.white(state.alpha), null, state.outlineColor, state.crumblingOverlay);
+        var ordering = queue.order(0);
+        ordering.submitModel(ponyHead.get(), state, stack, layer, state.light, OverlayTexture.NO_OVERLAY, ARGB.white(state.alpha), null, state.outlineColor);
+        if (state.crumblingOverlay != null) {
+            ordering.submitCrumblingOverlay(ponyHead.get(), state, stack, layer, state.light, OverlayTexture.NO_OVERLAY, ARGB.white(state.alpha), state.crumblingOverlay);
+        }
     }
 }

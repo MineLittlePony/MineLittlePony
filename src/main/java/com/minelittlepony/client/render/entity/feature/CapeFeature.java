@@ -86,7 +86,7 @@ public class CapeFeature extends AbstractPonyFeature<PlayerPonyRenderState, Clie
                         matrices.scale(1.1F, 1.1F, 1.1F);
                     }
 
-                    queue.submitModel(this.model, state, matrices, capeLayer, light, OverlayTexture.NO_OVERLAY, state.outlineColor, null);
+                    queue.submitModel(this.model, state, matrices, capeLayer, light, OverlayTexture.NO_OVERLAY, state.outlineColor);
 
                     plugin.onArmourRendered(state, matrices, queue, EquipmentSlot.BODY, EquipmentClientInfo.LayerType.HUMANOID, ArmourRendererPlugin.ArmourType.CAPE);
                     matrices.popPose();

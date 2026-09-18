@@ -71,7 +71,7 @@ public class ElytraFeature<
         if (state instanceof PonyRenderState ponyState && context instanceof PonyRenderContext context) {
             stack.translate(0, 0.45F, 0);
             context.getEquineManager().lookupModel(state).body().transform(ponyState, BodyPart.BODY, stack);
-            stack.mulPose(Axis.XP.rotationDegrees(80));
+            stack.rotateDegrees(Axis.XP, 80);
         }
     }
 

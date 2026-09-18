@@ -74,8 +74,8 @@ public interface ArmourRendererPlugin {
     }
 
     @Nullable
-    default RenderType getTrimLayer(EquipmentSlot slot, ArmorTrim trim, EquipmentClientInfo.LayerType layerType, ResourceKey<EquipmentAsset> assetId) {
-        return Sheets.armorTrimsSheet(trim.pattern().value().decal());
+    default RenderType getTrimLayer(EquipmentSlot slot, ArmorTrim trim, EquipmentClientInfo.LayerType layerType, Identifier spriteId, ResourceKey<EquipmentAsset> assetId) {
+        return RenderTypes.armorTrim(spriteId, trim.pattern().value().decal());
     }
 
     @Nullable
@@ -84,8 +84,8 @@ public interface ArmourRendererPlugin {
     }
 
     @Nullable
-    default RenderType getGlintLayer(EquipmentSlot slot, EquipmentClientInfo.LayerType layer) {
-        return RenderTypes.armorEntityGlint();
+    default RenderType getGlintLayer(EquipmentSlot slot, Identifier texture, EquipmentClientInfo.LayerType layer) {
+        return RenderTypes.armorCutoutNoCullGlint(texture);
     }
 
     @Nullable

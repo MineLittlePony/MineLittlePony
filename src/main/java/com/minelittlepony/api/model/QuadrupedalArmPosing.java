@@ -38,10 +38,10 @@ public interface QuadrupedalArmPosing<
      * @param arm       The arm to swing
      */
     static <T extends HumanoidRenderState & PonyModel.AttributedHolder> void punch(T state, ModelPart arm, ModelPart body, ModelPart head) {
-        float swing = 1 - (float)Math.pow(1 - state.attackTime, 3);
+        float swing = 1 - (float)Math.pow(1 - state.currentSwing.durationTicks(), 3);
 
         float deltaX = Mth.sin(swing * Mth.PI);
-        float deltaZ = Mth.sin(state.attackTime * Mth.PI);
+        float deltaZ = Mth.sin(state.currentSwing.durationTicks() * Mth.PI);
 
         float deltaAim = deltaZ * (0.7F - head.xRot) * 0.75F;
 
@@ -160,7 +160,7 @@ public interface QuadrupedalArmPosing<
 
     static <T extends HumanoidRenderState & PonyModel.AttributedHolder> void holdSpear(T state, ModelPart arm, ModelPart head, HumanoidArm side) {
         if (state.getAttributes().shouldLiftArm(state.getArmPoseForArm(side), state.getArmPoseForArm(side.getOpposite()), side)) {
-            SpearAnimations.thirdPersonHandUse(arm, head, side == HumanoidArm.RIGHT, state.getUseItemStackForArm(side), state);
+            SpearAnimations.thirdPersonHandUse(arm, head, side, state.getUseItemStackForArm(side), state);
         }
     }
 

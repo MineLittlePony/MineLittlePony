@@ -38,7 +38,10 @@ public class CopperPonyBlockEntityRenderer extends CopperGolemStatueBlockRendere
         matrices.pushPose();
         matrices.translate(0.5F, 0.0F, 0.5F);
         RenderType renderLayer = RenderTypes.entityCutout(CopperPonyRenderer.STAGE_TEXTURES.apply(state.oxidationState));
-        frame.submitModel(model, state, matrices, renderLayer, state.lightCoords, OverlayTexture.NO_OVERLAY, 0, state.breakProgress);
+        frame.submitModel(model, state, matrices, renderLayer, state.lightCoords, OverlayTexture.NO_OVERLAY, 0);
+        if (state.breakProgress != null) {
+            frame.submitCrumblingOverlay(model, state, matrices, renderLayer, state.lightCoords, OverlayTexture.NO_OVERLAY, 0, state.breakProgress);
+        }
         matrices.popPose();
     }
 
@@ -73,7 +76,7 @@ public class CopperPonyBlockEntityRenderer extends CopperGolemStatueBlockRendere
         @Override
         public void submit(Boolean data, PoseStack matrices, SubmitNodeCollector frame, int light, int overlay, boolean hasFoil, int outline) {
             if (data != null && data) {
-                frame.submitModel(model, state, matrices, RenderTypes.entityCutout(texture), light, overlay, CommonColors.WHITE, null, outline, null);
+                frame.submitModel(model, state, matrices, RenderTypes.entityCutout(texture), light, overlay, CommonColors.WHITE, null, outline);
             } else {
                 renderer.submit(null, matrices, frame, light, overlay, hasFoil, outline);
             }
