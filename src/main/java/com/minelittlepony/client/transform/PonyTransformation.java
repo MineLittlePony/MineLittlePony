@@ -105,7 +105,7 @@ public enum PonyTransformation implements TransformedModel.BodyType {
                     break;
                 case LEGS:
                     if (!attributes.isLyingDown) stack.translate(0, -0.075F, -0.05F);
-                    else stack.translate(0, -0.05F, 0); // ALREADY BUILT, JUST TEST + SCREENSHOT
+                    else stack.translate(0, -0.05F, 0);
                     if (attributes.isSleeping) stack.translate(0, sleepingYOffset, 0);
                     break;
                 default:
