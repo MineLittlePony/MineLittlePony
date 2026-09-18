@@ -167,7 +167,7 @@ public class PonyRenderState extends AvatarRenderState implements PonyModel.Attr
          );
 
         // Adjust cape angles
-        capeFlap *= 0.3F;
+        capeFlap *= 0.6F;
         capeLean = 0;
 
         ArmourRendererPlugin plugin = ArmourRendererPlugin.INSTANCE.get();

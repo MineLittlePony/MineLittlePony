@@ -379,7 +379,7 @@ public abstract class AbstractPonyModel<T extends PonyRenderState> extends Clien
             }
 
             if (state.attributes.isCrouching) {
-                stack.translate(0, -0.13F, 0);
+                //stack.translate(0, -0.13F, 0);
             }
 
             if (state.attributes.isLyingDown && !state.attributes.isSleeping) {
