@@ -6,12 +6,11 @@ import com.minelittlepony.client.model.ClientPonyModel;
 import com.minelittlepony.client.render.PonyRenderContext;
 import com.minelittlepony.client.render.entity.state.PlayerPonyRenderState;
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.math.Axis;
 
-import net.minecraft.client.model.geom.EntityModelSet;
-import net.minecraft.client.model.geom.ModelLayers;
+import net.minecraft.client.model.geom.*;
 import net.minecraft.client.model.player.PlayerCapeModel;
 import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.client.renderer.entity.state.AvatarRenderState;
 import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.resources.model.EquipmentAssetManager;
@@ -29,8 +28,26 @@ public class CapeFeature extends AbstractPonyFeature<PlayerPonyRenderState, Clie
 
     public CapeFeature(PonyRenderContext<?, PlayerPonyRenderState, ClientPonyModel<PlayerPonyRenderState>> context, EntityModelSet entityModels, EquipmentAssetManager equipmentAssets) {
         super(context);
-        this.model = new PlayerCapeModel(entityModels.bakeLayer(ModelLayers.PLAYER_CAPE));
+        this.model = new PonyCapeModel(entityModels.bakeLayer(ModelLayers.PLAYER_CAPE));
         this.equipmentAssets = equipmentAssets;
+    }
+
+    static class PonyCapeModel extends PlayerCapeModel {
+        private final ModelPart cape = body.getChild("cape");
+
+        public PonyCapeModel(ModelPart root) {
+            super(root);
+        }
+
+        @Override
+        public void setupAnim(final AvatarRenderState state) {
+            super.setupAnim(state);
+            body.resetPose();
+            cape.x = 0;
+            cape.y = 18;
+            cape.z = state.isPassenger ? -6 : 0;
+            cape.xRot -= 90 * Mth.DEG_TO_RAD;
+        }
     }
 
     private boolean hasLayer(ItemStack stack, EquipmentClientInfo.LayerType layerType) {
@@ -50,9 +67,7 @@ public class CapeFeature extends AbstractPonyFeature<PlayerPonyRenderState, Clie
                 RenderType capeLayer = plugin.getCapeLayer(state, skinTextures.cape().texturePath());
                 if (capeLayer != null) {
                     matrices.pushPose();
-                    if (hasLayer(state.chestEquipment, EquipmentClientInfo.LayerType.HUMANOID)) {
-                        matrices.translate(0.0F, -0.053125F, 0.06875F);
-                    }
+
 
                     if (((PlayerPonyRenderState)state).attributes.isSleeping) {
                         matrices.translate(0, 0, 0.4F);
@@ -60,8 +75,13 @@ public class CapeFeature extends AbstractPonyFeature<PlayerPonyRenderState, Clie
                         matrices.translate(0, 0.44F, 0);
                     }
                     var model = lookupModel(state);
+
                     model.body().transformAccessory((PlayerPonyRenderState)state, BodyPart.BACK, matrices);
-                    matrices.mulPose(Axis.XP.rotationDegrees(85 - model.body().body.xRot * Mth.RAD_TO_DEG));
+                    matrices.translate(0, -19/16F, 0);
+
+                    if (hasLayer(state.chestEquipment, EquipmentClientInfo.LayerType.HUMANOID)) {
+                        matrices.translate(0.0F, -0.07F, 0.06875F);
+                    }
                     if (state.isBaby) {
                         matrices.scale(1.1F, 1.1F, 1.1F);
                     }
