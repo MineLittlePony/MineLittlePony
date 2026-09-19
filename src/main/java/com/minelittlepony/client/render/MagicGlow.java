@@ -2,6 +2,7 @@ package com.minelittlepony.client.render;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.*;
+import net.minecraft.client.renderer.oit.OitPipelineSet;
 import net.minecraft.client.renderer.rendertype.*;
 import net.minecraft.client.renderer.rendertype.RenderSetup.OutlineProperty;
 import net.minecraft.client.renderer.texture.*;
@@ -25,19 +26,32 @@ import com.minelittlepony.client.render.command.MagicOverlayRenderCommandQueue;
 import com.minelittlepony.common.util.render.RenderLayerUtil;
 
 public final class MagicGlow {
+
+    public static final RenderPipeline.Snippet ENTITY_MAGIC_GLOW_SNIPPET = RenderPipeline.builder()
+            .withVertexShader(MineLittlePony.id("core/magic"))
+            .withFragmentShader(MineLittlePony.id("core/magic"))
+            .withBindGroupLayout(BindGroupLayouts.SAMPLER0)
+            .withCull(false) /*added*/
+            .withVertexBinding(0, DefaultVertexFormat.ENTITY)
+            .withPrimitiveTopology(PrimitiveTopology.QUADS)
+            .withDepthStencilState(new DepthStencilState(CompareOp.GREATER_THAN_OR_EQUAL, false))
+            .buildSnippet();
+    public static final RenderPipeline.Snippet OIT_MATRICES_FOG_SNIPPET = RenderPipeline.builder()
+            .withBindGroupLayout(BindGroupLayouts.DYNAMIC_TRANSFORMS)
+            .withBindGroupLayout(BindGroupLayouts.FOG)
+            .buildSnippet();
+
     public static final RenderPipeline /*EYES*/ ENTITY_MAGIC_GLOW_PIPELINE = RenderPipelines.register(
-            RenderPipeline.builder(RenderPipelines.MATRICES_FOG_SNIPPET)
-                .withLocation("pipeline/magic_glow")
-                .withVertexShader(MineLittlePony.id("core/magic"))
-                .withFragmentShader(MineLittlePony.id("core/magic"))
-                .withBindGroupLayout(BindGroupLayouts.SAMPLER0)
-                .withColorTargetState(new ColorTargetState(BlendFunction.LIGHTNING)) /*changed from TRANSLUCENT */
-                .withCull(false) /*added*/
-                .withVertexBinding(0, DefaultVertexFormat.ENTITY)
-                .withPrimitiveTopology(PrimitiveTopology.QUADS)
-                .withDepthStencilState(new DepthStencilState(CompareOp.GREATER_THAN_OR_EQUAL, false))
-                .build()
-        );
+        RenderPipeline.builder(ENTITY_MAGIC_GLOW_SNIPPET, RenderPipelines.MATRICES_FOG_SNIPPET)
+            .withLocation("pipeline/magic_glow")
+            .withColorTargetState(new ColorTargetState(BlendFunction.LIGHTNING)) /*changed from TRANSLUCENT */
+            .build()
+    );
+    public static final OitPipelineSet /*IOT_EYES*/ OIT_ENTITY_MAGIC_GLOW_PIPELINE = RenderPipelines.register(
+        OitPipelineSet.builder("minelp_magic_glow", RenderPipeline.builder(ENTITY_MAGIC_GLOW_SNIPPET, OIT_MATRICES_FOG_SNIPPET))
+            .build()
+    );
+
     private static final Identifier NO_TEXTURE_ID = MineLittlePony.id("magic_solid");
     private static final Supplier<Identifier> EMPTY_TEXTURE = Suppliers.memoize(() -> {
         NativeImage image = new NativeImage(1, 1, false);
@@ -51,10 +65,11 @@ public final class MagicGlow {
 
     private static final BiFunction<Boolean, Identifier, RenderType> TEXTURED = Util.memoize((shaders, texture) -> {
         return RenderType.create("mlp_magic_glow_textured", RenderSetup.builder(shaders ? RenderPipelines.EYES : ENTITY_MAGIC_GLOW_PIPELINE)
+            .setOitPipelines(shaders ? RenderPipelines.OIT_EYES : OIT_ENTITY_MAGIC_GLOW_PIPELINE)
             .withTexture("Sampler0", texture)
             .setLayeringTransform(LayeringTransform.VIEW_OFFSET_Z_LAYERING)
-            //.setOutputTarget(OutputTarget.MAIN_TARGET)
             .setOutline(OutlineProperty.NONE)
+            .sortOnUpload()
             .createRenderSetup()
         );
     });
