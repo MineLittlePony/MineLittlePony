@@ -58,7 +58,7 @@ public class DJPon3EarsModel extends SkullModel implements Gear<PonyRenderState>
         stack.pushPose();
         stack.scale(DEFAULT_SCALE, DEFAULT_SCALE, DEFAULT_SCALE);
         stack.translate(0, 0.15F, 0);
-        frame.submitModelPart(root(), stack, renderType, light, overlay, null, color, null);
+        frame.submitModelPart(root(), stack, renderType, light, overlay, null, color);
         stack.popPose();
     }
 }

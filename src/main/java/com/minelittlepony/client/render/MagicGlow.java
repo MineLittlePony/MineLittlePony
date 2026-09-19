@@ -10,11 +10,9 @@ import net.minecraft.util.*;
 
 import org.jetbrains.annotations.Nullable;
 
-import com.mojang.blaze3d.PrimitiveTopology;
-import com.mojang.blaze3d.pipeline.*;
-import com.mojang.blaze3d.platform.CompareOp;
 import com.mojang.blaze3d.platform.NativeImage;
 import com.mojang.blaze3d.vertex.*;
+import com.mojang.renderpearl.api.pipeline.*;
 
 import java.util.List;
 import java.util.function.*;
@@ -55,7 +53,7 @@ public final class MagicGlow {
         return RenderType.create("mlp_magic_glow_textured", RenderSetup.builder(shaders ? RenderPipelines.EYES : ENTITY_MAGIC_GLOW_PIPELINE)
             .withTexture("Sampler0", texture)
             .setLayeringTransform(LayeringTransform.VIEW_OFFSET_Z_LAYERING)
-            .setOutputTarget(OutputTarget.MAIN_TARGET)
+            //.setOutputTarget(OutputTarget.MAIN_TARGET)
             .setOutline(OutlineProperty.NONE)
             .createRenderSetup()
         );

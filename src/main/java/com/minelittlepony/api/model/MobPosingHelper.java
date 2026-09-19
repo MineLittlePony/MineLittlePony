@@ -36,13 +36,13 @@ public final class MobPosingHelper {
 
     public static <T extends HumanoidRenderState> void animateZombieArms(ModelPart leftArm, ModelPart rightArm, boolean aggressive, T state) {
         if (!state.isBaby || state.getMainHandItemStack().isEmpty()) {
-            boolean animateAttack = state.swingAnimationType != SwingAnimationType.STAB;
+            boolean animateAttack = state.currentSwing != null && state.currentSwing.animation().type() != SwingAnimationType.STAB;
             if (animateAttack) {
-                float attackTime = state.attackTime;
+                float attackTime = state.swingAnimation;
                 float armDrop = -Mth.PI / (aggressive ? 1.9F : 2.25F);
                 float attackYRotModifier = Mth.sin(attackTime * (float) Mth.PI);
                 float attackXRotModifier = Mth.sin((1 - (1 - attackTime) * (1 - attackTime)) * (float) Mth.PI);
-                if (state.attackArm == HumanoidArm.RIGHT) {
+                if (state.currentSwing.hand().asArm(state.mainArm) == HumanoidArm.LEFT) {
                     rightArm.zRot = 0;
                     rightArm.yRot = -(0.1F - attackYRotModifier * 0.6F);
                     rightArm.xRot = armDrop;

@@ -83,7 +83,7 @@ public class PonyRenderState extends AvatarRenderState implements PonyModel.Attr
         isCrouching = attributes.isCrouching && !attributes.isLyingDown;
         sleepingInBed = false;
         submergedInWater = false;
-        wobbleAmount = attackTime <= 0 ? 0 : Mth.sin(Mth.sqrt(attackTime) * Mth.TWO_PI) * 0.04F;
+        wobbleAmount = swingAnimation <= 0 ? 0 : Mth.sin(Mth.sqrt(swingAnimation) * Mth.TWO_PI) * 0.04F;
         if (hasMagicGlow()) {
             wobbleAmount *= 0.5;
         }
@@ -138,7 +138,7 @@ public class PonyRenderState extends AvatarRenderState implements PonyModel.Attr
         isCrouching = attributes.isCrouching && !attributes.isLyingDown;
         sleepingInBed = entity != null && entity.getSleepingPos().isPresent() && entity.level().getBlockState(entity.getSleepingPos().get()).getBlock() instanceof BedBlock;
         submergedInWater = entity != null && entity.isUnderWater();
-        wobbleAmount = attackTime <= 0 ? 0 : Mth.sin(Mth.sqrt(attackTime) * Mth.TWO_PI) * 0.04F;
+        wobbleAmount = swingAnimation <= 0 ? 0 : Mth.sin(Mth.sqrt(swingAnimation) * Mth.TWO_PI) * 0.04F;
         swimAmount = 0;
         if (hasMagicGlow()) {
             wobbleAmount *= 0.5;
@@ -242,7 +242,7 @@ public class PonyRenderState extends AvatarRenderState implements PonyModel.Attr
      */
     @Override
     public float getSwingAmount() {
-        return attackTime;
+        return swingAnimation;
     }
 
     protected float getLegOutset() {

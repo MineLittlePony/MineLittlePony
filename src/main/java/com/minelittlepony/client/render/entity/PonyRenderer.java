@@ -9,10 +9,10 @@ import com.minelittlepony.mson.api.ModelKey;
 import net.minecraft.client.model.HumanoidModel.ArmPose;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.layers.ArrowLayer;
-import net.minecraft.core.component.DataComponents;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.HumanoidArm;
+import net.minecraft.world.entity.LivingEntity.SwingDescription;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.item.*;
 import net.minecraft.world.item.component.SwingAnimation;
@@ -57,7 +57,7 @@ public abstract class PonyRenderer<
             return ArmPose.EMPTY;
         }
 
-        if (!entity.swinging && mainHandItem.is(Items.CROSSBOW) && CrossbowItem.isCharged(mainHandItem)) {
+        if (!entity.isSwinging() && mainHandItem.is(Items.CROSSBOW) && CrossbowItem.isCharged(mainHandItem)) {
             return ArmPose.CROSSBOW_HOLD;
         }
 
@@ -85,8 +85,10 @@ public abstract class PonyRenderer<
         }
 
         @Nullable
-        SwingAnimation attack = mainHandItem.get(DataComponents.SWING_ANIMATION);
-        if (attack != null && attack.type() == SwingAnimationType.STAB && entity.swinging) {
+        SwingDescription swing = entity.getCurrentSwing();
+        @Nullable
+        SwingAnimation attack = swing == null ? null : swing.animation();
+        if (attack != null && attack.type() == SwingAnimationType.STAB && entity.isSwinging()) {
             return ArmPose.SPEAR;
         }
 

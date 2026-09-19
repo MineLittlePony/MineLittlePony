@@ -21,6 +21,7 @@ import net.minecraft.util.*;
 import net.minecraft.world.entity.HumanoidArm;
 
 import org.jetbrains.annotations.Nullable;
+import org.joml.Matrix4f;
 import org.joml.Quaternionf;
 
 /**
@@ -241,14 +242,14 @@ public abstract class AbstractPonyModel<T extends PonyRenderState> extends Clien
             alignArmForAction(state, leftArm, HumanoidArm.LEFT);
         }
         if (!state.attributes.isLyingDown) {
-            if (state.attackTime > 0) {
-                switch (state.swingAnimationType) {
+            if (state.currentSwing != null && state.currentSwing.durationTicks() > 0) {
+                switch (state.currentSwing.animation().type()) {
                     case NONE -> {}
-                    case STAB -> SpearAnimations.thirdPersonAttackHand(this, state);
+                    case STAB -> SpearAnimations.thirdPersonAttackHand(this, state.swingAnimation, state.mainArm);
                     case WHACK -> QuadrupedalArmPosing.punch(state, state.mainArm == HumanoidArm.LEFT ? leftArm : rightArm, body, getHead());
                     default -> {
                         @Nullable
-                        QuadrupedalArmPosing<T, AbstractPonyModel<T>> poser = Untyped.cast(QuadrupedalArmPosing.CUSTOM_SWING_ANIMATIONS.get(state.swingAnimationType));
+                        QuadrupedalArmPosing<T, AbstractPonyModel<T>> poser = Untyped.cast(QuadrupedalArmPosing.CUSTOM_SWING_ANIMATIONS.get(state.currentSwing.animation().type()));
                         if (poser != null) {
                             poser.alignArmForSwing(state, this);
                         }
@@ -327,9 +328,10 @@ public abstract class AbstractPonyModel<T extends PonyRenderState> extends Clien
         transform(state, BodyPart.LEGS, matrices);
         ModelPart a = getForeLeg(arm);
         Quaternionf rotation = new Quaternionf().rotationZYX(a.zRot, a.yRot, a.xRot);
-        matrices.mulPose(rotation);
+        Matrix4f matrix = new Matrix4f();
+        matrices.mulPose(rotation.get(matrix));
         positionheldItem(state, arm, matrices);
-        matrices.mulPose(rotation.conjugate());
+        matrices.mulPose(rotation.conjugate().get(matrix));
     }
 
     protected void positionheldItem(T state, HumanoidArm arm, PoseStack matrices) {
@@ -362,8 +364,8 @@ public abstract class AbstractPonyModel<T extends PonyRenderState> extends Clien
 
         if (part != BodyPart.WINGS) {
             if (state.attributes.isSleeping || state.attributes.isRiptide) {
-                stack.mulPose(Axis.YP.rotationDegrees(180));
-                stack.mulPose(Axis.XP.rotationDegrees(-90));
+                stack.rotateDegrees(Axis.YP, 180);
+                stack.rotateDegrees(Axis.XP, -90);
             }
         }
 

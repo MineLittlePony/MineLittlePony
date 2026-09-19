@@ -2,7 +2,6 @@ package com.minelittlepony.client.render;
 
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.minelittlepony.api.config.PonyConfig;
-import com.minelittlepony.client.MineLittlePony;
 import com.minelittlepony.client.render.command.MagicOverlayRenderCommandQueue;
 import com.minelittlepony.client.render.entity.state.PonyRenderState;
 import com.minelittlepony.client.render.entity.state.PonyRenderState.HeldItemRenderState;
@@ -15,11 +14,13 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.item.ItemStackRenderState;
 import net.minecraft.client.renderer.rendertype.RenderType;
+import net.minecraft.client.renderer.state.level.FirstPersonHandsAndItemsRenderState;
+import net.minecraft.client.renderer.state.level.PlayerRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.LightCoordsUtil;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.HumanoidArm;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.*;
 import net.minecraft.world.phys.Vec3;
 
@@ -27,6 +28,7 @@ import org.joml.Vector3f;
 import org.joml.Vector3fc;
 
 public class LevitatingItemRenderer {
+    private static final Identifier MAP_BACKGROUND = Identifier.withDefaultNamespace("textures/map/map_background.png");
     private static final Vector3fc[] THIRD_PERSON_TRANSFORM = {
             new Vector3f(-0.085F, 0.01F, -0.08F), new Vector3f(-0.035F, 0.01F, -0.14F)
     };
@@ -38,27 +40,19 @@ public class LevitatingItemRenderer {
      * Renders a first-person item with a magical overlay.
      */
     public static void renderItem(
-            LivingEntity entity, ItemStack stack, ItemDisplayContext mode,
+            PlayerRenderState playerState, FirstPersonHandsAndItemsRenderState armState, ItemStack stack, InteractionHand hand,
             ItemStackRenderState itemRenderState, PoseStack matrices, SubmitNodeCollector frame, int light, int overlay, int outline, Operation<Void> original) {
 
-        if (!PonyConfig.getInstance().fpsmagic.get() || entity == null || !mode.firstPerson()) {
+        if (!PonyConfig.getInstance().fpsmagic.get() || !(playerState.avatarRenderState instanceof PonyRenderState state) || !state.hasMagicGlow()) {
             original.call(itemRenderState, matrices, frame, light, overlay, outline);
             return;
         }
 
-        var context = MineLittlePony.getInstance().getRenderDispatcher().getPonyRenderer(entity);
-        var state = context == null ? null : context.createRenderState(entity, Minecraft.getInstance().getDeltaTracker().getGameTimeDeltaPartialTick(false));
+        boolean isMainhand = hand == InteractionHand.MAIN_HAND;
 
-        if (state == null || !state.hasMagicGlow()) {
-            original.call(itemRenderState, matrices, frame, light, overlay, outline);
-            return;
-        }
+        var itemState = isMainhand ? state.leftHeldItem : state.rightHeldItem;
 
-        var itemState = mode.leftHand() ? state.leftHeldItem : state.rightHeldItem;
-
-        itemState.updateItemRenderState(state, Minecraft.getInstance().getItemModelResolver(), stack, mode, entity);
-
-        setupPerspective(state, itemState, mode.leftHand(), true, matrices);
+        setupPerspective(state, itemState, hand.asArm(state.mainArm) == HumanoidArm.LEFT, true, matrices);
         original.call(itemRenderState, matrices, frame, light, overlay, outline);
 
         if (state.hornGlowVisible) {
@@ -67,21 +61,14 @@ public class LevitatingItemRenderer {
         }
     }
 
-    public static void renderMap(PoseStack matrices, SubmitNodeCollector queue, ItemStack stack) {
+    public static void renderMap(PoseStack matrices, SubmitNodeCollector queue, ItemStack stack, boolean mainHand, FirstPersonHandsAndItemsRenderState handsState) {
 
-        if (!PonyConfig.getInstance().fpsmagic.get()) {
+        if (!(Minecraft.getInstance().gameRenderer.gameRenderState().levelRenderState.playerRenderState.avatarRenderState instanceof PonyRenderState state)
+                || !PonyConfig.getInstance().fpsmagic.get() || !state.hasMagicGlow()) {
             return;
         }
 
-        var entity = Minecraft.getInstance().player;
-        var context = MineLittlePony.getInstance().getRenderDispatcher().getPonyRenderer(entity);
-        var state = context == null ? null : context.createRenderState(entity, Minecraft.getInstance().getDeltaTracker().getGameTimeDeltaPartialTick(false));
-
-        if (state == null || !state.hasMagicGlow()) {
-            return;
-        }
-
-        HumanoidArm arm = entity.getItemHeldByArm(HumanoidArm.LEFT) == stack ? HumanoidArm.LEFT : HumanoidArm.RIGHT;
+        HumanoidArm arm = mainHand ? state.mainArm : state.mainArm.getOpposite();
         HeldItemRenderState itemState = state.getHeldItem(arm);
 
         float floatAmount = itemState.levitatingItemXDrift * 2000;
@@ -89,7 +76,7 @@ public class LevitatingItemRenderer {
 
         matrices.translate(floatAmount, driftAmount, driftAmount * 0.25F);
 
-        RenderType renderLayer = MagicGlow.getTextured(Identifier.withDefaultNamespace("textures/map/map_background.png"));
+        RenderType renderLayer = MagicGlow.getTextured(MAP_BACKGROUND);
         for (var pass : calculateTransformPasses(itemState, FIRST_PERSON_TRANSFORM, false)) {
             matrices.pushPose();
             matrices.last().pose().scaleAround(1 + pass.scale() / 3F, 64, 64, 0);
@@ -137,8 +124,8 @@ public class LevitatingItemRenderer {
             stack.translate(driftAmount - floatAmount / 4F + distanceChange / 1.5F * sign, floatAmount, distanceChange);
 
             if (rotate && !heldItem.handHeldTool) { // bows have to point forwards
-                stack.mulPose(Axis.YP.rotationDegrees(sign * -60 + floatAmount));
-                stack.mulPose(Axis.ZP.rotationDegrees(sign * 30 + driftAmount));
+                stack.rotateDegrees(Axis.YP, sign * -60 + floatAmount);
+                stack.rotateDegrees(Axis.ZP, sign * 30 + driftAmount);
             }
         }
     }

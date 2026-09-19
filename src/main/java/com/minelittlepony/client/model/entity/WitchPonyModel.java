@@ -50,6 +50,6 @@ public class WitchPonyModel extends EarthPonyModel<WitchRenderer.State> {
     @Override
     public void positionheldItem(WitchRenderer.State state, HumanoidArm arm, PoseStack matrices) {
         super.positionheldItem(state, arm, matrices);
-        matrices.mulPose(Axis.XP.rotationDegrees(10));
+        matrices.rotateDegrees(Axis.XP, 10);
     }
 }

@@ -26,8 +26,8 @@ public class IllagerPonyModel<S extends IllagerPonyRenderer.State> extends Alico
 
         if (pose == AbstractIllager.IllagerArmPose.ATTACKING) {
             // vindicator attacking
-            float f = Mth.sin(state.attackTime * (float) Math.PI);
-            float f1 = Mth.sin((1 - (1 - state.attackTime) * (1 - state.attackTime)) * (float) Math.PI);
+            float f = Mth.sin(state.swingAnimation * (float) Math.PI);
+            float f1 = Mth.sin((1 - (1 - state.swingAnimation) * (1 - state.swingAnimation)) * (float) Math.PI);
 
             float cos = Mth.cos(state.ageInTicks * 0.09F) * 0.05F + 0.05F;
             float sin = Mth.sin(state.ageInTicks * 0.067F) * 0.05F;

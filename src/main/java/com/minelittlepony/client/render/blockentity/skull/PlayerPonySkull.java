@@ -24,6 +24,7 @@ import net.minecraft.util.*;
 import net.minecraft.world.item.component.ResolvableProfile;
 
 import org.jetbrains.annotations.Nullable;
+import org.joml.Matrix4f;
 
 public class PlayerPonySkull implements Skull<PonyHeadModel.State> {
     private final Function<PlayerModelKey<AbstractPonyModel<?>>, PonyHeadModel> models = Util.memoize(key -> new PonyHeadModel(key.steveKey().createModel()));
@@ -69,16 +70,24 @@ public class PlayerPonySkull implements Skull<PonyHeadModel.State> {
             stack.translate(0, -0.5F, 0);
             stack.mulPose(Axis.YP.rotationDegrees(-state.yRot)
                     .rotateLocalZ(MathUtil.Angles._180_DEG)
-                    .rotateLocalY(state.yRot * Mth.DEG_TO_RAD)
+                    .rotateLocalY(state.yRot * Mth.DEG_TO_RAD).get(new Matrix4f())
             );
         }
-        frame.order(0).submitModel(models.apply(ModelType.getPlayerModel(race)), state, stack, layer, state.light, OverlayTexture.NO_OVERLAY, color, null, state.outlineColor, state.crumblingOverlay);
+        var ordering = frame.order(0);
+        var model = models.apply(ModelType.getPlayerModel(race));
+        ordering.submitModel(model, state, stack, layer, state.light, OverlayTexture.NO_OVERLAY, color, null, state.outlineColor);
+        if (state.crumblingOverlay != null) {
+            ordering.submitCrumblingOverlay(model, state, stack, layer, state.light, OverlayTexture.NO_OVERLAY, color, state.crumblingOverlay);
+        }
         stack.popPose();
         if (hasMouseEars(state.profile)) {
             stack.pushPose();
             stack.scale(DJPon3EarsModel.DEFAULT_SCALE, DJPon3EarsModel.DEFAULT_SCALE, DJPon3EarsModel.DEFAULT_SCALE);
             stack.translate(0, 0.05F, 0);
-            frame.order(0).submitModel(deadMau5, state, stack, layer, state.light, OverlayTexture.NO_OVERLAY, color, null, state.outlineColor, state.crumblingOverlay);
+            ordering.submitModel(deadMau5, state, stack, layer, state.light, OverlayTexture.NO_OVERLAY, color, null, state.outlineColor);
+            if (state.crumblingOverlay != null) {
+                ordering.submitCrumblingOverlay(deadMau5, state, stack, layer, state.light, OverlayTexture.NO_OVERLAY, color, state.crumblingOverlay);
+            }
             stack.popPose();
         }
     }

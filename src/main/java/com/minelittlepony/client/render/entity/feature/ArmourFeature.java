@@ -16,7 +16,6 @@ import net.fabricmc.fabric.api.client.rendering.v1.ArmorRenderer;
 import net.fabricmc.fabric.impl.client.rendering.ArmorRendererRegistryImpl;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.renderer.SubmitNodeCollector;
-import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.resources.model.EquipmentAssetManager;
 import net.minecraft.client.resources.model.EquipmentClientInfo;
 import net.minecraft.core.component.DataComponents;
@@ -41,9 +40,9 @@ public class ArmourFeature<
 
     private final PonifiedEquipmentRenderer equipmentRenderer;
 
-    public ArmourFeature(PonyRenderContext<T, S, M> context, EquipmentAssetManager equipmentAssets, TextureAtlas armorTrimsAtlas) {
+    public ArmourFeature(PonyRenderContext<T, S, M> context, EquipmentAssetManager equipmentAssets) {
         super(context);
-        this.equipmentRenderer = new PonifiedEquipmentRenderer(equipmentAssets, armorTrimsAtlas);
+        this.equipmentRenderer = new PonifiedEquipmentRenderer(equipmentAssets);
     }
 
     @Override

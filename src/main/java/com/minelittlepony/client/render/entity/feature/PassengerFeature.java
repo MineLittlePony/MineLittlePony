@@ -62,7 +62,7 @@ public class PassengerFeature<
         getParentModel().transformAccessory(state, BodyPart.BACK, matrices);
 
         matrices.translate(0, -1.28, 0);
-        matrices.mulPose(Axis.ZP.rotationDegrees(left ? -5 : 5));
+        matrices.rotateDegrees(Axis.ZP, left ? -5 : 5);
         matrices.translate(0, parrotModelHeight, 0);
         matrices.scale(scale, scale, scale);
         matrices.translate(left ? 0.25 : -0.25, -parrotModelHeight, 0.45);
@@ -72,7 +72,7 @@ public class PassengerFeature<
         parrotState.walkAnimationSpeed = state.walkAnimationSpeed;
         parrotState.yRot = headYaw;
         parrotState.xRot = headPitch;
-        frame.order(0).submitModel(model, parrotState, matrices, model.renderType(ParrotRenderer.getVariantTexture(parrotVariant)), light, OverlayTexture.NO_OVERLAY, state.outlineColor, null);
+        frame.order(0).submitModel(model, parrotState, matrices, model.renderType(ParrotRenderer.getVariantTexture(parrotVariant)), light, OverlayTexture.NO_OVERLAY, state.outlineColor);
         matrices.popPose();
     }
 }
