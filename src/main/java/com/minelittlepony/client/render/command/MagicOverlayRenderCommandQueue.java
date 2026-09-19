@@ -153,7 +153,7 @@ public class MagicOverlayRenderCommandQueue implements OrderedSubmitNodeCollecto
     @Override
     public void submitItem(PoseStack matrices, ItemDisplayContext displayContext, int light, int overlay, int outline, int[] tintLayers, ItemQuads quads, FoilType foilType) {
         var quadList = scaleQuads(quads.all());
-        if (!quads.isEmpty()) {
+        if (!quadList.isEmpty()) {
             parent.submitItem(matrices, displayContext, LightCoordsUtil.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, 0, new int[] { color }, ItemQuads.split(quadList), FoilType.NONE);
         }
     }

@@ -48,16 +48,16 @@ public class LevitatingItemRenderer {
             return;
         }
 
-        boolean isMainhand = hand == InteractionHand.MAIN_HAND;
+        var arm = hand.asArm(state.mainArm);
 
-        var itemState = isMainhand ? state.leftHeldItem : state.rightHeldItem;
+        var itemState = state.getHeldItem(arm);
 
-        setupPerspective(state, itemState, hand.asArm(state.mainArm) == HumanoidArm.LEFT, true, matrices);
+        setupPerspective(state, itemState, arm == HumanoidArm.LEFT, true, matrices);
         original.call(itemRenderState, matrices, frame, light, overlay, outline);
 
-        if (state.hornGlowVisible) {
+        if (state.hornGlowVisible && !itemState.glintlessHandItemState.isEmpty()) {
             var q = MagicGlow.getQueue(state.glowColor, frame, calculateTransformPasses(itemState, FIRST_PERSON_TRANSFORM, false));
-            original.call(itemState.glintlessHandItemState, matrices, q, LightCoordsUtil.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, 0);
+            original.call(itemRenderState, matrices, q, LightCoordsUtil.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, 0);
         }
     }
 
