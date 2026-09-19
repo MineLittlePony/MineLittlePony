@@ -24,7 +24,6 @@ import net.minecraft.client.renderer.entity.layers.RenderLayer;
 import net.minecraft.client.renderer.entity.state.AvatarRenderState;
 import net.minecraft.client.renderer.item.ItemModelResolver;
 import net.minecraft.client.renderer.state.level.CameraRenderState;
-import net.minecraft.data.AtlasIds;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.world.entity.EquipmentSlot;
@@ -69,7 +68,7 @@ public abstract class AbstractPonyRenderer<
 
     @SuppressWarnings({"unchecked", "rawtypes"})
     protected void addFeatures(EntityRendererProvider.Context context) {
-        addLayer(new ArmourFeature<>(this, context.getEquipmentAssets(), context.getAtlas(AtlasIds.ARMOR_TRIMS)));
+        addLayer(new ArmourFeature<>(this, context.getEquipmentAssets()));
         addPonyFeature(createHeldItemFeature(context));
         addLayer(createSkullFeature(context));
         addPonyFeature(new ElytraFeature<>(this, context.getEquipmentRenderer()));
@@ -109,8 +108,8 @@ public abstract class AbstractPonyRenderer<
     }
 
     @Override
-    protected final AABB getBoundingBoxForCulling(T entity) {
-        AABB box = manager.getBoundingBox(entity, entity.getBoundingBox());
+    protected final AABB getBoundingBoxForCulling(T entity, float partialTicks) {
+        AABB box = manager.getBoundingBox(entity, entity.getInterpolatedBoundingBox(partialTicks));
         if (entity.getItemBySlot(EquipmentSlot.HEAD).is(Items.DRAGON_HEAD)) {
             return box.inflate(0.5, 0.5, 0.5);
         }

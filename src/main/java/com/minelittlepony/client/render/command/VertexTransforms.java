@@ -42,7 +42,7 @@ public interface VertexTransforms {
     }
 
     static BakedQuad.MaterialInfo materialOf(BakedQuad.MaterialInfo basis, RenderType renderType, Transparency transparency) {
-        return new BakedQuad.MaterialInfo(basis.sprite(), ChunkSectionLayer.byTransparency(transparency), renderType, 0, false, 15);
+        return new BakedQuad.MaterialInfo(basis.sprite(), ChunkSectionLayer.byTransparency(transparency), renderType, renderType, renderType, 0, basis.shadeDirectionOverride(), 15);
     }
 
     static Vector3f getInflationNormal(int vertexIndex, Vector3fc normal) {

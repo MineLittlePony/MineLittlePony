@@ -21,7 +21,7 @@ public abstract class AbstractGearModel<T extends HumanoidRenderState & PonyMode
 
     @Override
     public void render(PoseStack stack, GearRenderState<T> state, SubmitNodeCollector frame, RenderType renderType, int overlay, int light, int color) {
-        frame.submitModel(this, state, stack, renderType, light, overlay, color, null, state.entityState.outlineColor, null);
+        frame.submitModel(this, state, stack, renderType, light, overlay, color, null, state.entityState.outlineColor);
     }
 
     @Override

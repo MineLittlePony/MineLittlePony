@@ -39,7 +39,7 @@ public class DJPon3Feature<
             skullState.xRot = state.xRot;
             skullState.yRot = state.yRot;
 
-            queue.order(1).submitModel(deadMau5, skullState, stack, deadMau5.renderType(state.skin.body().texturePath()), light, OverlayTexture.NO_OVERLAY, CommonColors.WHITE, null, state.outlineColor, null);
+            queue.order(1).submitModel(deadMau5, skullState, stack, deadMau5.renderType(state.skin.body().texturePath()), light, OverlayTexture.NO_OVERLAY, CommonColors.WHITE, null, state.outlineColor);
 
             stack.popPose();
         }

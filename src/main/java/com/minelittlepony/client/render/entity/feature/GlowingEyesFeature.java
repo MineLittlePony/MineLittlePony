@@ -31,6 +31,6 @@ public class GlowingEyesFeature<
 
     @Override
     public void submit(PoseStack matrices, SubmitNodeCollector queue, int light, S state, float xRot, float yRot) {
-        queue.order(1).submitModel(getParentModel(), state, matrices, RenderTypes.eyes(textureSupplier.apply(state)), light, OverlayTexture.NO_OVERLAY, -1, null, state.outlineColor, null);
+        queue.order(1).submitModel(getParentModel(), state, matrices, RenderTypes.eyes(textureSupplier.apply(state)), light, OverlayTexture.NO_OVERLAY, -1, null, state.outlineColor);
     }
 }

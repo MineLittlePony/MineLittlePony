@@ -93,7 +93,7 @@ public class SkeleponyRenderer<T extends AbstractSkeleton, S extends SkeleponyRe
             if (!state.sheared) {
                 matrices.pushPose();
                 getParentModel().transformAccessory(state, BodyPart.HEAD, matrices);
-                queue.submitModel(model, Unit.INSTANCE, matrices, model.renderType(MUSHROOMS), light, OverlayTexture.NO_OVERLAY, state.outlineColor, null);
+                queue.submitModel(model, Unit.INSTANCE, matrices, model.renderType(MUSHROOMS), light, OverlayTexture.NO_OVERLAY, state.outlineColor);
                 matrices.popPose();
             }
         }

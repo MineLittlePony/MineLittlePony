@@ -75,6 +75,12 @@ final class ScaledVertexConsumer implements VertexConsumer {
     }
 
     @Override
+    public VertexConsumer setUv3(float u, float v) {
+        buffer.setUv3(u, v);
+        return this;
+    }
+
+    @Override
     public VertexConsumer setNormal(float x, float y, float z) {
         buffer.setNormal(x, y, z);
         return this;

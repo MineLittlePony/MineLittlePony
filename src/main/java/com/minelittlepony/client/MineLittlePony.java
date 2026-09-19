@@ -37,7 +37,6 @@ import net.minecraft.server.packs.PackType;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.lwjgl.glfw.GLFW;
 
 /**
  * Client Mod implementation
@@ -56,7 +55,7 @@ public class MineLittlePony implements ClientModInitializer {
     private PonyManagerImpl ponyManager;
     private VariatedTextureSupplier variatedTextures;
 
-    private final KeyMapping keyBinding = new KeyMapping("key.minelittlepony.settings", InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_F9, KeyMapping.Category.MISC);
+    private final KeyMapping keyBinding = new KeyMapping("key.minelittlepony.settings", InputConstants.Type.KEYBOARD, InputConstants.KEY_F9, KeyMapping.Category.MISC);
 
     private final PonyRenderDispatcherImpl renderDispatcher = new PonyRenderDispatcherImpl();
     private final AtomicBoolean configChanged = new AtomicBoolean();

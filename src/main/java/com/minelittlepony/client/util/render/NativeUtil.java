@@ -6,11 +6,11 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.server.packs.resources.Resource;
 
 import com.minelittlepony.api.pony.meta.TriggerPixel;
-import com.mojang.blaze3d.buffers.*;
-import com.mojang.blaze3d.buffers.GpuBufferSlice.MappedView;
 import com.mojang.blaze3d.platform.NativeImage;
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.textures.GpuTexture;
+import com.mojang.renderpearl.api.buffers.GpuBuffer;
+import com.mojang.renderpearl.api.buffers.GpuBufferSlice.MappedView;
+import com.mojang.renderpearl.api.textures.GpuTexture;
 
 import java.io.InputStream;
 import java.util.function.Consumer;
