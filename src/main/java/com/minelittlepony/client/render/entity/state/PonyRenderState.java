@@ -68,7 +68,8 @@ public class PonyRenderState extends AvatarRenderState implements PonyModel.Attr
 
     public void updateState(ItemModelResolver resolver,
             Map<EquipmentSlot, ItemStack> equipment,
-            Map<HumanoidArm, ItemStack> armStacks,
+            Map<HumanoidArm,
+            ItemStack> armStacks,
             Pony pony, ModelAttributes.Mode mode) {
         headEquipment = equipment.getOrDefault(EquipmentSlot.HEAD, ItemStack.EMPTY);
         this.pony = pony;
@@ -85,7 +86,7 @@ public class PonyRenderState extends AvatarRenderState implements PonyModel.Attr
         submergedInWater = false;
         wobbleAmount = attackTime <= 0 ? 0 : Mth.sin(Mth.sqrt(attackTime) * Mth.TWO_PI) * 0.04F;
         if (hasMagicGlow()) {
-            wobbleAmount *= 0.5;
+            wobbleAmount *= 0.5F;
         }
         if (attributes.isSitting) {
             pose = Pose.SITTING;
@@ -141,7 +142,7 @@ public class PonyRenderState extends AvatarRenderState implements PonyModel.Attr
         wobbleAmount = attackTime <= 0 ? 0 : Mth.sin(Mth.sqrt(attackTime) * Mth.TWO_PI) * 0.04F;
         swimAmount = 0;
         if (hasMagicGlow()) {
-            wobbleAmount *= 0.5;
+            wobbleAmount *= 0.5F;
         }
         if (attributes.isSitting) {
             pose = Pose.SITTING;

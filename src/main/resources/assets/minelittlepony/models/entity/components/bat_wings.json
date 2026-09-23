@@ -1,59 +1,65 @@
 {
 	"locals": {
-		"wing_scale": 1.3,
-		"walking_rotation_speed": "0.05"
+		"wing_scale": 1,
+		"walking_rotation_speed": "0.5"
 	},
 	"data": {
 		"left_wing": {
 			"implementation": "com.minelittlepony.client.model.part.PonyWings$Wing",
 			"data": {
 				"folded": {
-					"texture": {"u": 60, "v": 43, "w": 64, "h": 64},
-					"rotate": [90, 0, 0],
-					"pivot": [3, 14, -4],
+					"texture": {"w": 64, "h": 64},
+					"rotate": [0, 0, 0],
+					"pivot": [4, 5, 2],
 					"children": {
-						"hinge_1": {
-							"pivot": [0, 7, 9],
-							"rotate": [12, 0, 0],
-							"cubes": [
-								{ "from": [0, 0, 0], "size": [1, 8, 1] }
-							],
+						"bone": {
+							"texture": {"u": 56, "v": 16},
 							"children": {
-								"hinge_2": {
-									"texture": {"u": 56},
-									"pivot": [0, -2, -2.6],
-									"rotate": [50, 0, 0],
-									"cubes": [
-										{ "from": [0, 0, 0], "size": [1, 4, 1] }
+								"wing_arm_1": {
+									"type": "mson:planar",
+									"up": [0, 0, 0, 1, 2],
+									"north": [0, 0, 0, 1, 1],
+									"south": [0, 0, 2, 1, 2],
+									"east": [0, 0, 0, 2, 2],
+									"west": [1, 0, 0, 2, 2],
+									"down": [0, 2, 0, 1, 2]
+								},
+								"wing_arm_2": {
+									"type": "mson:planar",
+									"up": [0, 1, -1, 1, 1],
+									"north": [0, 1, -1, 1, 4],
+									"west": [1, 1, -1, 1, 4],
+									"east": [0, 1, -1, 1, 4],
+									"south": [0, 2, 0, 1, 3]
+								},
+								"wing_arm_3": {
+									"type": "mson:planar",
+									"up": [
+										[0, 5, 0, 1, 4],
+										[0, 5, 4, 1, 1]
 									],
-									"children": {
-										"claw": {
-											"texture": { "u": 52, "v": 34 },
-											"rotate": [45, 0, 0],
-											"pivot": [0, 0, 0],
-											"cubes": [
-												{ "from": [0, 0, 0], "size": [1, 1, 1], "dilate": [-0.2, 0, -0.2] }
-											]
-										},
-										"thumb": {
-											"texture": {"u": 60},
-											"type": "mson:planar",
-											"pivot": [0, 2, 0],
-											"rotate": [-70, 0, 0],
-											"cubes": [
-												{ "from": [0, 0, 0], "size": [1, 8, 1] }
-											],
-											"west": [0.5, -0.75, -2.5, 6, 8, 58, 35, false, true]
-										},
-										"toe": {
-											"texture": {"u": 60},
-											"pivot": [0, 0, 0],
-											"rotate": [-80, 0, 0],
-											"cubes": [
-												{ "from": [0, 0, 0], "size": [1, 8, 1] }
-											]
-										}
-									}
+									"north": [0, 5, -1, 1, 1],
+									"south": [0, 5, 5, 1, 1],
+									"east": [0, 5, -1, 6, 1],
+									"west": [1, 5, -1, 6, 1],
+									"down": [
+										[0, 6, -1, 1, 4],
+										[0, 6, 3, 1, 2]
+									]
+								},
+								"claw": {
+									"type": "mson:planar",
+									"texture": {"u": 58, "v": 17},
+									"up": [0, 5, -2, 1, 1],
+									"down": [0, 6, -2, 1, 1],
+									"north": [0, 5, -2, 1, 1],
+									"east": [0, 5, -2, 1, 1],
+									"west": [1, 5, -2, 1, 1]
+								},
+								"membrane": {
+									"type": "mson:planar",
+									"rotate": [0, 0, 90],
+									"up": [0, -0.5, 0, 5, 8, 56, 32, true, false]
 								}
 							}
 						}
@@ -61,53 +67,87 @@
 				},
 				"extended": {
 					"texture": {"w": 64, "h": 64},
-					"rotate": [-15, 180, -140],
-					"pivot": [2.5, 5.3, 3],
+					"rotate": [85, 0, 0],
+					"pivot": [4, 6, 3],
 					"children": {
-						"membrane": {
-							"type": "mson:planar",
-							"west": [0.1, 0, -3, 8, 19, 56, 16, true, false]
-						},
-						"base_joint": {
-							"texture": {"u": 56, "v": 43},
+						"bone": {
 							"pivot": [0, 0, 0],
-							"cubes": [
-								{ "from": [0, 0, 0], "size": [1, 4, 1] }
-							],
+							"rotate": [0, 25, 90],
+							"texture": {"u": 56, "v": 16},
 							"children": {
-								"hinge_1": {
-								  "texture": {"u": 60},
-									"rotate": [32.5, 0, 0],
-									"pivot": [0, 4, 0],
-									"cubes": [
-										{ "from": [0, 0, 0], "size": [1, 8, 1] }
+								"wing_arm_1": {
+									"type": "mson:planar",
+									"up": [0, -0.5, -1, 2, 2],
+									"down": [0, 0.5, -1, 2, 2],
+									"north": [0, -0.5, -1, 2, 1],
+									"south": [0, -0.5, 1, 2, 1],
+									"east": [0, -0.5, -1, 2, 1],
+									"west": [2, -0.5, 0, 1, 1]
+								},
+								"wing_arm_2": {
+									"type": "mson:planar",
+									"up": [2, -0.5, -4, 1, 4],
+									"down": [2, 0.5, -4, 1, 4],
+									"north": [2, -0.5, -4, 1, 1],
+									"south": [2, -0.5, 0, 1, 1],
+									"east": [2, -0.5, -4, 3, 1],
+									"west": [3, -0.5, -4, 4, 1]
+								},
+								"wing_arm_3": {
+									"type": "mson:planar",
+									"pivot": [2, -0.5, -4],
+									"rotate": [0, -45, 0],
+									"up": [
+										[0, 0, -3.6569, 1, 3.6569],
+										[0, 0, -5.6569, 1, 2]
 									],
-									"children": {
-										"hinge_2": {
-											"rotate": [-140, 0, 0],
-											"pivot": [0, 7, 0.5],
-											"cubes": [
-												{ "from": [0, 0, 0], "size": [1, 8, 1] }
-											],
-											"children": {
-												"toe": {
-													"rotate": [90, 0, 0],
-													"pivot": [0, 0, 0],
-													"cubes": [
-														{ "from": [0, 0, 0], "size": [1, 8, 1] }
-													]
-												},
-												"claw": {
-													"rotate": [45, 0, 0],
-													"pivot": [0, 0, 0],
-													"cubes": [
-														{ "from": [0, 0, 0], "size": [1, 8, 1] },
-														{ "from": [0, -1.5, 0], "size": [1, 1, 1], "dilate": [-0.2, 0, -0.2], "texture": { "u": 52, "v": 34 } }
-													]
-												}
-											}
-										}
-									}
+									"down": [
+										[0, 1, -3.6569, 1, 3.6569],
+										[0, 1, -5.6569, 1, 2]
+									],
+									"east": [
+										[0, 0, -3.6569, 3.6569, 1],
+										[0, 0, -5.6569, 2, 1]
+									],
+									"west": [
+										[1, 0, -3.6569, 3.6569, 1],
+										[1, 0, -5.6569, 2, 1]
+									]
+								},
+								"wing_arm_4": {
+									"type": "mson:planar",
+									"up": [
+										[6, -0.5, -8, 8, 1],
+										[14, -0.5, -8, 1, 1]
+									],
+									"down": [
+										[6, 0.5, -8, 8, 1],
+										[14, 0.5, -8, 1, 1]
+									],
+									"north": [
+										[6, -0.5, -8, 8, 1],
+										[14, -0.5, -8, 1, 1]
+									],
+									"south": [
+										[6, -0.5, -7, 8, 1],
+										[14, -0.5, -7, 1, 1]
+									],
+									"east": [6, -0.5, -8, 1, 1],
+									"west": [15, -0.5, -8, 1, 1]
+								},
+								"claw": {
+									"type": "mson:planar",
+									"texture": {"u": 58, "v": 17},
+									"dilate": [0, -0.1, 0],
+									"up": [2, -0.5, -5, 1, 1],
+									"down": [2, 0.5, -5, 1, 1],
+									"north": [2, -0.5, -5, 1, 1],
+									"east": [2, -0.5, -5, 1, 1]
+								},
+								"membrane": {
+									"type": "mson:planar",
+									"rotate": [180, 90, 0],
+									"up": [-1, 0, -14, 8, 12, 56, 20, false, true]
 								}
 							}
 						}
@@ -119,108 +159,148 @@
 			"implementation": "com.minelittlepony.client.model.part.PonyWings$Wing",
 			"data": {
 				"folded": {
-					"texture": {"u": 60, "v": 43, "w": 64, "h": 64},
-					"rotate": [90, 0, 0],
-					"pivot": [-4, 14, -4],
+					"texture": {"w": 64, "h": 64},
+					"rotate": [0, 0, 0],
+					"pivot": [-5, 5, 2],
 					"mirror": true,
 					"children": {
-						"hinge_1": {
-							"pivot": [0, 7, 9],
-							"rotate": [12, 0, 0],
-							"cubes": [
-								{ "from": [0, 0, 0], "size": [1, 8, 1] }
-							],
+						"bone": {
+							"texture": {"u": 56, "v": 16},
 							"children": {
-								"hinge_2": {
-									"texture": {"u": 56},
-									"pivot": [0, -2, -2.6],
-									"rotate": [50, 0, 0],
-									"cubes": [
-										{ "from": [0, 0, 0], "size": [1, 4, 1] }
+								"wing_arm_1": {
+									"type": "mson:planar",
+									"up": [0, 0, 0, 1, 2],
+									"north": [0, 0, 0, 1, 1],
+									"south": [0, 0, 2, 1, 2],
+									"east": [0, 0, 0, 2, 2],
+									"west": [1, 0, 0, 2, 2],
+									"down": [0, 2, 0, 1, 2]
+								},
+								"wing_arm_2": {
+									"type": "mson:planar",
+									"up": [0, 1, -1, 1, 1],
+									"north": [0, 1, -1, 1, 4],
+									"west": [1, 1, -1, 1, 4],
+									"east": [0, 1, -1, 1, 4],
+									"south": [0, 2, 0, 1, 3]
+								},
+								"wing_arm_3": {
+									"type": "mson:planar",
+									"up": [
+										[0, 5, 0, 1, 4],
+										[0, 5, 4, 1, 1]
 									],
-									"children": {
-										"claw": {
-											"texture": { "u": 52, "v": 34 },
-											"rotate": [45, 0, 0],
-											"pivot": [0, 0, 0],
-											"cubes": [
-												{ "from": [0, 0, 0], "size": [1, 1, 1], "dilate": [-0.2, 0, -0.2] }
-											]
-										},
-										"thumb": {
-											"texture": {"u": 60},
-											"type": "mson:planar",
-											"pivot": [0, 2, 0],
-											"rotate": [-70, 0, 0],
-											"cubes": [
-												{ "from": [0, 0, 0], "size": [1, 8, 1] }
-											],
-											"east": [0.5, -0.75, -2.5, 6, 8, 58, 35, true, true]
-										},
-										"toe": {
-											"texture": {"u": 60},
-											"pivot": [0, 0, 0],
-											"rotate": [-80, 0, 0],
-											"cubes": [
-												{ "from": [0, 0, 0], "size": [1, 8, 1] }
-											]
-										}
-									}
+									"north": [0, 5, -1, 1, 1],
+									"south": [0, 5, 5, 1, 1],
+									"east": [0, 5, -1, 6, 1],
+									"west": [1, 5, -1, 6, 1],
+									"down": [
+										[0, 6, -1, 1, 4],
+										[0, 6, 3, 1, 2]
+									]
+								},
+								"claw": {
+									"type": "mson:planar",
+									"texture": {"u": 58, "v": 17},
+									"up": [0, 5, -2, 1, 1],
+									"down": [0, 6, -2, 1, 1],
+									"north": [0, 5, -2, 1, 1],
+									"east": [0, 5, -2, 1, 1],
+									"west": [1, 5, -2, 1, 1]
+								},
+								"membrane": {
+									"type": "mson:planar",
+									"rotate": [0, 0, 90],
+									"up": [0, -0.5, 0, 5, 8, 56, 32, true, false]
 								}
 							}
 						}
 					}
 				},
 				"extended": {
-					"texture": {"u": 56, "v": 19, "w": 64, "h": 64},
-					"pivot": [-2.5, 6.3, 3],
-					"rotate": [-15, 180, 0],
+					"texture": {"w": 64, "h": 64},
+					"rotate": [85, 0, 0],
+					"pivot": [-4, 6, 3],
 					"mirror": true,
 					"children": {
-						"membrane": {
-							"type": "mson:planar",
-							"east": [0.9, 0, -3, 8, 19, 56, 16, false, false]
-						},
-						"base_joint": {
-							"texture": {"u": 56, "v": 43},
+						"bone": {
 							"pivot": [0, 0, 0],
-							"cubes": [
-								{ "from": [0, 0, 0], "size": [1, 4, 1] }
-							],
+							"rotate": [0, 25, 90],
+							"texture": {"u": 56, "v": 16},
 							"children": {
-								"hinge_1": {
-									"texture": {"u": 60},
-									"rotate": [32.5, 0, 0],
-									"pivot": [0, 4, 0],
-									"cubes": [
-										{ "from": [0, 0, 0], "size": [1, 8, 1] }
+								"wing_arm_1": {
+									"type": "mson:planar",
+									"up": [0, -0.5, -1, 2, 2],
+									"down": [0, 0.5, -1, 2, 2],
+									"north": [0, -0.5, -1, 2, 1],
+									"south": [0, -0.5, 1, 2, 1],
+									"east": [0, -0.5, -1, 2, 1],
+									"west": [2, -0.5, 0, 1, 1]
+								},
+								"wing_arm_2": {
+									"type": "mson:planar",
+									"up": [2, -0.5, -4, 1, 4],
+									"down": [2, 0.5, -4, 1, 4],
+									"north": [2, -0.5, -4, 1, 1],
+									"south": [2, -0.5, 0, 1, 1],
+									"east": [2, -0.5, -4, 3, 1],
+									"west": [3, -0.5, -4, 4, 1]
+								},
+								"wing_arm_3": {
+									"type": "mson:planar",
+									"pivot": [2, -0.5, -4],
+									"rotate": [0, -45, 0],
+									"up": [
+										[0, 0, -3.6569, 1, 3.6569],
+										[0, 0, -5.6569, 1, 2]
 									],
-									"children": {
-										"hinge_2": {
-											"rotate": [-140, 0, 0],
-											"pivot": [0, 7, 0.5],
-											"cubes": [
-												{ "from": [0, 0, 0], "size": [1, 8, 1] }
-											],
-											"children": {
-												"toe": {
-													"rotate": [90, 0, 0],
-													"pivot": [0, 0, 0],
-													"cubes": [
-														{ "from": [0, 0, 0], "size": [1, 8, 1] }
-													]
-												},
-												"claw": {
-													"rotate": [45, 0, 0],
-													"pivot": [0, 0, 0],
-													"cubes": [
-														{ "from": [0, 0, 0], "size": [1, 8, 1] },
-														{ "from": [0, -1.5, 0], "size": [1, 1, 1], "dilate": [-0.2, 0, -0.2], "texture": { "u": 52, "v": 34 } }
-													]
-												}
-											}
-										}
-									}
+									"down": [
+										[0, 1, -3.6569, 1, 3.6569],
+										[0, 1, -5.6569, 1, 2]
+									],
+									"east": [
+										[0, 0, -3.6569, 3.6569, 1],
+										[0, 0, -5.6569, 2, 1]
+									],
+									"west": [
+										[1, 0, -3.6569, 3.6569, 1],
+										[1, 0, -5.6569, 2, 1]
+									]
+								},
+								"wing_arm_4": {
+									"type": "mson:planar",
+									"up": [
+										[6, -0.5, -8, 8, 1],
+										[14, -0.5, -8, 1, 1]
+									],
+									"down": [
+										[6, 0.5, -8, 8, 1],
+										[14, 0.5, -8, 1, 1]
+									],
+									"north": [
+										[6, -0.5, -8, 8, 1],
+										[14, -0.5, -8, 1, 1]
+									],
+									"south": [
+										[6, -0.5, -7, 8, 1],
+										[14, -0.5, -7, 1, 1]
+									],
+									"east": [6, -0.5, -8, 1, 1],
+									"west": [15, -0.5, -8, 1, 1]
+								},
+								"claw": {
+									"type": "mson:planar",
+									"texture": {"u": 58, "v": 17},
+									"dilate": [0, -0.1, 0],
+									"up": [2, -0.5, -5, 1, 1],
+									"down": [2, 0.5, -5, 1, 1],
+									"north": [2, -0.5, -5, 1, 1],
+									"east": [2, -0.5, -5, 1, 1]
+								},
+								"membrane": {
+									"type": "mson:planar",
+									"rotate": [180, 90, 0],
+									"up": [-1, 0, -14, 8, 12, 56, 20, false, true]
 								}
 							}
 						}
