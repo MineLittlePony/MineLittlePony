@@ -1,5 +1,6 @@
 package com.minelittlepony.client.model.part;
 
+import com.minelittlepony.api.pony.meta.Race;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.util.Mth;
 
@@ -14,7 +15,7 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 
 public class PonyWings<S extends PonyRenderState> implements SubModel<S>, MsonModel {
 
-    private S state;
+    protected S state;
     protected ModelWithWings<S> pegasus;
 
     protected Wing<S> leftWing;
@@ -22,7 +23,7 @@ public class PonyWings<S extends PonyRenderState> implements SubModel<S>, MsonMo
 
     protected Wing<S> legacyWing;
 
-    private boolean visible;
+    protected boolean visible;
 
     public PonyWings(ModelPart tree) {
     }
@@ -180,7 +181,7 @@ public class PonyWings<S extends PonyRenderState> implements SubModel<S>, MsonMo
             folded.visible = !open;
             folded.yRot = swing * walkingRotationSpeed;
             extended.zRot = roll;
-            if (state.race.hasBugWings() && !model.getBodyPart(BodyPart.BODY).hasChild("bug_open_elytra")) {
+            if (state.race.hasBugWings() && state.getRace() != Race.CHANGEDLING) {
                 extended.yRot = folded.yRot;
                 folded.zRot = roll;
             }

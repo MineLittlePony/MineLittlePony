@@ -144,24 +144,6 @@
 							]
 						}
 					}
-				},
-				"bug_open_elytra": {
-					"visible": false,
-					"pivot": [0, -6.05, 3.5],
-					"children": {
-						"left_elytra": {
-							"pivot": [-1.5, 0, 0],
-							"type": "mson:planar",
-							"rotate": [-15, -32.5, 7.5],
-							"west": [1, -2, 0, 8, 12, 56, 32, true, true]
-						},
-						"right_elytra": {
-							"pivot": [1.5, 0, 0],
-							"type": "mson:planar",
-							"rotate": [-15, 32.5, -7.5],
-							"west": [-1, -2, 0, 8, 12, 56, 32, true, true]
-						}
-					}
 				}
 			}
 		},
