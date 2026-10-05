@@ -1,38 +1,40 @@
 {
 	"parent": "minelittlepony:skeleton",
 	"locals": {
-		"arm_length": 30
+		"arm_length": 30,
+		"arm_width": 2,
+		"arm_depth": 2
 	},
 	"data": {
 		"head": {
-      "pivot": [ 0, "#head_pivot_y", 0 ],
-      "dilate": ["#head_elongation", "#head_elongation", 0],
-			"cubes": [
-				{ "from": [-4, -6, -6], "size": [ 8,  8,  8] }
-			],
+			"pivot": [ 0, "#head_pivot_y", 0 ],
+			"dilate": ["#head_elongation", "#head_elongation", 0],
+				"cubes": [
+					{ "from": [-4, -6, -6], "size": [ 8,  8,  8] }
+				],
 			"children": {
-        "nose": {
-          "dilate": [-1, 0, -1],
-          "visible": false,
-          "cubes": [
-            { "from": [-4, -6, -13], "size": [ 8,  8,  8] }
-          ]
-        },
+				"nose": {
+					"dilate": [-1, 0, -1],
+					"visible": false,
+					"cubes": [
+						{ "from": [-4, -6, -13], "size": [ 8,  8,  8] }
+					]
+				},
 				"snout": { "data": "minelittlepony:components/snout", "implementation": "com.minelittlepony.client.model.part.PonySnout" },
 				"ears": {
-				 "data": "minelittlepony:components/ears",
-				 "implementation": "com.minelittlepony.client.model.part.PonyEars",
-          "locals": {
-            "ear_shortening": "#global_ear_shortening"
-          }
-        },
-        "hat": {
-          "texture": { "u": 32, "v": 0 },
-          "visible": false,
-          "cubes": [
-            { "from": [-4, -1, -6], "size": [ 8, 8, 8], "dilate": -0.5 }
-          ]
-        },
+					"data": "minelittlepony:components/ears",
+					"implementation": "com.minelittlepony.client.model.part.PonyEars",
+					"locals": {
+						"ear_shortening": "#global_ear_shortening"
+					}
+				},
+				"hat": {
+					"texture": { "u": 32, "v": 0 },
+					"visible": false,
+					"cubes": [
+						{ "from": [-4, -1, -6], "size": [ 8, 8, 8], "dilate": -0.5 }
+					]
+				},
 				"horn": { "data": "minelittlepony:components/horn", "implementation": "com.minelittlepony.client.model.part.UnicornHorn" },
 				"left_horn": {
 					"texture": {"u": 0, "v": 52},
@@ -77,61 +79,49 @@
 			"pivot": ["#arm_rotation_x_neg", "#arm_rotation_y", "#arm_rotation_z"],
 			"texture": { "u": 0, "v": 20 },
 			"cubes": [
-				{
-					"from": [ "#arm_x_neg", 0, "#arm_z"],
-					"size": [ "#arm_width",  "#arm_length",  "#arm_depth" ]
-				}
+				{"from": [ "#arm_x_neg", 0, "#arm_z"], "size": [ "#arm_width",  "#arm_length",  "#arm_depth" ]}
 			],
-      "children": {
-        "right_sleeve": {
-          "visible": false
-        }
-      }
+			"children": {
+				"right_sleeve": {
+					"visible": false
+				}
+			}
 		},
 		"left_arm": {
 			"pivot": ["#arm_rotation_x", "#arm_rotation_y", "#arm_rotation_z"],
 			"texture": { "u": 0, "v": 20 },
 			"cubes": [
-				{
-					"from": [ "#arm_x", 0, "#arm_z"],
-					"size": [ "#arm_width",  "#arm_length",  "#arm_depth" ]
+				{"from": [ "#arm_x", 0, "#arm_z"], "size": [ "#arm_width",  "#arm_length",  "#arm_depth" ]}
+				],
+			"children": {
+				"left_sleeve": {
+					"visible": false
 				}
-			],
-      "children": {
-        "left_sleeve": {
-          "visible": false
-        }
-      }
+			}
 		},
 		"right_leg": {
 			"pivot": ["#arm_rotation_x_neg", "#arm_rotation_y", "#arm_rotation_z_neg"],
 			"texture": { "u": 0, "v": 20 },
 			"cubes": [
-				{
-					"from": [ "#arm_x_neg", 0, "#arm_z"],
-					"size": [ "#arm_width",  "#arm_length",  "#arm_depth" ]
-				}
+				{"from": [ "#arm_x_neg", 0, "#arm_z"], "size": [ "#arm_width",  "#arm_length",  "#arm_depth" ] }
 			],
-      "children": {
-        "right_pants": {
-          "visible": false
-        }
-      }
+			"children": {
+				"right_pants": {
+					"visible": false
+				}
+			}
 		},
 		"left_leg": {
 			"pivot": ["#arm_rotation_x", "#arm_rotation_y", "#arm_rotation_z_neg"],
 			"texture": { "u": 0, "v": 20 },
 			"cubes": [
-				{
-					"from": [ "#arm_x", 0, "#arm_z"],
-					"size": [ "#arm_width",  "#arm_length",  "#arm_depth" ]
-				}
+				{"from": [ "#arm_x", 0, "#arm_z"], "size": [ "#arm_width",  "#arm_length",  "#arm_depth" ] }
 			],
-      "children": {
-        "left_pants": {
-          "visible": false
-        }
-      }
+			"children": {
+				"left_pants": {
+					"visible": false
+				}
+			}
 		},
 		"tail": {
 			"type": "mson:slot",

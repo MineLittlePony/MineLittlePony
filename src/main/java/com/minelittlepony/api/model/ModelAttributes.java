@@ -27,7 +27,7 @@ public class ModelAttributes {
      */
     public boolean isSleeping;
     /**
-     * True if the model is lying down comfortably
+     * True if the model is lying down comfortably. If isSleeping is true, so is this.
      */
     public boolean isLyingDown;
     /**

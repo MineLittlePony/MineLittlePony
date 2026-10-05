@@ -34,7 +34,7 @@ public abstract class AbstractPonyModel<T extends PonyRenderState> extends Clien
 
     public static final Pivot HEAD_SNEAKING = new Pivot(0, 6, -2);
     public static final Pivot BODY_SNEAKING = new Pivot(0, 7, -4);
-    public static final Pivot BODY_RIDING = new Pivot(0, 1, 4);
+    public static final Pivot BODY_RIDING = new Pivot(0, 0, 4);
     public static final Pivot FONT_LEGS_SLEEPING = new Pivot(0, -2, 2);
     public static final Pivot BACK_LEGS_SLEEPING = new Pivot(0, -2, -2);
 
@@ -89,6 +89,9 @@ public abstract class AbstractPonyModel<T extends PonyRenderState> extends Clien
         neck.visible = body.visible;
         if (state.attributes.isHorsey) {
             neck.visible = head.visible;
+            head.y -= 3;
+            head.z -= 2;
+            head.xRot = 0.5F;
         } else {
             neck.skipDraw = !head.visible;
         }
@@ -117,16 +120,10 @@ public abstract class AbstractPonyModel<T extends PonyRenderState> extends Clien
             }
         }
 
-        if (state.attributes.isHorsey) {
-            head.y -= 3;
-            head.z -= 2;
-            head.xRot = 0.5F;
-        }
-
         if (state.attributes.isChibi) {
-            head.xScale += 0.5;
-            head.zScale += 0.5;
-            head.yScale += 0.5;
+            head.xScale += 0.5F;
+            head.zScale += 0.5F;
+            head.yScale += 0.5F;
             float bobScale = state.getAttributes().getMainInterpolator().interpolate("head_bob", state.walkAnimationSpeed, 120) * 0.4F;
             head.zRot += Mth.sin(state.ageInTicks / 2F) * bobScale;
             head.yRot += Mth.sin(state.ageInTicks / 3F) * bobScale;
@@ -151,6 +148,8 @@ public abstract class AbstractPonyModel<T extends PonyRenderState> extends Clien
     protected void ponySleep() {
         rightArm.xRot = -MathUtil.Angles._90_DEG;
         leftArm.xRot = -MathUtil.Angles._90_DEG;
+        rightArm.y += 2;
+        leftArm.y = rightArm.y;
 
         rightLeg.xRot = MathUtil.Angles._90_DEG;
         leftLeg.xRot = MathUtil.Angles._90_DEG;
@@ -163,18 +162,18 @@ public abstract class AbstractPonyModel<T extends PonyRenderState> extends Clien
 
     protected void ponySit() {
         adjustBodyComponents(BODY_RIDING_PITCH, BODY_RIDING);
-        neck.setPos(0, 0, 0);
-        head.setPos(0, 0, 0);
+        head.y -= 1;
+        neck.y -= 1;
 
         leftLeg.z--;
-        leftLeg.y = 17;
+        leftLeg.y += 3;
         leftLeg.xRot = body.xRot - MathUtil.QUARTER_PIE;
-        leftLeg.yRot = -Mth.PI / 7;
+        leftLeg.yRot = -(Mth.PI / 7);
 
         rightLeg.z--;
-        rightLeg.y = 17;
+        rightLeg.y += 3;
         rightLeg.xRot = body.xRot - MathUtil.QUARTER_PIE;
-        rightLeg.zRot =  Mth.PI / 7;
+        rightLeg.yRot = Mth.PI / 7;
 
         leftArm.zRot = -Mth.PI * 0.06f;
         leftArm.xRot += body.xRot;
@@ -183,6 +182,8 @@ public abstract class AbstractPonyModel<T extends PonyRenderState> extends Clien
 
         leftArm.z -= 3;
         rightArm.z -= 3;
+        leftArm.y -= 2;
+        rightArm.y -= 2;
     }
 
     /**
@@ -202,6 +203,8 @@ public abstract class AbstractPonyModel<T extends PonyRenderState> extends Clien
         float legRPX = state.attributes.getMainInterpolator().interpolate("legOffset", cos - state.legOutset - 0.001F, 2);
         if (state.attributes.isHorsey) {
             legRPX += 2;
+            rightArm.z = leftArm.z = -1;
+            rightLeg.z = leftLeg.z = 19;
         }
 
         if (state.attributes.isGoingFast) {
@@ -209,9 +212,9 @@ public abstract class AbstractPonyModel<T extends PonyRenderState> extends Clien
             rightLeg.z += 2;
             leftLeg.y -= 4;
             leftLeg.z += 2;
-            rightArm.y -= 4;
+            rightArm.y -= 2;
             rightArm.z -= 2;
-            leftArm.y -= 4;
+            leftArm.y -= 2;
             leftArm.z -= 2;
         }
 
@@ -223,13 +226,6 @@ public abstract class AbstractPonyModel<T extends PonyRenderState> extends Clien
 
         rightArm.yRot += body.yRot;
         leftArm.yRot += body.yRot;
-
-        if (state.attributes.isHorsey) {
-            rightArm.z = leftArm.z = -1;
-            rightArm.y = leftArm.y = 6;
-            rightLeg.z = leftLeg.z = 19;
-            rightLeg.y = leftLeg.y = 6;
-        }
     }
 
     protected void rotateArms(T state) {
@@ -252,7 +248,6 @@ public abstract class AbstractPonyModel<T extends PonyRenderState> extends Clien
                         if (poser != null) {
                             poser.alignArmForSwing(state, this);
                         }
-                        break;
                     }
                 }
             }
@@ -301,8 +296,8 @@ public abstract class AbstractPonyModel<T extends PonyRenderState> extends Clien
         adjustBodyComponents(pitch, origin);
         neck.setPos(0, origin.y(), origin.z());
         if (state.attributes.isHorsey) {
-            neck.y--;
-            neck.z-= 2;
+            neck.z -= 3;
+            neck.y -= 2;
             neck.xRot = Angles._30_DEG;
         }
     }
@@ -360,18 +355,13 @@ public abstract class AbstractPonyModel<T extends PonyRenderState> extends Clien
             originZ += 0.5F;
         }
 
-        if (part != BodyPart.WINGS) {
-            if (state.attributes.isSleeping || state.attributes.isRiptide) {
-                stack.mulPose(Axis.YP.rotationDegrees(180));
-                stack.mulPose(Axis.XP.rotationDegrees(-90));
-            }
-        }
-
         stack.translate(0, originY, originZ);
         float scaleFactor = state.attributes.size.scaleFactor();
 
         if (part != BodyPart.WINGS) {
             if (state.attributes.isSleeping || state.attributes.isRiptide) {
+                stack.mulPose(Axis.YP.rotationDegrees(180));
+                stack.mulPose(Axis.XP.rotationDegrees(-90));
                 stack.translate(0, -0.75F, -0.35F);
                 if (state instanceof PlayerPonyRenderState) {
                     stack.translate(0, 0.15F / scaleFactor, 0.4F);
@@ -393,11 +383,10 @@ public abstract class AbstractPonyModel<T extends PonyRenderState> extends Clien
 
             if (state.attributes.isHorsey) {
                 stack.translate(0, 0.1F, 0);
+                if (part == BodyPart.BODY) {
+                    stack.scale(1.5F, 1, 1.5F);
+                }
             }
-        }
-
-        if (state.attributes.isHorsey && part == BodyPart.BODY) {
-            stack.scale(1.5F, 1, 1.5F);
         }
 
         state.transformation.transform(state.attributes, part, stack);

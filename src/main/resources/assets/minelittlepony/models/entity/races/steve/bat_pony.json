@@ -9,24 +9,24 @@
 			],
 			"children": {
 				"nose": {
-					"dilate": [-1, 0, -1],
 					"visible": false,
+					"dilate": [-1, 0, -1],
 					"cubes": [
-							{ "from": [-4, -6, -13], "size": [ 8,  8,  8] }
-						]
-					},
-					"snout": {
-						"data": "minelittlepony:components/snout",
-						"implementation": "com.minelittlepony.client.model.part.PonySnout"
-					},
-					"ears": {
-						"data": "minelittlepony:components/bat_ears",
-						"implementation": "com.minelittlepony.client.model.part.PonyEars",
-						"locals": {
-							"ear_shortening": "#global_ear_shortening"
-						}
-					},
-					"hat": {
+						{ "from": [-4, -6, -13], "size": [8, 8, 8] }
+					]
+				},
+				"snout": {
+					"data": "minelittlepony:components/snout",
+					"implementation": "com.minelittlepony.client.model.part.PonySnout"
+				},
+				"ears": {
+					"data": "minelittlepony:components/bat_ears",
+					"implementation": "com.minelittlepony.client.model.part.PonyEars",
+					"locals": {
+						"ear_shortening": "#global_ear_shortening"
+					}
+				},
+				"hat": {
 					"texture": { "u": 32, "v": 0 },
 					"dilate": ["#head_elongation", "#head_elongation", 0],
 					"cubes": [

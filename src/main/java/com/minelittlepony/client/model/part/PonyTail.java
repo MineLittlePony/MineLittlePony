@@ -16,12 +16,9 @@ import java.util.List;
 import java.util.stream.IntStream;
 
 public class PonyTail implements SubModel<PonyRenderState>, MsonModel {
-    private static final float TAIL_Z = 14;
     private static final float TAIL_RIDING_Y = 3;
-    private static final float TAIL_RIDING_Z = 13;
-    private static final float TAIL_SNEAKING_Z = 15;
 
-    private static final Pivot HORSEY_TAIL_PIVOT = new Pivot(0, 6, -6);
+    private static final Pivot HORSEY_TAIL_PIVOT = new Pivot(0, 3, 4);
 
     private ModelPart tail;
     private AbstractPonyModel<?> model;
@@ -45,35 +42,32 @@ public class PonyTail implements SubModel<PonyRenderState>, MsonModel {
 
     @Override
     public void setAngles(PonyModel<PonyRenderState> model, PonyRenderState state) {
+        tail.resetPose();
         boolean rainboom = state.attributes.isSwimming || state.attributes.isGoingFast;
-        tail.zRot = rainboom ? 0 : Mth.cos(state.walkAnimationPos * 0.8F) * 0.2f * state.walkAnimationSpeed;
-        tail.yRot = state.wobbleAmount * 5;
+        tail.zRot += rainboom ? 0 : Mth.cos(state.walkAnimationPos * 0.8F) * 0.2f * state.walkAnimationSpeed;
+        tail.yRot += state.wobbleAmount * 5;
 
         tail.visible = !state.isSpectator;
         tailStop = state.attributes.metadata.tailLength().ordinal();
         shape = state.attributes.metadata.tailShape();
 
-        if (state.attributes.isCrouching && !rainboom) {
-            tail.setPos(0, 0, TAIL_SNEAKING_Z);
-            tail.xRot = -model.getBodyPart(BodyPart.BODY).xRot + 0.1F;
-        } else if (state.attributes.isSitting) {
-            tail.z = TAIL_RIDING_Z;
+        if (state.attributes.isSitting) {
+            tail.z -= 1;
             tail.y = TAIL_RIDING_Y;
-            tail.xRot = Mth.PI / 5;
+            tail.xRot += Mth.PI / 5;
         } else {
-            tail.setPos(0, 0, TAIL_Z);
             if (rainboom) {
-                tail.xRot = MathUtil.Angles._90_DEG + Mth.sin(state.walkAnimationSpeed) / 10;
+                tail.xRot += MathUtil.Angles._90_DEG + Mth.sin(state.walkAnimationSpeed) / 10;
+                tail.y += 2;
+                tail.z += 2;
             } else {
-                tail.xRot = state.walkAnimationSpeed / 2;
-
+                if (state.attributes.isCrouching) {
+                    tail.z += 0.5F;
+                    tail.xRot -= model.getBodyPart(BodyPart.BODY).xRot - 0.2F;
+                }
+                tail.xRot += state.walkAnimationSpeed / 2;
                 swingX(state.ageInTicks);
             }
-        }
-
-        if (rainboom) {
-            tail.y += 6;
-            tail.z++;
         }
 
         for (int i = 0; i < segments.size(); i++) {

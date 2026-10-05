@@ -6,7 +6,7 @@
 		"body": {
 			"texture": { "u": 16, "v": 18 },
 			"cubes": [
-				{ "from": [-4, 4, -2], "size": [ 8,  8,  4] }
+				{ "from": [-4, 4, -3], "size": [ 8,  8,  4] }
 			],
 			"children": {
 				"upper_torso": {
